@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { NavLink, navLinks } from "@/data/navLinks"
 import Link from "next/link"
+import ThemeToggleButton from "../ui/theme-toggle-button"
 
 export default function Navbar() {
   const menuLinks = ["Home", "About", "Services", "Contact"]
@@ -68,6 +69,7 @@ export default function Navbar() {
               <Icon className="h-6 w-6 text-foreground" />
             </Button>
           ))}
+          <ThemeToggleButton/>
         </div>
       </div>
 

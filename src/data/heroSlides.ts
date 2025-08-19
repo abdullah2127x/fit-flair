@@ -7,7 +7,7 @@ export type HeroSlideProps = {
   }[];
   imageSide: "left" | "right";
   imageUrl: string;
-  textColorAfterMd: "primary" | "secondary";
+  textColorAfterMd: "black" | "white";
 };
 
 export const heroSlideOne: HeroSlideProps = {
@@ -25,7 +25,7 @@ export const heroSlideOne: HeroSlideProps = {
   ],
   imageSide: "left",
   imageUrl: "/images/hero/heroSlideOneImage.webp",
-  textColorAfterMd: "primary",
+  textColorAfterMd: "black",
 };
 export const heroSlideTwo: HeroSlideProps = {
   title: "UNSTITSHED ",
@@ -38,18 +38,18 @@ export const heroSlideTwo: HeroSlideProps = {
   ],
   imageSide: "right",
   imageUrl: "/images/hero/heroSlideTwoImage.webp",
-  textColorAfterMd: "primary",
+  textColorAfterMd: "black",
 };
 export const heroSlideThree: HeroSlideProps = {
   title: "READY TO WEAR ",
   subTitle: "INTERMIX '25 - NEW ARRIVALS",
   buttons: [
-   {
+    {
       label: "SHOP NOW",
       href: "/#",
     },
   ],
   imageSide: "right",
   imageUrl: "/images/hero/heroSlideThreeImage.webp",
-  textColorAfterMd: "secondary",
+  textColorAfterMd: "white",
 };

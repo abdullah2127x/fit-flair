@@ -22,7 +22,7 @@ const HeroSlide = ({
   buttons,
   imageSide,
   imageUrl,
-  textColorAfterMd = "primary",
+  textColorAfterMd = "black",
 }: HeroSlideProps) => {
   const btnRefs = useRef(null);
   // gsap.registerPlugin(useGSAP);
@@ -41,7 +41,7 @@ const HeroSlide = ({
 
   return (
     <section
-      className={`relative w-full flex justify-center items-end md:items-center md:px-[14vw] py-[5%] xs:py-[8%] md:py-0 h-[38vh] xs:h-[45vh] sm:h-[48vh] md:h-[30vh] lg:h-[50vh] xl:h-[65vh] ${
+      className={`relative text-center w-full flex justify-center items-end md:items-center md:px-[14vw] py-[5%] xs:py-[8%] md:py-0 h-[38vh] xs:h-[45vh] sm:h-[48vh] md:h-[30vh] lg:h-[50vh] xl:h-[65vh] ${
         imageSide == "left" ? "md:justify-end" : "md:justify-start"
       }
         `}
@@ -70,23 +70,19 @@ const HeroSlide = ({
 
       {/* Content */}
       <div className="flex gap-1 md:gap-4 flex-col items-center ">
-        <PrimaryHeading
-          className={`text-foreground md:text-${textColorAfterMd}`}
-        >
+        <PrimaryHeading className={`text-white md:text-${textColorAfterMd}`}>
           {title}
         </PrimaryHeading>
-        <SecondaryHeading
-          className={`text-foreground md:text-${textColorAfterMd}`}
-        >
+        <SecondaryHeading className={`text-white md:text-${textColorAfterMd}`}>
           {subTitle}
         </SecondaryHeading>
 
         <div ref={btnRefs} className="flex gap-x-4">
           {buttons.map((button) => (
             <Button
-              className={`bg-primary-foreground text-primary hover:bg-primary-foreground/90  ${
-                textColorAfterMd == "primary"
-                  ? "md:bg-primary md:text-primary-foreground hover:md:bg-primary/90"
+              className={`bg-white text-black hover:bg-white/90  ${
+                textColorAfterMd == "black"
+                  ? "md:bg-black md:text-white hover:md:bg-black/90"
                   : ""
               } `}
               key={button.label}
@@ -104,7 +100,6 @@ export default function Hero() {
   const swiperRef = useRef<any>(null);
 
   const animateSlide = (swiper: any) => {
-    console.log("the swiper is : ", swiper);
     const activeSlide = swiper.slides[swiper.activeIndex];
     if (!activeSlide) return;
     if (swiper.activeIndex == swiper.previousIndex) return;
@@ -123,7 +118,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="w-full md:mt-14">
+    <section className="w-full ">
       <Swiper
         modules={[Autoplay]}
         spaceBetween={30}
@@ -133,11 +128,6 @@ export default function Hero() {
         autoplay={{
           delay: 5000,
           disableOnInteraction: false,
-        }}
-        onSwiper={(swiper) => {
-          swiperRef.current = swiper;
-          // Run animation on first load
-          animateSlide(swiper);
         }}
         onSlideChange={(swiper) => {
           animateSlide(swiper);
