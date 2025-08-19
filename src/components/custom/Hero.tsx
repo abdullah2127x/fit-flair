@@ -1,35 +1,32 @@
 "use client";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import PrimaryHeading from "./PrimaryHeading";
 import SecondaryHeading from "./SecondaryHeading";
-import { Autoplay, Mousewheel } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
+import {
+  heroSlideOne,
+  HeroSlideProps,
+  heroSlideThree,
+  heroSlideTwo,
+} from "@/data/heroSlides";
 
-type HeroSlideProps = {
-  title: string;
-  subTitle: string;
-  buttons: {
-    label: string;
-    href: string;
-  }[];
-  imageSide: "left" | "right";
-  imageUrl: string;
-};
 const HeroSlide = ({
   title,
   subTitle,
   buttons,
   imageSide,
   imageUrl,
+  textColorAfterMd = "primary",
 }: HeroSlideProps) => {
   return (
     <section
-      className={`relative w-full h-[60vh] md:h-[70vh] flex justify-center ${
-        imageSide == "left" ? "md:justify-end" : "justify-start"
-      } items-end md:items-center md:px-[14vw] py-[10%] md:py-0    `}
+      className={`relative w-full flex justify-center items-end md:items-center md:px-[14vw] py-[5%] xs:py-[8%] md:py-0 h-[38vh] xs:h-[45vh] sm:h-[48vh] md:h-[30vh] lg:h-[50vh] xl:h-[65vh] ${
+        imageSide == "left" ? "md:justify-end" : "md:justify-start"
+      }
+        `}
     >
       {/* Background Image */}
       <Image
@@ -37,29 +34,45 @@ const HeroSlide = ({
         alt="Adventure"
         fill
         priority
-        className={`object-cover md:object-[19%_30%]  -z-10 
-          ${imageSide === "left" ? "object-[19%_30%]" : "object-[81%_70%]"}
+        className={`object-cover  -z-10 
+          ${
+            imageSide === "left"
+              ? "object-[14%_0%]"
+              : "object-[70%_0%] md:object-[0%_0%] lg:object-[60%_10%]"
+          }
           `}
       />
 
       {/* Overlay (optional dark layer for better text readability) */}
-      {/* <div className="absolute inset-0 bg-black/40 -z-10"></div> */}
+      <div
+        className={` absolute inset-0  bg-gradient-to-t ${
+          imageSide == "left" ? "md:bg-gradient-to-l" : "md:bg-gradient-to-r"
+        } from-black/50 to-transparent  -z-10`}
+      ></div>
 
       {/* Content */}
-      <div className="flex gap-4 flex-col items-center ">
-        <PrimaryHeading className="text-secondary md:text-primary">
+      <div className="flex gap-1 md:gap-4 flex-col items-center ">
+        <PrimaryHeading
+          className={`text-secondary md:text-${textColorAfterMd}`}
+        >
           {title}
         </PrimaryHeading>
-        <SecondaryHeading className="text-secondary md:text-primary">
+        <SecondaryHeading
+          className={`text-secondary md:text-${textColorAfterMd}`}
+        >
           {subTitle}
         </SecondaryHeading>
 
         <div className="flex gap-x-4">
           {buttons.map((button) => (
             <Button
-              className="bg-secondary text-primary md:bg-primary md:text-secondary"
+              className={`bg-secondary text-primary text-sm ${
+                textColorAfterMd == "primary"
+                  ? "md:bg-primary md:text-secondary"
+                  : ""
+              } `}
               key={button.label}
-              size={"lg"}
+              // size={"lg"}
             >
               {button.label}
             </Button>
@@ -71,26 +84,10 @@ const HeroSlide = ({
 };
 
 export default function Hero() {
-  const slideOne: HeroSlideProps = {
-    title: "MAN ",
-    subTitle: "INTERMIX '25",
-    buttons: [
-      {
-        label: "Stiched",
-        href: "/get-started",
-      },
-      {
-        label: "UNSTICHED",
-        href: "/get-started",
-      },
-    ],
-    imageSide: "left",
-    imageUrl: "/images/hero/heroSlideOneImage.webp",
-  };
   return (
-    <section className="w-full md:mt-14">
+    <section className="w-full md:mt-14 ">
       <Swiper
-        modules={[Autoplay, Mousewheel]}
+        modules={[Autoplay]}
         spaceBetween={30}
         slidesPerView={1}
         loop={true}
@@ -102,11 +99,32 @@ export default function Hero() {
       >
         <SwiperSlide>
           <HeroSlide
-            title={slideOne.title}
-            subTitle={slideOne.subTitle}
-            buttons={slideOne.buttons}
-            imageSide={slideOne.imageSide}
-            imageUrl={slideOne.imageUrl}
+            title={heroSlideOne.title}
+            subTitle={heroSlideOne.subTitle}
+            buttons={heroSlideOne.buttons}
+            imageSide={heroSlideOne.imageSide}
+            imageUrl={heroSlideOne.imageUrl}
+            textColorAfterMd={heroSlideOne.textColorAfterMd}
+          />
+        </SwiperSlide>
+        <SwiperSlide>
+          <HeroSlide
+            title={heroSlideTwo.title}
+            subTitle={heroSlideTwo.subTitle}
+            buttons={heroSlideTwo.buttons}
+            imageSide={heroSlideTwo.imageSide}
+            textColorAfterMd={heroSlideTwo.textColorAfterMd}
+            imageUrl={heroSlideTwo.imageUrl}
+          />
+        </SwiperSlide>
+        <SwiperSlide>
+          <HeroSlide
+            title={heroSlideThree.title}
+            subTitle={heroSlideThree.subTitle}
+            buttons={heroSlideThree.buttons}
+            textColorAfterMd={heroSlideThree.textColorAfterMd}
+            imageSide={heroSlideThree.imageSide}
+            imageUrl={heroSlideThree.imageUrl}
           />
         </SwiperSlide>
       </Swiper>
