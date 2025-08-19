@@ -1,4 +1,5 @@
 "use client";
+import gsap from "gsap";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,8 @@ import {
   heroSlideThree,
   heroSlideTwo,
 } from "@/data/heroSlides";
+import { useGSAP } from "@gsap/react";
+import { useRef } from "react";
 
 const HeroSlide = ({
   title,
@@ -21,6 +24,21 @@ const HeroSlide = ({
   imageUrl,
   textColorAfterMd = "primary",
 }: HeroSlideProps) => {
+  const btnRefs = useRef(null);
+  // gsap.registerPlugin(useGSAP);
+  useGSAP(() => {
+    if (!btnRefs.current) return;
+
+    const animate = () => {
+      // gsap code here...
+      gsap.from(btnRefs.current, {
+        scale: 0.5,
+        stagger: 0.15,
+      }); // <-- automatically reverted
+    };
+    animate();
+  });
+
   return (
     <section
       className={`relative w-full flex justify-center items-end md:items-center md:px-[14vw] py-[5%] xs:py-[8%] md:py-0 h-[38vh] xs:h-[45vh] sm:h-[48vh] md:h-[30vh] lg:h-[50vh] xl:h-[65vh] ${
@@ -47,32 +65,31 @@ const HeroSlide = ({
       <div
         className={` absolute inset-0  bg-gradient-to-t ${
           imageSide == "left" ? "md:bg-gradient-to-l" : "md:bg-gradient-to-r"
-        } from-black/50 to-transparent  -z-10`}
+        } from-black/70 md:from-black/40 to-transparent  -z-10`}
       ></div>
 
       {/* Content */}
       <div className="flex gap-1 md:gap-4 flex-col items-center ">
         <PrimaryHeading
-          className={`text-secondary md:text-${textColorAfterMd}`}
+          className={`text-foreground md:text-${textColorAfterMd}`}
         >
           {title}
         </PrimaryHeading>
         <SecondaryHeading
-          className={`text-secondary md:text-${textColorAfterMd}`}
+          className={`text-foreground md:text-${textColorAfterMd}`}
         >
           {subTitle}
         </SecondaryHeading>
 
-        <div className="flex gap-x-4">
+        <div ref={btnRefs} className="flex gap-x-4">
           {buttons.map((button) => (
             <Button
-              className={`bg-secondary text-primary text-sm ${
+              className={`bg-primary-foreground text-primary hover:bg-primary-foreground/90  ${
                 textColorAfterMd == "primary"
-                  ? "md:bg-primary md:text-secondary"
+                  ? "md:bg-primary md:text-primary-foreground hover:md:bg-primary/90"
                   : ""
               } `}
               key={button.label}
-              // size={"lg"}
             >
               {button.label}
             </Button>
@@ -84,8 +101,29 @@ const HeroSlide = ({
 };
 
 export default function Hero() {
+  const swiperRef = useRef<any>(null);
+
+  const animateSlide = (swiper: any) => {
+    console.log("the swiper is : ", swiper);
+    const activeSlide = swiper.slides[swiper.activeIndex];
+    if (!activeSlide) return;
+    if (swiper.activeIndex == swiper.previousIndex) return;
+
+    // Animate elements inside active slide
+    gsap.fromTo(
+      activeSlide.querySelectorAll("h1, h2"),
+      { autoAlpha: 0, x: 400 },
+      { autoAlpha: 1, x: 0, stagger: 0.2, duration: 0.8, ease: "circ.out" }
+    );
+    gsap.fromTo(
+      activeSlide.querySelectorAll("button"),
+      { autoAlpha: 0, scale: 0 },
+      { autoAlpha: 1, scale: 1, stagger: 0.2, duration: 0.8, ease: "circ.out" }
+    );
+  };
+
   return (
-    <section className="w-full md:mt-14 ">
+    <section className="w-full md:mt-14">
       <Swiper
         modules={[Autoplay]}
         spaceBetween={30}
@@ -93,39 +131,26 @@ export default function Hero() {
         loop={true}
         allowTouchMove={true}
         autoplay={{
-          delay: 3000,
+          delay: 5000,
           disableOnInteraction: false,
+        }}
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper;
+          // Run animation on first load
+          animateSlide(swiper);
+        }}
+        onSlideChange={(swiper) => {
+          animateSlide(swiper);
         }}
       >
         <SwiperSlide>
-          <HeroSlide
-            title={heroSlideOne.title}
-            subTitle={heroSlideOne.subTitle}
-            buttons={heroSlideOne.buttons}
-            imageSide={heroSlideOne.imageSide}
-            imageUrl={heroSlideOne.imageUrl}
-            textColorAfterMd={heroSlideOne.textColorAfterMd}
-          />
+          <HeroSlide {...heroSlideOne} />
         </SwiperSlide>
         <SwiperSlide>
-          <HeroSlide
-            title={heroSlideTwo.title}
-            subTitle={heroSlideTwo.subTitle}
-            buttons={heroSlideTwo.buttons}
-            imageSide={heroSlideTwo.imageSide}
-            textColorAfterMd={heroSlideTwo.textColorAfterMd}
-            imageUrl={heroSlideTwo.imageUrl}
-          />
+          <HeroSlide {...heroSlideTwo} />
         </SwiperSlide>
         <SwiperSlide>
-          <HeroSlide
-            title={heroSlideThree.title}
-            subTitle={heroSlideThree.subTitle}
-            buttons={heroSlideThree.buttons}
-            textColorAfterMd={heroSlideThree.textColorAfterMd}
-            imageSide={heroSlideThree.imageSide}
-            imageUrl={heroSlideThree.imageUrl}
-          />
+          <HeroSlide {...heroSlideThree} />
         </SwiperSlide>
       </Swiper>
     </section>
