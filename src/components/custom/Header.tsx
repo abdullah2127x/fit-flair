@@ -153,7 +153,7 @@ const Header = () => {
         {navLinks.map((link: NavLink, idx: number) => (
           <div
             key={idx}
-            className="overflow-hidden cursor-pointer hover:text-primary flex flex-col items-center relative pl-5"
+            className="overflow-hidden cursor-pointer hover:text-secondary-foreground/90 flex flex-col items-center justify-center relative"
             onMouseEnter={() => animateIn(idx)}
             onMouseLeave={() => animateOut(idx)}
           >
@@ -197,19 +197,11 @@ const Header = () => {
               ref={(el) => {
                 if (el) underlineRef.current[idx] = el;
               }}
-              className={`bg-primary underline rounded-full absolute left-5 bottom-0 h-[2px] w-full
+              className={`bg-secondary-foreground/90 underline rounded-full absolute bottom-0 h-[2px] w-full
                  ${activeLinkIndex === idx ? "block" : "hidden"}
                 `}
             ></div>
           </div>
-          // <Link
-          //   onMouseEnter={hoverLink}
-          //   key={link.id}
-          //   href={link.href}
-          //   className="hidden sm:block"
-          // >
-          //   {link.label}
-          // </Link>
         ))}
       </nav>
     </header>
