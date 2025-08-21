@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Elegant Cotton Suit",
+    "slug": "elegant-cotton-suit",
+    "price": 4500,
+    "category": "unStitched",
+    "subCategory": "",
+    "fabric": "Silk",
+    "audience": "women",
+    "featuredImage": "https://next-ecommerce-template-4.vercel.app/product/Chair (19).png",
+    "additionalImages": [
+      "https://next-ecommerce-template-4.vercel.app/product/Chair (19).png",
+      "https://next-ecommerce-template-4.vercel.app/product/Chair (13).png"
+    ],
+    "description": "An elegant unstitched cotton suit perfect for summer wear.",
+    "brand": "Sapphire",
+    "color": "Red",
+    "isFeatured": true,
+    "tags": ["Shirt", "Everyday Wear", "Summer Collection"],
+    "sizes": ["S", "M", "L", "XL"]
+  }
+]
