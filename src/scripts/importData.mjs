@@ -13,7 +13,11 @@ const {
   NEXT_PUBLIC_API_BASE_URL,
 } = process.env;
 
-if (!NEXT_PUBLIC_SANITY_PROJECT_ID || !SANITY_API_TOKEN || !NEXT_PUBLIC_API_BASE_URL) {
+if (
+  !NEXT_PUBLIC_SANITY_PROJECT_ID ||
+  !SANITY_API_TOKEN ||
+  !NEXT_PUBLIC_API_BASE_URL
+) {
   console.error("❌ Missing required environment variables.");
   process.exit(1);
 }
@@ -29,20 +33,34 @@ const client = createClient({
 // ------------------- Helper Functions -------------------
 
 // Upload image to Sanity
+// it will behave as if same image comes twice so it upload it twice which gets more space and time to upload so create our custom chache and check
+const uploadedImages = {}; // { imageUrl: assetId }
 async function uploadImageToSanity(imageUrl) {
   try {
+    // ✅ Check if already uploaded
+    if (uploadedImages[imageUrl]) {
+      console.log(`🔁 Already uploaded: ${imageUrl}`);
+      return uploadedImages[imageUrl]; // return existing assetId
+    }
+
     console.log(`📤 Uploading Image: ${imageUrl}`);
     const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
     const buffer = Buffer.from(response.data);
+
     const asset = await client.assets.upload("image", buffer, {
       filename: imageUrl.split("/").pop(),
     });
+
+    // ✅ Save to cache
+    uploadedImages[imageUrl] = asset._id;
+
     return asset._id;
   } catch (error) {
     console.error("❌ Failed to Upload Image:", imageUrl, error.message);
     return null;
   }
 }
+
 
 // Generic helper to fetch reference by type + field
 async function fetchReference(type, field, value) {
@@ -60,9 +78,14 @@ async function fetchReference(type, field, value) {
 // Fetch data from API with POST + retry
 async function fetchData(type, retries = 1) {
   try {
-    const response = await axios.post(`${NEXT_PUBLIC_API_BASE_URL}/api/importData`, { type });
+    const response = await axios.post(
+      `${NEXT_PUBLIC_API_BASE_URL}/api/importData`,
+      { type }
+    );
     if (!Array.isArray(response.data)) {
-      console.warn(`⚠️ API response for ${type} is not an array. Returning empty.`);
+      console.warn(
+        `⚠️ API response for ${type} is not an array. Returning empty.`
+      );
       return [];
     }
     return response.data;
@@ -115,7 +138,11 @@ async function importProducts() {
     let featuredImageRef = null;
     if (item.featuredImage) {
       const uploaded = await uploadImageToSanity(item.featuredImage);
-      if (uploaded) featuredImageRef = { _type: "image", asset: { _type: "reference", _ref: uploaded } };
+      if (uploaded)
+        featuredImageRef = {
+          _type: "image",
+          asset: { _type: "reference", _ref: uploaded },
+        };
     }
 
     // Upload additional images
@@ -147,17 +174,32 @@ async function importProducts() {
             style: "normal",
             markDefs: [],
             children: [
-              { _type: "span", _key: uuidv4(), text: item.description, marks: [] },
+              {
+                _type: "span",
+                _key: uuidv4(),
+                text: item.description,
+                marks: [],
+              },
             ],
           },
         ]
       : [];
 
     // Tags
-    const unstitchedTags = item.category === "unStitched" ? item.tags || [] : [];
-    const topTags = item.category === "readyToWear" && item.subCategory === "top" ? item.tags || [] : [];
-    const bottomTags = item.category === "readyToWear" && item.subCategory === "bottom" ? item.tags || [] : [];
-    const fullTags = item.category === "readyToWear" && item.subCategory === "full" ? item.tags || [] : [];
+    const unstitchedTags =
+      item.category === "unStitched" ? item.tags || [] : [];
+    const topTags =
+      item.category === "readyToWear" && item.subCategory === "top"
+        ? item.tags || []
+        : [];
+    const bottomTags =
+      item.category === "readyToWear" && item.subCategory === "bottom"
+        ? item.tags || []
+        : [];
+    const fullTags =
+      item.category === "readyToWear" && item.subCategory === "full"
+        ? item.tags || []
+        : [];
 
     const sanityItem = {
       _type: "product",
