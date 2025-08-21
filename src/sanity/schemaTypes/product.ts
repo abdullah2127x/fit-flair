@@ -133,7 +133,16 @@ export const product = defineType({
         layout: "radio",
         direction: "horizontal",
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const parent = context.parent as { category?: string } | undefined;
+
+          if (parent?.category === "readyToWear" && !value) {
+            return "Sub-Category is required when Category is Ready To Wear.";
+          }
+          return true;
+        }),
+
       hidden: ({ parent }) => parent?.category !== "readyToWear",
     }),
 
