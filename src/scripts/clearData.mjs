@@ -93,7 +93,7 @@ async function promptDeletion() {
       type: "list",
       name: "typeToDelete",
       message: "Select the data type you want to delete:",
-      choices: ["product", "brand", "color", "fabric"],
+      choices: ["product", "brand", "color", "fabric", "category", "audience"],
     },
   ]);
 
