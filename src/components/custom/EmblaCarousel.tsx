@@ -6,10 +6,10 @@ import AutoScroll from "embla-carousel-auto-scroll";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ImageCard from "./ImageCard";
 
-
 type SlideType = {
+  id: string;
   src: string;
-  title?: string;
+  title: string;
   subTitle?: string;
   href?: string; // 👈 optional URL
   linkEnabled?: boolean;
@@ -17,46 +17,74 @@ type SlideType = {
 
 type CarouselProps = {
   slides: SlideType[];
+
   slidesToShow?: number;
-  autoPlay?: boolean;
+
+  autoPlay?: boolean; // continuous smooth autoplay
   autoPlaySpeed?: number;
+
   rounded?: "circle" | "square";
+
   ripple?: boolean;
   rippleColor?: string;
   rippleOpacity?: number;
+
   emblaOptions?: EmblaOptionsType;
   className?: string;
 
-  // 🔹 interactive features
+  stepAutoPlay?: boolean;
+  stepAutoPlayDelay?: number;
+
+  // interactive features
   showPagination?: boolean;
   paginationPosition?: "below" | "center";
+
   showNavigation?: boolean;
   navigationPosition?: "middle" | "below";
+
   stopOnHover?: boolean;
   freeScroll?: boolean;
   centerIfFew?: boolean;
   centerScale?: boolean;
+  enableMouseWheel?: boolean;
+  mouseWheelSensitivity?: number;
+  direction?: "forward" | "backward";
 };
 
 const EmblaCarousel: React.FC<CarouselProps> = ({
   slides,
   slidesToShow = 6,
-  autoPlay = false, // Changed default to false for interactive carousel
+
+  autoPlay = false, // continuous smooth scroll
   autoPlaySpeed = 2,
+
+  stepAutoPlay = false,
+  stepAutoPlayDelay = 3,
+
   rounded = "circle",
+
   ripple = false,
   rippleColor = "white",
   rippleOpacity = 0.3,
+
   emblaOptions = { loop: true },
   className = "",
+
   showPagination = false,
   paginationPosition = "below",
+
   showNavigation = false,
   navigationPosition = "middle",
+
   stopOnHover = true,
   freeScroll = true,
   centerIfFew = true,
   centerScale = false,
+
+  enableMouseWheel = true,
+  mouseWheelSensitivity = 1,
+
+  direction = "forward",
 }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
@@ -65,12 +93,13 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
       containScroll: "trimSnaps",
       dragFree: freeScroll,
     },
-    autoPlay
+    autoPlay && !stepAutoPlay
       ? [
           AutoScroll({
-            playOnInit: true,
+            playOnInit: false,
             speed: autoPlaySpeed,
-            stopOnInteraction: true, // Changed to true for interactive carousel
+            direction: direction,
+            stopOnInteraction: false,
           }),
         ]
       : []
@@ -89,21 +118,22 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
   // check if scrolling is possible
   const checkCanScroll = useCallback(() => {
     if (!emblaApi) return;
+
     const snaps = emblaApi.scrollSnapList();
     const slides = emblaApi.slideNodes();
-    // If there’s only one snap point OR all slides fit → disable nav
     setCanScroll(snaps.length > 1 && slides.length > slidesToShow);
   }, [emblaApi, slidesToShow]);
 
+  // show and hide the scrollbar if more slides are available
   useEffect(() => {
     if (!emblaApi) return;
 
     setScrollSnaps(emblaApi.scrollSnapList());
+
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", checkCanScroll);
     emblaApi.on("resize", checkCanScroll);
 
-    // initial check
     checkCanScroll();
     onSelect();
 
@@ -114,9 +144,67 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
     };
   }, [emblaApi, onSelect, checkCanScroll]);
 
-  // autoplay hover stop
+  // Center scale effect
   useEffect(() => {
-    if (!emblaApi || !stopOnHover) return;
+    if (!emblaApi || !centerScale) return;
+
+    const slides = emblaApi.slideNodes();
+
+    const applyScale = () => {
+      const viewport = emblaApi.rootNode();
+      const viewportWidth = viewport.offsetWidth;
+      const viewportCenter = viewportWidth / 2;
+
+      slides.forEach((slide) => {
+        const rect = slide.getBoundingClientRect();
+        const slideCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(viewportCenter - slideCenter);
+
+        // Normalize distance (0 = center, 1 = far away)
+        const maxDistance = viewportWidth / 2;
+        const normalized = Math.min(distance / maxDistance, 1);
+
+        // Scale calculation
+        const scale = 1 - normalized * 0.3; // 👈 adjust 0.3 for intensity
+        slide.style.transform = `scale(${scale})`;
+        slide.style.transition = "transform 0.3s ease-out";
+      });
+    };
+
+    emblaApi.on("scroll", applyScale);
+    emblaApi.on("reInit", applyScale);
+
+    applyScale(); // initial
+
+    return () => {
+      emblaApi.off("scroll", applyScale);
+      emblaApi.off("reInit", applyScale);
+    };
+  }, [emblaApi, centerScale]);
+
+  // step autoplay (slide by slide with loop)
+  useEffect(() => {
+    if (!emblaApi || !stepAutoPlay) return;
+    if (slides.length <= 1) return; // 👈 don’t autoplay single slide
+
+    let interval: NodeJS.Timeout;
+
+    const play = () => {
+      if (direction === "forward") {
+        emblaApi.scrollNext();
+      } else {
+        emblaApi.scrollPrev();
+      }
+    };
+
+    interval = setInterval(play, stepAutoPlayDelay * 1000);
+
+    return () => clearInterval(interval);
+  }, [emblaApi, stepAutoPlay, stepAutoPlayDelay, direction, slides.length]);
+
+  // autoplay hover stop (only for continuous mode)
+  useEffect(() => {
+    if (!emblaApi || !stopOnHover || !autoPlay || stepAutoPlay) return;
     const autoScroll = emblaApi.plugins()?.autoScroll;
     if (!autoScroll) return;
 
@@ -131,14 +219,55 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
       node.removeEventListener("mouseenter", handleMouseEnter);
       node.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [emblaApi, stopOnHover]);
+  }, [emblaApi, stopOnHover, autoPlay, stepAutoPlay]);
+
+  // Mouse wheel support
+  useEffect(() => {
+    if (!emblaApi || !enableMouseWheel) return;
+
+    const node = emblaApi.rootNode();  
+    let wheelTimeout: NodeJS.Timeout;
+    
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      if (wheelTimeout) clearTimeout(wheelTimeout);
+
+      const delta = event.deltaY;
+      const threshold = 50 / mouseWheelSensitivity;
+
+      if (Math.abs(delta) > threshold) {
+        if (delta > 0) {
+          emblaApi.scrollNext();
+        } else {
+          emblaApi.scrollPrev();
+        }
+        wheelTimeout = setTimeout(() => {}, 1000);
+      }
+    };
+
+    node.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      node.removeEventListener("wheel", handleWheel);
+      if (wheelTimeout) clearTimeout(wheelTimeout);
+    };
+  }, [emblaApi, enableMouseWheel, mouseWheelSensitivity]);
 
   return (
     <div className={`relative w-full ${className}`}>
+      {/* Mouse wheel hint */}
+      {enableMouseWheel && (
+        <div className="absolute top-2 right-2 z-10">
+          <div className="bg-black/20 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity duration-300">
+            🖱️ Use mouse wheel to scroll
+          </div>
+        </div>
+      )}
+
       {/* Carousel */}
       <div className="overflow-hidden w-full" ref={emblaRef}>
         <div
-          // className="flex"
           className={`embla__container flex gap-4 ${
             centerIfFew && slides.length <= 3 ? "justify-center" : ""
           }`}
@@ -153,15 +282,15 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
               }}
             >
               <ImageCard
+                id={slide.title}
                 src={slide.src}
                 title={slide.title}
+                href={slide.href}
                 subTitle={slide.subTitle}
                 rounded={rounded}
                 ripple={ripple}
                 rippleColor={rippleColor}
                 rippleOpacity={rippleOpacity}
-                href={slide.href} // 👈 optional href for link
-                linkEnabled={slide.linkEnabled} // 👈 optional toggle
               />
             </div>
           ))}
