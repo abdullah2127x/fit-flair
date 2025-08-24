@@ -1,131 +1,127 @@
-// "use client";
-// import Image from "next/image";
-// import React from "react";
-// import RippleEffect from "./RippleEffect";
-
-// type ImageCardProps = {
-//   src: string;
-//   title?: string;
-//   subtitle?: string;
-//   rounded?: "circle" | "square";
-//   ripple?: boolean; // 👈 enable/disable ripple
-//   rippleColor?: string;
-//   rippleOpacity?: number;
-// };
-
-// const ImageCard: React.FC<ImageCardProps> = ({
-//   src,
-//   title,
-//   subtitle,
-//   rounded = "circle",
-//   ripple = false,
-//   rippleColor = "white",
-//   rippleOpacity = 0.3,
-// }) => {
-//   return (
-//     <div>
-//       <div
-//         className={`relative w-full aspect-square bg-gray-200 ${
-//           rounded === "circle" ? "rounded-full" : "rounded-lg"
-//         } overflow-hidden flex items-center justify-center`}
-//       >
-//         {/* Main Image */}
-//         <Image
-//           src={src}
-//           alt={title || "slide"}
-//           fill
-//           className="object-contain"
-//         />
-
-//         {/* Optional Ripple Overlay */}
-//         {ripple && (
-//           <RippleEffect
-//             rippleColor={rippleColor}
-//             rippleOpacity={rippleOpacity}
-//             className="absolute inset-0"
-//           />
-//         )}
-//       </div>
-
-//       {title && (
-//         <h3 className="text-center font-semibold mt-2">{title}</h3>
-//       )}
-//       {subtitle && (
-//         <h3 className="text-center font-medium">{subtitle}</h3>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default ImageCard;
-
 "use client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import RippleEffect from "./RippleEffect";
+import { Button } from "../ui/button";
+import { IoMdCart } from "react-icons/io";
 
 type ImageCardProps = {
-  src: string;
-  title?: string;
+  id: string;
+  src: string; //image path
+  title: string;
+  href?: string;
   subTitle?: string;
+  price?: number;
+
   rounded?: "circle" | "square";
   ripple?: boolean;
   rippleColor?: string;
   rippleOpacity?: number;
-  href?: string; // optional link URL
-  linkEnabled?: boolean; // whether to wrap in Link
+
+  buttonText?: string; // 👈 customizable button text
+  showAddToCart?: boolean; // 👈 new prop to control bucarttton visibility
 };
 
 const ImageCard: React.FC<ImageCardProps> = ({
+  id,
   src,
   title,
+  price,
   subTitle,
   rounded = "circle",
   ripple = false,
   rippleColor = "white",
   rippleOpacity = 0.3,
   href,
-  linkEnabled = false,
+  showAddToCart = true,
+  buttonText = "Show All",
 }) => {
-  const cardContent = (
-    <div>
+  return (
+    <div className="flex group flex-col items-center gap-1.5">
       <div
-        className={`relative w-full aspect-square bg-gray-300 ${
+        className={`relative w-full aspect-square bg-gray-300 group ${
           rounded === "circle" ? "rounded-full" : "rounded-lg"
-        } overflow-hidden flex items-center text-center justify-center`}
+        } overflow-hidden flex items-center justify-center`}
       >
+        {/* just view in mobile devices */}
+        <Link href={"/ad"} className="md:hidden">
+          <Image
+            src={src}
+            alt={title || "slide"}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={true}
+            className="object-cover object-top"
+          />
+        </Link>
+        {/* Image */}
         <Image
           src={src}
           alt={title || "slide"}
           fill
-          className="object-cover object-top"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={true}
+          className="object-cover object-top md:block hidden"
         />
 
-        {ripple && (
-          <RippleEffect
-            rippleColor={rippleColor}
-            rippleOpacity={rippleOpacity}
-            className="absolute inset-0"
-          />
-        )}
+        {/* Hidden overlay with buttons */}
+        <div
+          className=" hidden md:flex absolute inset-0  bg-black/30 opacity-0 group-hover:opacity-100 
+                        items-end justify-center transition-opacity duration-300"
+        >
+          {ripple && (
+            <RippleEffect
+              rippleColor={rippleColor}
+              rippleOpacity={rippleOpacity}
+              className="absolute inset-0 "
+            />
+          )}
+
+          {showAddToCart && (
+            <Button
+              className="absolute left-[10%] top-[20%] size-8
+          bg-white text-black shadow hover:bg-white/90
+          "
+              size="icon"
+            >
+              <IoMdCart />
+            </Button>
+          )}
+          <Button
+            className="absolute bottom-[10%]
+            bg-white text-black shadow hover:bg-white/90
+            "
+            asChild
+          >
+            <Link href={href ? href : ""}>{buttonText}</Link>
+          </Button>
+        </div>
       </div>
 
-      {title && <h3 className="text-center font-semibold mt-2">{title}</h3>}
-      {subTitle && <h3 className="text-center font-medium">{subTitle}</h3>}
+      <Button className="md:hidden flex gap-2 w-full justify-center items-center mx-3 text-sm ">
+        <IoMdCart />
+        Add to Cart
+      </Button>
+
+      <div className="flex flex-col gap-">
+        {/* Title & Subtitle */}
+        {title && (
+          <h3 className="text-center px-3 text-lg font-semibold ">{title}</h3>
+        )}
+        {subTitle && (
+          <p className=" text-sm leading-5 justify-self-start px-3 font-normal">
+            {subTitle}
+          </p>
+        )}
+        {price && (
+          <p className="text-center text-base  justify-self-start px-3 font-medium">
+            ${price}
+          </p>
+        )}
+      </div>
     </div>
   );
-
-  // Conditionally wrap with Link
-  if (linkEnabled && href) {
-    return (
-      <Link className="cursor-pointer" href={href}>
-        {cardContent}
-      </Link>
-    );
-  }
-
-  return cardContent;
 };
 
 export default ImageCard;
