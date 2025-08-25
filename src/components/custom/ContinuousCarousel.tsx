@@ -26,6 +26,7 @@ type ContinuousCarouselProps = {
   className?: string;
   centerIfFew?: boolean;
   enableMouseWheel?: boolean; // 🆕 Enable/disable mouse wheel scrolling
+  mouseWheelDirection?: "horizontal" | "vertical" | "both";
   mouseWheelSensitivity?: number; // 🆕 Control mouse wheel sensitivity (default: 1)
   direction?: "forward" | "backward";
 };
@@ -43,6 +44,7 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
   className = "",
   centerIfFew = true,
   enableMouseWheel = true, // 🆕 Default to enabled
+  mouseWheelDirection = "both",
   mouseWheelSensitivity = 1, // 🆕 Default sensitivity
   direction = "forward",
 }) => {
@@ -96,7 +98,20 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
       if (wheelTimeout) clearTimeout(wheelTimeout);
 
       // Get wheel delta and determine scroll direction
-      const delta = event.deltaY;
+      let delta = 0;
+
+      if (mouseWheelDirection === "vertical") {
+        delta = event.deltaY;
+      } else if (mouseWheelDirection === "horizontal") {
+        delta = event.deltaX;
+      } else {
+        // "both" → prioritize whichever has bigger movement
+        delta =
+          Math.abs(event.deltaX) > Math.abs(event.deltaY)
+            ? event.deltaX
+            : event.deltaY;
+      }
+
       const threshold = 50 / mouseWheelSensitivity; // Adjust threshold based on sensitivity
       // console.log("the value is  ", Math.abs(delta));
       if (Math.abs(delta) > threshold) {

@@ -46,8 +46,12 @@ type CarouselProps = {
   freeScroll?: boolean;
   centerIfFew?: boolean;
   centerScale?: boolean;
+
   enableMouseWheel?: boolean;
+  mouseWheelDirection?: "horizontal" | "vertical" | "both";
+
   mouseWheelSensitivity?: number;
+
   direction?: "forward" | "backward";
 };
 
@@ -82,6 +86,8 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
   centerScale = false,
 
   enableMouseWheel = true,
+  mouseWheelDirection = "both",
+
   mouseWheelSensitivity = 1,
 
   direction = "forward",
@@ -225,15 +231,26 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
   useEffect(() => {
     if (!emblaApi || !enableMouseWheel) return;
 
-    const node = emblaApi.rootNode();  
+    const node = emblaApi.rootNode();
     let wheelTimeout: NodeJS.Timeout;
-    
 
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
       if (wheelTimeout) clearTimeout(wheelTimeout);
 
-      const delta = event.deltaY;
+      let delta = 0;
+
+      if (mouseWheelDirection === "vertical") {
+        delta = event.deltaY;
+      } else if (mouseWheelDirection === "horizontal") {
+        delta = event.deltaX;
+      } else {
+        // "both" → prioritize whichever has bigger movement
+        delta =
+          Math.abs(event.deltaX) > Math.abs(event.deltaY)
+            ? event.deltaX
+            : event.deltaY;
+      }
       const threshold = 50 / mouseWheelSensitivity;
 
       if (Math.abs(delta) > threshold) {

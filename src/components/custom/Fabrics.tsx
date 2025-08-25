@@ -87,7 +87,7 @@ type Slide = {
 const products: Slide[] = fabrics.map((fabric) => ({
   src: `/images/fabrics/${fabric}.webp`,
   title: fabric,
-  href: `/collections/?fabric=${fabric.toLowerCase()}`,
+  href: `/collections/${fabric.toLowerCase()}`,
   linkEnabled: true,
 }));
 
