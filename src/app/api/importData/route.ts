@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import brands from "@/data/forSanity/brands.json";
 import fabrics from "@/data/forSanity/fabrics.json";
 import colors from "@/data/forSanity/colors.json";
 import products from "@/data/forSanity/products.json";
@@ -23,9 +22,6 @@ export async function POST(req: NextRequest) {
     let data;
 
     switch (type) {
-      case "brand":
-        data = brands;
-        break;
       case "fabric":
         data = fabrics;
         break;
