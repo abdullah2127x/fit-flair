@@ -42,14 +42,6 @@ export const product = defineType({
     }),
 
     defineField({
-      name: "brand",
-      title: "Brand",
-      type: "reference",
-      to: [{ type: "brand" }],
-      validation: (Rule) => Rule.required(),
-    }),
-
-    defineField({
       name: "audience",
       title: "Audience",
       type: "string",
@@ -226,7 +218,19 @@ export const product = defineType({
       of: [{ type: "block" }],
       validation: (Rule) => Rule.required(),
     }),
-    
+
+    defineField({
+      name: "relevantKeywords",
+      title: "Relevant Keywords",
+      type: "array",
+      of: [{ type: "string" }],
+      options: {
+        layout: "tags", // shows as tags instead of plain array
+      },
+      description:
+        "Add relevant keywords that describe the product. Useful for search and SEO.",
+    }),
+
     defineField({
       name: "isFeatured",
       title: "Featured Product",
@@ -234,7 +238,7 @@ export const product = defineType({
       type: "boolean",
       initialValue: false,
     }),
-    
+
     defineField({
       name: "sku",
       title: "SKU",
