@@ -1,63 +1,5 @@
-import { bottomTags, fullTags, topTags, unStitchedTags } from "@/data/tags";
 import { defineField, defineType } from "sanity";
 import { v4 as uuidv4 } from "uuid";
-
-export const productFields = [
-  // Unstitched tags
-  defineField({
-    name: "unstitchedTags",
-    title: "Unstitched Tags",
-    type: "array",
-    of: [{ type: "string" }],
-    options: {
-      layout: "grid",
-      list: unStitchedTags.map((tag) => ({ title: tag, value: tag })),
-    },
-    hidden: ({ parent }) => parent?.category !== "unStitched",
-  }),
-
-  // Ready-to-Wear → Top
-  defineField({
-    name: "topTags",
-    title: "Top Tags",
-    type: "array",
-    of: [{ type: "string" }],
-    options: {
-      layout: "grid",
-      list: topTags.map((tag) => ({ title: tag, value: tag })),
-    },
-    hidden: ({ parent }) =>
-      parent?.category !== "readyToWear" || parent?.subCategory !== "top",
-  }),
-
-  // Ready-to-Wear → Bottom
-  defineField({
-    name: "bottomTags",
-    title: "Bottom Tags",
-    type: "array",
-    of: [{ type: "string" }],
-    options: {
-      layout: "grid",
-      list: bottomTags.map((tag) => ({ title: tag, value: tag })),
-    },
-    hidden: ({ parent }) =>
-      parent?.category !== "readyToWear" || parent?.subCategory !== "bottom",
-  }),
-
-  // Ready-to-Wear → Full
-  defineField({
-    name: "fullTags",
-    title: "Full Outfit Tags",
-    type: "array",
-    of: [{ type: "string" }],
-    options: {
-      layout: "grid",
-      list: fullTags.map((tag) => ({ title: tag, value: tag })),
-    },
-    hidden: ({ parent }) =>
-      parent?.category !== "readyToWear" || parent?.subCategory !== "full",
-  }),
-];
 
 export const product = defineType({
   name: "product",
@@ -68,7 +10,24 @@ export const product = defineType({
       name: "title",
       title: "Product Title",
       type: "string",
-      validation: (Rule) => Rule.required().min(3).max(100),
+      validation: (Rule) =>
+        Rule.required()
+          .min(3)
+          .max(100)
+          .custom(async (value, context) => {
+            if (!value) return true;
+
+            const { document, getClient } = context as any;
+            const client = getClient({ apiVersion: "2023-01-01" });
+
+            // Check if another product already has the same title
+            const duplicate = await client.fetch(
+              `*[_type == "product" && title == $title && _id != $id][0]`,
+              { title: value, id: document._id }
+            );
+
+            return duplicate ? "This title is already taken" : true;
+          }),
     }),
 
     defineField({
@@ -96,8 +55,8 @@ export const product = defineType({
       type: "string",
       options: {
         list: [
-          { title: "Men", value: "men" },
-          { title: "Women", value: "women" },
+          { title: "Man", value: "man" },
+          { title: "Woman", value: "woman" },
         ],
         layout: "radio",
         direction: "horizontal",
@@ -111,53 +70,79 @@ export const product = defineType({
       type: "string",
       options: {
         list: [
-          { title: "Un Stitched", value: "unStitched" },
-          { title: "Ready to Wear", value: "readyToWear" },
+          { title: "1 Piece (Shirt)", value: "1piece" },
+          { title: "2 Piece (Shirt + Dupatta / Trouser)", value: "2piece" },
+          { title: "3 Piece (Full Set)", value: "3piece" },
         ],
         layout: "radio",
+        direction: "horizontal",
+      },
+      hidden: ({ parent }) => parent?.audience !== "woman", // only show if audience = women
+      validation: (Rule) =>
+        Rule.custom((field, context) => {
+          const parent = (context as { parent?: { audience?: string } }).parent;
+          if (parent?.audience === "woman" && !field) {
+            return "Suit Type is required for women";
+          }
+          return true;
+        }),
+    }),
+
+    defineField({
+      name: "season",
+      title: "Season",
+      type: "array",
+      of: [{ type: "string" }],
+      options: {
+        list: [
+          { title: "Summer", value: "summer" },
+          { title: "Winter", value: "winter" },
+        ],
+        layout: "grid",
         direction: "horizontal",
       },
       validation: (Rule) => Rule.required(),
     }),
 
     defineField({
-      name: "subCategory",
-      title: "Sub-Category",
-      type: "string",
-      options: {
-        list: [
-          { title: "Top", value: "top" },
-          { title: "Bottom", value: "bottom" },
-          { title: "Full", value: "full" },
-        ],
-        layout: "radio",
-        direction: "horizontal",
-      },
-      validation: (Rule) =>
-        Rule.custom((value, context) => {
-          const parent = context.parent as { category?: string } | undefined;
-
-          if (parent?.category === "readyToWear" && !value) {
-            return "Sub-Category is required when Category is Ready To Wear.";
-          }
-          return true;
-        }),
-
-      hidden: ({ parent }) => parent?.category !== "readyToWear",
-    }),
-
-    ...productFields,
-
-    defineField({
-      name: "sizes",
-      title: "Sizes",
+      name: "designs",
+      title: "Designs",
       type: "array",
       of: [{ type: "string" }],
       options: {
-        list: ["XS", "S", "M", "L", "XL", "XXL"],
         layout: "grid",
+        list: [
+          { title: "Plain", value: "plain" },
+          { title: "Printed", value: "printed" },
+          { title: "Embroidered", value: "embroidered" },
+          { title: "Block Print", value: "block_print" },
+          { title: "Digital Print", value: "digital_print" },
+          { title: "Geometric", value: "geometric" },
+          { title: "Floral", value: "floral" },
+          { title: "Abstract", value: "abstract" },
+          { title: "Minimalist", value: "minimalist" },
+        ],
       },
-      hidden: ({ parent }) => parent?.category !== "readyToWear",
+      validation: (Rule) => Rule.required().min(1),
+    }),
+
+    defineField({
+      name: "occasions",
+      title: "Occasions",
+      type: "array",
+      of: [{ type: "string" }],
+      options: {
+        layout: "grid",
+        list: [
+          { title: "Casual", value: "casual" },
+          { title: "Formal", value: "formal" },
+          { title: "Party / Festive", value: "party" },
+          { title: "Wedding", value: "wedding" },
+          { title: "Office / Workwear", value: "office" },
+          { title: "Eid / Religious", value: "eid" },
+        ],
+      },
+      validation: (Rule) => Rule.required().min(1),
     }),
 
     defineField({
@@ -176,61 +161,62 @@ export const product = defineType({
     }),
 
     defineField({
-      name: "featuredImage",
-      title: "Featured Image",
-      type: "image",
-      validation: (Rule) => Rule.required(),
-    }),
-
-    defineField({
-      name: "additionalImages",
-      title: "Additional Images",
+      name: "variants",
+      title: "Variants",
       type: "array",
-      of: [{ type: "image" }],
-    }),
+      of: [
+        {
+          type: "object",
+          fields: [
+            defineField({
+              name: "color",
+              title: "Color",
+              type: "reference",
+              to: [{ type: "color" }],
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "featuredImage",
+              title: "Featured Image",
+              type: "image",
+              validation: (Rule) => Rule.required(),
+              options: { hotspot: true },
+            }),
+            defineField({
+              name: "additionalImages",
+              title: "Additional Images",
+              type: "array",
+              of: [{ type: "image", options: { hotspot: true } }],
+            }),
+            defineField({
+              name: "stock",
+              title: "Stock",
+              type: "number",
+              validation: (Rule) =>
+                Rule.required()
+                  .min(0)
+                  .error("Stock must be 0 or a positive number"),
+            }),
+          ],
+        },
+      ],
+      validation: (Rule) =>
+        Rule.custom((variants?: Array<{ color?: { _ref?: string } }>) => {
+          if (!variants) return true;
 
-    // defineField({
-    //   name: "stock",
-    //   title: "Stock",
-    //   type: "array",
-    //   description:
-    //     "Add stock per size (for Ready to Wear) or one entry for Unstitched",
-    //   of: [
-    //     {
-    //       type: "object",
-    //       fields: [
-    //         {
-    //           name: "size",
-    //           title: "Size",
-    //           type: "string",
-    //           options: {
-    //             list: [
-    //               "Free Size (Unstitched)",
-    //               "XS",
-    //               "S",
-    //               "M",
-    //               "L",
-    //               "XL",
-    //               "XXL",
-    //             ],
-    //           },
-    //         },
-    //         {
-    //           name: "quantity",
-    //           title: "Quantity",
-    //           type: "number",
-    //           validation: (Rule) => Rule.min(0),
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // }),
+          const seen = new Set();
+          for (const variant of variants) {
+            const colorId = variant?.color?._ref;
+            if (!colorId) continue;
 
-    defineField({
-      name: "color",
-      title: "Color",
-      type: "reference",
-      to: [{ type: "color" }],
+            if (seen.has(colorId)) {
+              return "You can't select the same color for multiple variants";
+            }
+            seen.add(colorId);
+          }
+
+          return true;
+        }),
     }),
 
     defineField({
@@ -240,6 +226,7 @@ export const product = defineType({
       of: [{ type: "block" }],
       validation: (Rule) => Rule.required(),
     }),
+    
     defineField({
       name: "isFeatured",
       title: "Featured Product",
@@ -247,6 +234,7 @@ export const product = defineType({
       type: "boolean",
       initialValue: false,
     }),
+    
     defineField({
       name: "sku",
       title: "SKU",
