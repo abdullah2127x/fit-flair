@@ -1,53 +1,7 @@
-// import { createClient } from "@sanity/client";
-// import dotenv from "dotenv";
-
-// dotenv.config({ path: ".env.local" });
-
-// const {
-//   NEXT_PUBLIC_SANITY_PROJECT_ID, // Sanity project ID
-//   NEXT_PUBLIC_SANITY_DATASET, // Sanity dataset (e.g., "production")
-//   SANITY_API_TOKEN, // Sanity API token
-//   NEXT_PUBLIC_SANITY_API_VERSION,
-// } = process.env;
-
-// // Check if the required environment variables are provided
-// if (!NEXT_PUBLIC_SANITY_PROJECT_ID || !SANITY_API_TOKEN) {
-//   console.error(
-//     "Missing required environment variables. Please check your .env.local file."
-//   );
-//   process.exit(1); // Stop execution if variables are missing
-// }
-
-// const client = createClient({
-//   projectId: NEXT_PUBLIC_SANITY_PROJECT_ID,
-//   dataset: NEXT_PUBLIC_SANITY_DATASET || "production",
-//   token: SANITY_API_TOKEN,
-//   apiVersion: NEXT_PUBLIC_SANITY_API_VERSION || "2025-01-15",
-//   useCdn: false,
-// });
-
-// async function deleteData(productType) {
-//   try {
-//     const deletedData = await client.delete({
-//       query: `*[_type == "${productType}"][0...999]`,
-//     });
-
-//     console.log("The deleted data is : ", deletedData);
-//     console.log("🟢Data Deletion Completed Successfully!");
-//   } catch (error) {
-//     console.error("🔴Error Deleting Data:", error);
-//   }
-// }
-
-// // deleteData("product");
-// deleteData("brand");
-// // product
-// // brand
-// // tag
-// // category
 import { createClient } from "@sanity/client";
 import dotenv from "dotenv";
 import inquirer from "inquirer";
+import chalk from "chalk";
 
 dotenv.config({ path: ".env.local" });
 
@@ -59,9 +13,8 @@ const {
 } = process.env;
 
 if (!NEXT_PUBLIC_SANITY_PROJECT_ID || !SANITY_API_TOKEN) {
-  console.error(
-    "Missing required environment variables. Please check your .env.local file."
-  );
+  console.error(chalk.red.bold("❌ Missing required environment variables!"));
+  console.log(chalk.yellow("Please check your .env.local file."));
   process.exit(1);
 }
 
@@ -75,34 +28,82 @@ const client = createClient({
 
 async function deleteData(productType) {
   try {
-    const deletedData = await client.delete({
-      query: `*[_type == "${productType}"][0...999]`,
-    });
+    const dataToDelete = await client.fetch(
+      `*[_type == "${productType}"]{_id, _type}`
+    );
 
-    console.log(`🟢 Data of type "${productType}" deleted successfully!`);
-    console.log("Deleted items:", deletedData);
+    if (!dataToDelete.length) {
+      console.log(chalk.gray(`⚪ No "${productType}" items found to delete.`));
+      return;
+    }
+
+    console.log(chalk.blue.bold(`\nDeleting all "${productType}" items...\n`));
+
+    let success = [];
+    let failed = [];
+
+    for (const [index, item] of dataToDelete.entries()) {
+      process.stdout.write(
+        chalk.cyan(
+          `Processing ${index + 1}/${dataToDelete.length} → ${item._id} ... `
+        )
+      );
+      try {
+        await client.delete(item._id);
+        success.push(item._id);
+        console.log(chalk.green.bold("Deleted ✅"));
+      } catch (err) {
+        const referencing =
+          err?.response?.body?.error?.items?.[0]?.error?.referencingIDs || [];
+        failed.push({ id: item._id, referencing });
+        console.log(chalk.red.bold("Failed ❌"));
+      }
+    }
+
+    console.log(
+      chalk.green.bold(`\n🟢 Successfully deleted: ${success.length} item(s)`)
+    );
+    if (success.length)
+      success.forEach((id) => console.log(chalk.green(`   ✅ ${id}`)));
+
+    if (failed.length) {
+      console.log(
+        chalk.red.bold(
+          `\n🔴 Failed to delete: ${failed.length} item(s) (still referenced)`
+        )
+      );
+      failed.forEach((f) => {
+        console.log(chalk.red(`   ❌ ID: ${f.id}`));
+        if (f.referencing.length)
+          console.log(
+            chalk.yellow(`      Referenced by: ${f.referencing.join(", ")}`)
+          );
+      });
+    }
+
+    console.log("\n" + "-".repeat(50) + "\n"); // Separator
   } catch (error) {
-    console.error("🔴 Error Deleting Data:", error);
+    console.error(chalk.red.bold("❌ Unexpected error:"), error);
   }
 }
 
-// Prompt user to select which type to delete
 async function promptDeletion() {
   const { typeToDelete } = await inquirer.prompt([
     {
       type: "list",
       name: "typeToDelete",
-      message: "Select the data type you want to delete:",
-      choices: ["product", "brand", "color", "fabric", "category", "audience"],
+      message: chalk.cyan("Select the data type you want to delete:"),
+      choices: ["product", "color", "fabric"],
     },
   ]);
 
-  // Confirm before deletion
   const { confirmDelete } = await inquirer.prompt([
     {
       type: "confirm",
       name: "confirmDelete",
-      message: `Are you sure you want to delete all "${typeToDelete}" items?`,
+      message: chalk.yellow(
+        `Are you sure you want to delete all "${typeToDelete}" items?`
+      ),
       default: false,
     },
   ]);
@@ -110,7 +111,7 @@ async function promptDeletion() {
   if (confirmDelete) {
     await deleteData(typeToDelete);
   } else {
-    console.log("❌ Deletion canceled.");
+    console.log(chalk.gray("❌ Deletion canceled."));
   }
 }
 

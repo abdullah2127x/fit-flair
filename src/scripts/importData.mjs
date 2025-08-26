@@ -61,7 +61,6 @@ async function uploadImageToSanity(imageUrl) {
   }
 }
 
-
 // Generic helper to fetch reference by type + field
 async function fetchReference(type, field, value) {
   if (!value) return null;
@@ -102,70 +101,232 @@ async function fetchData(type, retries = 1) {
 
 // ------------------- Import Functions -------------------
 
-// Brands / Fabrics / Colors
-async function importSimpleType(type) {
-  const items = await fetchData(type);
+// Colors
+async function importColors() {
+  const colors = await fetchData("color"); // expects [{ name, code }]
+
+  for (const colorItem of colors) {
+    const { name, code } = colorItem;
+
+    try {
+      const existing = await client.fetch(
+        `*[_type == "color" && name == $name]{_id}[0]`,
+        { name }
+      );
+
+      if (existing) {
+        console.log(`⚠️ Already exists: ${name} (ID: ${existing._id})`);
+      } else {
+        const result = await client.create({
+          _type: "color",
+          name,
+          code,
+        });
+        console.log(`✅ Added color: ${result.name} (ID: ${result._id})`);
+      }
+    } catch (err) {
+      console.error(`❌ Error adding color: ${name}`, err.message);
+    }
+  }
+
+  console.log("🎉 All colors processed successfully!\n");
+}
+
+// Fabrics
+async function importFabrics() {
+  const items = await fetchData("fabric");
+  console.log("the items are : ", items);
 
   for (const itemName of items) {
     try {
       const existing = await client.fetch(
-        `*[_type == "${type}" && name == $name]{_id}[0]`,
+        `*[_type == "fabric" && name == $name]{_id}[0]`,
         { name: itemName }
       );
 
       if (existing) {
         console.log(`⚠️ Already exists: ${itemName} (ID: ${existing._id})`);
       } else {
-        const result = await client.create({ _type: type, name: itemName });
-        console.log(`✅ Added ${type}: ${result.name} (ID: ${result._id})`);
+        const result = await client.create({ _type: "fabric", name: itemName });
+        console.log(`✅ Added fabric: ${result.name} (ID: ${result._id})`);
       }
     } catch (err) {
-      console.error(`❌ Error adding ${type}: ${itemName}`, err.message);
+      console.error(`❌ Error adding fabric : ${itemName}`, err.message);
     }
   }
 
-  console.log(`🎉 All ${type}s processed successfully!\n`);
+  console.log(`🎉 All fabrics processed successfully!\n`);
 }
 
-// Products (with images, references, tags)
+// Products (with variants, images, references)
+// async function importProducts() {
+//   const products = await fetchData("product");
+
+//   for (const item of products) {
+//     console.log(`➡️ Processing Item: ${item.title}`);
+
+//     // Prepare variants array
+//     const variantsArray = [];
+//     if (item.variants?.length) {
+//       for (const variant of item.variants) {
+
+//          season: item.season || [],
+//       designs: item.designs || [],
+//       occasions: item.occasions || [],
+//       relevantTags: item.relevantTags || [],
+//         // Upload featured image
+//         let featuredImageRef = null;
+//         if (variant.featuredImage) {
+//           const uploaded = await uploadImageToSanity(variant.featuredImage);
+//           if (uploaded)
+//             featuredImageRef = {
+//               _type: "image",
+//               asset: { _type: "reference", _ref: uploaded },
+//             };
+//         }
+
+//         // Upload additional images
+//         let additionalImageRefs = [];
+//         if (variant.additionalImages?.length) {
+//           for (const img of variant.additionalImages) {
+//             const uploaded = await uploadImageToSanity(img);
+//             if (uploaded) {
+//               additionalImageRefs.push({
+//                 _key: uuidv4(),
+//                 _type: "image",
+//                 asset: { _type: "reference", _ref: uploaded },
+//               });
+//             }
+//           }
+//         }
+
+//         // Color reference
+//         const colorRef = await fetchReference("color", "name", variant.color);
+
+//         variantsArray.push({
+//           _key: uuidv4(),
+//           color: colorRef,
+
+//            season: item.season || [],
+//       designs: item.designs || [],
+//       occasions: item.occasions || [],
+//       relevantTags: item.relevantTags || [],
+//           featuredImage: featuredImageRef,
+//           additionalImages: additionalImageRefs,
+//           stock: variant.stock || 0,
+//         });
+//       }
+//     }
+
+//     // Description
+//     const descriptionBlocks = item.description
+//       ? [
+//           {
+//             _type: "block",
+//             _key: uuidv4(),
+//             style: "normal",
+//             markDefs: [],
+//             children: [
+//               {
+//                 _type: "span",
+//                 _key: uuidv4(),
+//                 text: item.description,
+//                 marks: [],
+//               },
+//             ],
+//           },
+//         ]
+//       : [];
+
+//     // References
+//     const fabricRef = await fetchReference("fabric", "name", item.fabric);
+
+//     // Tags
+//     const relevantTags = item.relevantTags || [];
+
+//     const sanityItem = {
+//       _type: "product",
+//       title: item.title,
+//       slug: {
+//         _type: "slug",
+//         current: item.slug || item.title.toLowerCase().replace(/\s+/g, "-"),
+//       },
+//       audience: item.audience,
+//       category: item.category,
+//       price: item.price,
+//       fabric: fabricRef,
+//       variants: variantsArray,
+
+//       description: descriptionBlocks,
+
+//        season: item.season || [],
+//       designs: item.designs || [],
+//       occasions: item.occasions || [],
+//       relevantTags: item.relevantTags || [],
+
+//       isFeatured: item.isFeatured || false,
+
+//     };
+
+//     const result = await client.create(sanityItem);
+//     console.log(`✅ Uploaded: ${result._id}`);
+//     console.log("----------------------------------------------------------\n");
+//   }
+
+//   console.log("🎉 Products import completed successfully!\n");
+// }
+
+// Products (with variants, images, references)
 async function importProducts() {
   const products = await fetchData("product");
 
   for (const item of products) {
     console.log(`➡️ Processing Item: ${item.title}`);
 
-    // Upload featured image
-    let featuredImageRef = null;
-    if (item.featuredImage) {
-      const uploaded = await uploadImageToSanity(item.featuredImage);
-      if (uploaded)
-        featuredImageRef = {
-          _type: "image",
-          asset: { _type: "reference", _ref: uploaded },
-        };
-    }
-
-    // Upload additional images
-    let additionalImageRefs = [];
-    if (item.additionalImages?.length) {
-      for (const img of item.additionalImages) {
-        const uploaded = await uploadImageToSanity(img);
-        if (uploaded) {
-          additionalImageRefs.push({
-            _key: uuidv4(),
-            _type: "image",
-            asset: { _type: "reference", _ref: uploaded },
-          });
+    // -------------------- Variants --------------------
+    const variantsArray = [];
+    if (item.variants?.length) {
+      for (const variant of item.variants) {
+        // Upload featured image
+        let featuredImageRef = null;
+        if (variant.featuredImage) {
+          const uploaded = await uploadImageToSanity(variant.featuredImage);
+          if (uploaded)
+            featuredImageRef = {
+              _type: "image",
+              asset: { _type: "reference", _ref: uploaded },
+            };
         }
+
+        // Upload additional images
+        const additionalImageRefs = [];
+        if (variant.additionalImages?.length) {
+          for (const img of variant.additionalImages) {
+            const uploaded = await uploadImageToSanity(img);
+            if (uploaded) {
+              additionalImageRefs.push({
+                _key: uuidv4(),
+                _type: "image",
+                asset: { _type: "reference", _ref: uploaded },
+              });
+            }
+          }
+        }
+
+        // Color reference
+        const colorRef = await fetchReference("color", "name", variant.color);
+
+        variantsArray.push({
+          _key: uuidv4(),
+          color: colorRef,
+          featuredImage: featuredImageRef,
+          additionalImages: additionalImageRefs,
+          stock: variant.stock || 0,
+        });
       }
     }
 
-    // References
-    const brandRef = await fetchReference("brand", "name", item.brand);
-    const fabricRef = await fetchReference("fabric", "name", item.fabric);
-    const colorRef = await fetchReference("color", "name", item.color);
-
-    // Description
+    // -------------------- Description --------------------
     const descriptionBlocks = item.description
       ? [
           {
@@ -185,48 +346,39 @@ async function importProducts() {
         ]
       : [];
 
-    // Tags
-    const unstitchedTags =
-      item.category === "unStitched" ? item.tags || [] : [];
-    const topTags =
-      item.category === "readyToWear" && item.subCategory === "top"
-        ? item.tags || []
-        : [];
-    const bottomTags =
-      item.category === "readyToWear" && item.subCategory === "bottom"
-        ? item.tags || []
-        : [];
-    const fullTags =
-      item.category === "readyToWear" && item.subCategory === "full"
-        ? item.tags || []
-        : [];
+    // -------------------- References --------------------
+    const fabricRef = await fetchReference("fabric", "name", item.fabric);
 
+    // -------------------- Sanity Document --------------------
     const sanityItem = {
       _type: "product",
       title: item.title,
-      slug: { _type: "slug", current: item.slug },
-      price: item.price,
-      category: item.category,
-      subCategory: item.subCategory || null,
-      fabric: fabricRef,
+      slug: {
+        _type: "slug",
+        current: item.slug || item.title.toLowerCase().replace(/\s+/g, "-"),
+      },
       audience: item.audience,
+      category: item.category || null, // only required if audience = woman
+      price: item.price,
+      fabric: fabricRef,
+      variants: variantsArray,
       description: descriptionBlocks,
-      uploadedAt: item.uploadedAt,
-      brand: brandRef,
-      color: colorRef,
+      season: item.season || [],
+      designs: item.designs || [],
+      occasions: item.occasions || [],
+      relevantTags: item.relevantTags || [],
       isFeatured: item.isFeatured || false,
-      sizes: item.sizes || [],
-      featuredImage: featuredImageRef,
-      additionalImages: additionalImageRefs,
-      unstitchedTags,
-      topTags,
-      bottomTags,
-      fullTags,
     };
 
-    const result = await client.create(sanityItem);
-    console.log(`✅ Uploaded: ${result._id}`);
-    console.log("----------------------------------------------------------\n");
+    try {
+      const result = await client.create(sanityItem);
+      console.log(`✅ Uploaded: ${result._id}`);
+      console.log(
+        "----------------------------------------------------------\n"
+      );
+    } catch (err) {
+      console.error(`❌ Failed to upload product: ${item.title}`, err.message);
+    }
   }
 
   console.log("🎉 Products import completed successfully!\n");
@@ -240,16 +392,16 @@ const run = async () => {
       type: "list",
       name: "selectedType",
       message: "Which type of data do you want to import?",
-      choices: ["brand", "fabric", "color", "product"],
+      choices: ["fabric", "color", "product"],
     },
   ]);
 
   switch (selectedType) {
-    case "brand":
     case "fabric":
-    case "color":
-      await importSimpleType(selectedType);
+      await importFabrics();
       break;
+    case "color":
+      await importColors();
     case "product":
       await importProducts();
       break;
