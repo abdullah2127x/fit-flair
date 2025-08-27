@@ -371,6 +371,7 @@ async function importProducts() {
       occasions: item.occasions || [],
       relevantTags: item.relevantTags || [],
       isFeatured: item.isFeatured || false,
+      discount: item.discount || 0,
     };
 
     try {

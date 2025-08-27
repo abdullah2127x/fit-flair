@@ -106,7 +106,7 @@ export const product = defineType({
       title: "Men Outfit Type",
       type: "string",
       options: {
-        layout:"radio",
+        layout: "radio",
         list: [
           { title: "Polo Shirt", value: "polo" },
           { title: "T-Shirt", value: "tshirt" },
@@ -139,7 +139,7 @@ export const product = defineType({
       title: "Women Outfit Type",
       type: "string",
       options: {
-        layout:"radio",
+        layout: "radio",
         list: [
           { title: "Kurti / Shirt", value: "kurti" },
           { title: "Polo Shirt", value: "polo" },
@@ -303,6 +303,16 @@ export const product = defineType({
 
             return true;
           }),
+    }),
+
+    defineField({
+      name: "discount",
+      title: "Discount (%)",
+      type: "number",
+      description: "Discount percentage applied to the product price",
+      initialValue: 0,
+      validation: (Rule) =>
+        Rule.min(0).max(100).error("Discount must be between 0 and 100"),
     }),
 
     defineField({

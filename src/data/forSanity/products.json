@@ -11,6 +11,7 @@
     "designs": ["plain"],
     "occasions": ["casual"],
     "fabric": "Wool",
+    "discount":13,
     "variants": [
       {
         "color": "Teal",
@@ -79,6 +80,7 @@
     "designs": ["printed"],
     "occasions": ["office"],
     "fabric": "Cotton",
+    "discount":25,
     "variants": [
       {
         "color": "Red",
@@ -137,6 +139,7 @@
     "designs": ["plain"],
     "occasions": ["formal"],
     "fabric": "Wool",
+    "discount":18,
     "variants": [
       {
         "color": "Black",
@@ -175,6 +178,7 @@
     "designs": ["embroidered"],
     "occasions": ["eid", "casual"],
     "fabric": "Cotton",
+    "discount":21,
     "variants": [
       {
         "color": "White",
@@ -213,6 +217,7 @@
     "designs": ["printed"],
     "occasions": ["casual"],
     "fabric": "Cotton",
+    "discount":25,
     "variants": [
       {
         "color": "Red",
@@ -261,6 +266,7 @@
     "designs": ["plain"],
     "occasions": ["office"],
     "fabric": "Linen",
+    "discount":10,
     "variants": [
       {
         "color": "White",
@@ -299,6 +305,7 @@
     "designs": ["plain"],
     "occasions": ["casual", "office"],
     "fabric": "Denim",
+    "discount":13,
     "variants": [
       {
         "color": "Blue",
@@ -337,6 +344,7 @@
     "designs": ["plain"],
     "occasions": ["formal"],
     "fabric": "Velvet",
+    "discount":15,
     "variants": [
       {
         "color": "Maroon",
@@ -375,6 +383,7 @@
     "designs": ["embroidered"],
     "occasions": ["wedding", "formal"],
     "fabric": "Silk",
+    "discount":20,
     "variants": [
       {
         "color": "Gold",
