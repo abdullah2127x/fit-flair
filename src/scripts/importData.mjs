@@ -358,7 +358,10 @@ async function importProducts() {
         current: item.slug || item.title.toLowerCase().replace(/\s+/g, "-"),
       },
       audience: item.audience,
-      category: item.category || null, // only required if audience = woman
+      category: item.category || null,
+      subCategory: item.subCategory || null,
+      menOutfitType: item.menOutfitType || null,
+      womenOutfitType: item.womenOutfitType || null,
       price: item.price,
       fabric: fabricRef,
       variants: variantsArray,
