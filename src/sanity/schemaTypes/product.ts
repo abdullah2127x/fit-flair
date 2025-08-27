@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+
 import { v4 as uuidv4 } from "uuid";
 
 export const product = defineType({
@@ -20,7 +21,18 @@ export const product = defineType({
             const { document, getClient } = context as any;
             const client = getClient({ apiVersion: "2023-01-01" });
 
-            // Check if another product already has the same title
+            // Fetch the existing product (published or draft)
+            const currentDoc = await client.fetch(
+              `*[_type == "product" && _id == $id][0]`,
+              { id: document._id }
+            );
+
+            // If the title didn't change, skip uniqueness check
+            if (currentDoc?.title === value) {
+              return true;
+            }
+
+            // Otherwise check for duplicates
             const duplicate = await client.fetch(
               `*[_type == "product" && title == $title && _id != $id][0]`,
               { title: value, id: document._id }
@@ -47,8 +59,8 @@ export const product = defineType({
       type: "string",
       options: {
         list: [
-          { title: "Man", value: "man" },
-          { title: "Woman", value: "woman" },
+          { title: "Men", value: "men" },
+          { title: "Women", value: "women" },
         ],
         layout: "radio",
         direction: "horizontal",
@@ -62,19 +74,96 @@ export const product = defineType({
       type: "string",
       options: {
         list: [
-          { title: "1 Piece (Shirt)", value: "1piece" },
-          { title: "2 Piece (Shirt + Dupatta / Trouser)", value: "2piece" },
+          { title: "Un Stitched", value: "unStitched" },
+          { title: "Stitched", value: "stitched" },
+          { title: "Ready To Wear", value: "readyToWear" },
+        ],
+        layout: "radio",
+        direction: "horizontal",
+      },
+    }),
+
+    defineField({
+      name: "subCategory",
+      title: "Sub Category",
+      type: "string",
+      options: {
+        list: [
+          { title: "Top", value: "top" },
+          { title: "Bottom", value: "bottom" },
+          { title: "2 Piece", value: "2piece" },
           { title: "3 Piece (Full Set)", value: "3piece" },
         ],
         layout: "radio",
         direction: "horizontal",
       },
-      hidden: ({ parent }) => parent?.audience !== "woman", // only show if audience = women
+      validation: (Rule) => Rule.required(),
+    }),
+
+    // Outfit Type for MEN
+    defineField({
+      name: "menOutfitType",
+      title: "Men Outfit Type",
+      type: "string",
+      options: {
+        layout:"radio",
+        list: [
+          { title: "Polo Shirt", value: "polo" },
+          { title: "T-Shirt", value: "tshirt" },
+          { title: "Formal Shirt", value: "shirt" },
+          { title: "Kurta", value: "kurta" },
+          { title: "Waistcoat", value: "waistcoat" },
+          { title: "Formal Suit (2 Piece)", value: "2pieceSuit" },
+          { title: "Formal Suit (3 Piece)", value: "3pieceSuit" },
+          { title: "Sherwani", value: "sherwani" },
+          { title: "Jeans", value: "jeans" },
+          { title: "Trousers / Chinos", value: "trousers" },
+          { title: "Shorts", value: "shorts" },
+          { title: "Tracksuit / Gym Wear", value: "tracksuit" },
+        ],
+      },
+      hidden: ({ parent }) => parent?.audience !== "men",
       validation: (Rule) =>
         Rule.custom((field, context) => {
           const parent = (context as { parent?: { audience?: string } }).parent;
-          if (parent?.audience === "woman" && !field) {
-            return "Suit Type is required for women";
+          if (parent?.audience === "men" && !field) {
+            return "Outfit type is required for men";
+          }
+          return true;
+        }),
+    }),
+
+    // Outfit Type for WOMEN
+    defineField({
+      name: "womenOutfitType",
+      title: "Women Outfit Type",
+      type: "string",
+      options: {
+        layout:"radio",
+        list: [
+          { title: "Kurti / Shirt", value: "kurti" },
+          { title: "Polo Shirt", value: "polo" },
+          { title: "T-Shirt", value: "tshirt" },
+          { title: "Blouse / Tunic", value: "blouse" },
+          { title: "Dress / Maxi", value: "dress" },
+          { title: "Gown", value: "gown" },
+          { title: "Saree", value: "saree" },
+          { title: "Lehenga Choli", value: "lehenga" },
+          { title: "Anarkali Suit", value: "anarkali" },
+          { title: "2 Piece (Kurti + Trouser)", value: "2pieceSuit" },
+          { title: "3 Piece (Kurti + Trouser + Dupatta)", value: "3pieceSuit" },
+          { title: "Jeans / Trousers", value: "jeansTrousers" },
+          { title: "Skirt", value: "skirt" },
+          { title: "Leggings / Jeggings", value: "leggings" },
+          { title: "Tracksuit / Gym Wear", value: "tracksuit" },
+        ],
+      },
+      hidden: ({ parent }) => parent?.audience !== "women",
+      validation: (Rule) =>
+        Rule.custom((field, context) => {
+          const parent = (context as { parent?: { audience?: string } }).parent;
+          if (parent?.audience === "women" && !field) {
+            return "Outfit type is required for women";
           }
           return true;
         }),
@@ -193,22 +282,27 @@ export const product = defineType({
         },
       ],
       validation: (Rule) =>
-        Rule.custom((variants?: Array<{ color?: { _ref?: string } }>) => {
-          if (!variants) return true;
+        Rule.min(1)
+          .required()
+          .error(
+            "Image Error: At least 1 image is required, color should be different for each image"
+          )
+          .custom((variants?: Array<{ color?: { _ref?: string } }>) => {
+            if (!variants) return true;
 
-          const seen = new Set();
-          for (const variant of variants) {
-            const colorId = variant?.color?._ref;
-            if (!colorId) continue;
+            const seen = new Set();
+            for (const variant of variants) {
+              const colorId = variant?.color?._ref;
+              if (!colorId) continue;
 
-            if (seen.has(colorId)) {
-              return "You can't select the same color for multiple variants";
+              if (seen.has(colorId)) {
+                return "You can't select the same color for multiple variants";
+              }
+              seen.add(colorId);
             }
-            seen.add(colorId);
-          }
 
-          return true;
-        }),
+            return true;
+          }),
     }),
 
     defineField({
@@ -220,15 +314,15 @@ export const product = defineType({
     }),
 
     defineField({
-      name: "relevantKeywords",
-      title: "Relevant Keywords",
+      name: "relevantTags",
+      title: "Relevant Tags",
       type: "array",
       of: [{ type: "string" }],
       options: {
         layout: "tags", // shows as tags instead of plain array
       },
       description:
-        "Add relevant keywords that describe the product. Useful for search and SEO.",
+        "Add relevant tags that describe the product. Useful for search and SEO.",
     }),
 
     defineField({
@@ -239,13 +333,48 @@ export const product = defineType({
       initialValue: false,
     }),
 
-    defineField({
-      name: "sku",
-      title: "SKU",
-      type: "string",
-      description: "Unique product code",
-      hidden: true, // prevent manual edits
-      initialValue: () => uuidv4(), // auto-generate when a product is created
-    }),
+    // defineField({
+    //   name: "sku",
+    //   title: "SKU",
+    //   type: "string",
+    //   description: "Unique product code",
+    //   hidden: true,
+    //   initialValue: async (context) => {
+    //     const document = context.document || {}; // default to empty object
+
+    //     const audienceChar = document.audience?.charAt(0).toUpperCase() || "X";
+    //     const categoryMap: Record<string, string> = {
+    //       "1piece": "1P",
+    //       "2piece": "2P",
+    //       "3piece": "3P",
+    //     };
+    //     const categoryCode = categoryMap[document.category || ""] || "XX";
+
+    //     const titleInitials = document.title
+    //       ? document.title
+    //           .split(" ")
+    //           .map((word: string) => word.charAt(0).toUpperCase())
+    //           .join("")
+    //           .slice(0, 2)
+    //       : "XX";
+
+    //     // Use client safely; if no title or category yet, default count to 0
+    //     let count = 0;
+    //     if (document.audience && document.category && document.title) {
+    //       count = await client.fetch(
+    //         `count(*[_type == "product" && audience == $audience && category == $category && title match $title])`,
+    //         {
+    //           audience: document.audience,
+    //           category: document.category,
+    //           title: document.title,
+    //         }
+    //       );
+    //     }
+
+    //     const number = String(count + 1).padStart(3, "0");
+
+    //     return `${audienceChar}-${categoryCode}-${titleInitials}-${number}`;
+    //   },
+    // }),
   ],
 });
