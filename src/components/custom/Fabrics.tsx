@@ -33,6 +33,59 @@
 
 // }
 
+// =============================
+
+// {
+
+// variants[] {
+//   // _key,
+//   stock,
+//   "featuredImage": featuredImage.asset->url,
+//   "additionalImages": additionalImages[].asset->url,
+//   "colorName": color->name,
+//   "colorCode": color->code,
+      
+//   }
+// }
+// =======================================
+// latest
+// *[
+//     _type == "product" &&
+//     defined(title) &&
+//     defined(slug.current) &&
+//     defined(description) &&
+//     defined(price) &&
+//     defined(variants)
+  
+//   ]
+//   {
+//   "id":_id,
+//   title,
+//   "slug": slug.current,
+//   price,
+//   "category": category,
+//   "subCategory": subCategory,
+//   "fabric": fabric->name,
+//   "audience": audience,
+//   variants[] {
+//     stock,
+//     "featuredImage": featuredImage.asset->url,
+//     "additionalImages": additionalImages[].asset->url,
+//     "colorName": color->name,
+//     "colorCode": color->code,   
+//   },
+//   "description": pt::text(description),
+//   "uploadedAt":_createdAt,
+//   isFeatured,
+//   relevantTags,
+//   "outFitType": select(
+//     audience == "men" => menOutfitType,
+//     audience == "women" => menOutfitType,
+//     [] // fallback empty array
+//   ),
+//    discount
+
+// }
 "use client";
 
 import ContinuousCarousel from "@/components/custom/ContinuousCarousel";

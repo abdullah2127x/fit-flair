@@ -28,7 +28,7 @@ export default function RootLayout({
         >
           
           <Navbar />
-          <Header />
+          {/* <Header /> */}
 
           {children}
         </ThemeProvider>

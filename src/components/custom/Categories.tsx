@@ -90,7 +90,7 @@ const Categories = () => {
       <EmblaCarousel
         slides={products}
         autoPlay={false}
-        slidesToShow={4}
+        slidesToShow={3}
         stepAutoPlay={true}
         stepAutoPlayDelay={5} // 1 slide every 4s
         showNavigation

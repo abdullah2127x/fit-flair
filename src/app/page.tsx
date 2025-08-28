@@ -9,11 +9,10 @@ import RippleEffect from "@/components/custom/RippleEffect";
 export default function Home() {
   return (
     <div className=" flex flex-col gap-16 overflow-hidden ">
-      {/* <div className="md:mt-12 flex flex-col gap-16 overflow-hidden "> */}
-      {/* <Hero /> */}
+      <Hero />
       <div className="container mx-auto">
-        <Fabrics /> 
-        <Categories /> 
+        <Fabrics />
+        <Categories />
         {/* <Brands />  */}
 
         {/* <EmblaCarouselExamples /> */}
