@@ -215,19 +215,37 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
     if (!autoScroll) return;
 
     const node = emblaApi.rootNode();
-    const handleMouseEnter = () => autoScroll.stop();
-    const handleMouseLeave = () => autoScroll.play();
+    let resumeTimeout: NodeJS.Timeout;
+
+    const handleMouseEnter = () => {
+      autoScroll.stop();
+      // after 5 seconds, resume even if still hovered
+      resumeTimeout = setTimeout(() => {
+        autoScroll.play();
+      }, 5000);
+    };
+
+    const handleMouseLeave = () => {
+      clearTimeout(resumeTimeout);
+      autoScroll.play();
+    };
 
     node.addEventListener("mouseenter", handleMouseEnter);
     node.addEventListener("mouseleave", handleMouseLeave);
 
+    // start autoplay initially
+    setTimeout(() => {
+      autoScroll.play();
+    }, 1000);
+
     return () => {
+      clearTimeout(resumeTimeout);
       node.removeEventListener("mouseenter", handleMouseEnter);
       node.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [emblaApi, stopOnHover, autoPlay, stepAutoPlay]);
 
-  // Mouse wheel support
+  // Mouse wheel support for horizontal and vertical scrolling
   useEffect(() => {
     if (!emblaApi || !enableMouseWheel) return;
 
@@ -235,34 +253,44 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
     let wheelTimeout: NodeJS.Timeout;
 
     const handleWheel = (event: WheelEvent) => {
-      event.preventDefault();
-      if (wheelTimeout) clearTimeout(wheelTimeout);
+      if (event.ctrlKey || event.metaKey) return;
 
       let delta = 0;
 
-      if (mouseWheelDirection === "vertical") {
+      if (mouseWheelDirection === "horizontal") {
+        // Only preventDefault when user is scrolling horizontally
+        if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+          event.preventDefault(); // stop body scroll only for horizontal
+          delta = event.deltaX;
+        } else {
+          // If user scrolls vertically, let body scroll normally
+          return;
+        }
+      } else if (mouseWheelDirection === "vertical") {
+        event.preventDefault(); // block Y scroll → control carousel
         delta = event.deltaY;
-      } else if (mouseWheelDirection === "horizontal") {
-        delta = event.deltaX;
       } else {
-        // "both" → prioritize whichever has bigger movement
+        // "both"
+        event.preventDefault();
         delta =
           Math.abs(event.deltaX) > Math.abs(event.deltaY)
             ? event.deltaX
             : event.deltaY;
       }
-      const threshold = 50 / mouseWheelSensitivity;
 
+      const threshold = 50 / mouseWheelSensitivity;
       if (Math.abs(delta) > threshold) {
         if (delta > 0) {
           emblaApi.scrollNext();
         } else {
           emblaApi.scrollPrev();
         }
-        wheelTimeout = setTimeout(() => {}, 1000);
+
+        wheelTimeout = setTimeout(() => {}, 100);
       }
     };
 
+    // Add wheel event listener
     node.addEventListener("wheel", handleWheel, { passive: false });
 
     return () => {
