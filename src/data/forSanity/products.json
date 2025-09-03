@@ -1,6 +1,8 @@
-[
+  [
   {
     "title": "Jumpsuit Outfit",
+    "subTitle": "Jumpsuit Outfit is the sub title of this product",
+
     "slug": "jumpsuit-outfit",
     "price": 9590.92,
     "audience": "men",
@@ -12,6 +14,7 @@
     "occasions": ["casual"],
     "fabric": "Wool",
     "discount":13,
+    "isNewArrival":true,
     "variants": [
       {
         "color": "Teal",
@@ -70,6 +73,8 @@
   },
   {
     "title": "Casual Shirt",
+    "subTitle": "Casual Shirt is the sub title of this product",
+
     "slug": "casual-shirt",
     "price": 4590.50,
     "audience": "men",
@@ -81,6 +86,7 @@
     "occasions": ["office"],
     "fabric": "Cotton",
     "discount":25,
+    "isNewArrival":false,
     "variants": [
       {
         "color": "Red",
@@ -129,6 +135,8 @@
   },
   {
     "title": "Formal Suit",
+    "subTitle": "Formal Suit is the sub title of this product",
+
     "slug": "formal-suit",
     "price": 15990.00,
     "audience": "men",
@@ -140,6 +148,7 @@
     "occasions": ["formal"],
     "fabric": "Wool",
     "discount":18,
+    "isNewArrival":false,
     "variants": [
       {
         "color": "Black",
@@ -168,6 +177,8 @@
   },
   {
     "title": "Kurta Set",
+    "subTitle": "Kurta Set is the sub title of this product",
+
     "slug": "kurta-set",
     "price": 7590.75,
     "audience": "men",
@@ -179,6 +190,7 @@
     "occasions": ["eid", "casual"],
     "fabric": "Cotton",
     "discount":21,
+    "isNewArrival":true,
     "variants": [
       {
         "color": "White",
@@ -207,6 +219,8 @@
   },
   {
     "title": "T-Shirt Casual",
+    "subTitle": "T-Shirt Casual is the sub title of this product",
+
     "slug": "tshirt-casual",
     "price": 2990.99,
     "audience": "men",
@@ -218,6 +232,7 @@
     "occasions": ["casual"],
     "fabric": "Cotton",
     "discount":25,
+    "isNewArrival":true,
     "variants": [
       {
         "color": "Red",
@@ -256,6 +271,8 @@
   },
   {
     "title": "Formal Shirt",
+    "subTitle": "Formal Shirt is the sub title of this product",
+
     "slug": "formal-shirt",
     "price": 5290.00,
     "audience": "men",
@@ -267,6 +284,7 @@
     "occasions": ["office"],
     "fabric": "Linen",
     "discount":10,
+    "isNewArrival":false,
     "variants": [
       {
         "color": "White",
@@ -295,6 +313,8 @@
   },
   {
     "title": "Jeans Classic",
+    "subTitle": "Jeans Classic is the sub title of this product",
+
     "slug": "jeans-classic",
     "price": 3890.50,
     "audience": "men",
@@ -306,6 +326,7 @@
     "occasions": ["casual", "office"],
     "fabric": "Denim",
     "discount":13,
+    "isNewArrival":true,
     "variants": [
       {
         "color": "Blue",
@@ -334,6 +355,8 @@
   },
   {
     "title": "Waistcoat Style",
+    "subTitle": "Waistcoat Style is the sub title of this product",
+
     "slug": "waistcoat-style",
     "price": 6990.75,
     "audience": "men",
@@ -345,6 +368,7 @@
     "occasions": ["formal"],
     "fabric": "Velvet",
     "discount":15,
+    "isNewArrival":true,
     "variants": [
       {
         "color": "Maroon",
@@ -373,6 +397,8 @@
   },
   {
     "title": "Sherwani Classic",
+    "subTitle": "Sherwani Classic is the sub title of this product",
+
     "slug": "sherwani-classic",
     "price": 12990.99,
     "audience": "men",
@@ -384,6 +410,7 @@
     "occasions": ["wedding", "formal"],
     "fabric": "Silk",
     "discount":20,
+    "isNewArrival":true,
     "variants": [
       {
         "color": "Gold",

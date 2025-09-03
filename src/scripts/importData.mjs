@@ -353,6 +353,7 @@ async function importProducts() {
     const sanityItem = {
       _type: "product",
       title: item.title,
+      title: item.subtitle || "Not set the subtitle yet",
       slug: {
         _type: "slug",
         current: item.slug || item.title.toLowerCase().replace(/\s+/g, "-"),
@@ -371,6 +372,7 @@ async function importProducts() {
       occasions: item.occasions || [],
       relevantTags: item.relevantTags || [],
       isFeatured: item.isFeatured || false,
+      isNewArrival: item.isNewArrival || false,
       discount: item.discount || 0,
     };
 
