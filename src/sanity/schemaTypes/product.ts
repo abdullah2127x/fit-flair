@@ -52,6 +52,12 @@ export const product = defineType({
       },
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "subTitle",
+      title: "Product Subtitle",
+      type: "string",
+      validation: (Rule) => Rule.required().min(3).max(60),
+    }),
 
     defineField({
       name: "audience",
@@ -339,6 +345,13 @@ export const product = defineType({
       name: "isFeatured",
       title: "Featured Product",
       description: "Featured products show on the home page",
+      type: "boolean",
+      initialValue: false,
+    }),
+    defineField({
+      name: "isNewArrival",
+      title: "New Arrival",
+      description: "Newly launched products",
       type: "boolean",
       initialValue: false,
     }),

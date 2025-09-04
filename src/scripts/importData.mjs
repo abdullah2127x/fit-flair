@@ -3,7 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import inquirer from "inquirer";
 import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
 dotenv.config({ path: ".env.local" });
+
 
 const {
   NEXT_PUBLIC_SANITY_PROJECT_ID,
@@ -35,33 +38,76 @@ const client = createClient({
 // Upload image to Sanity
 // it will behave as if same image comes twice so it upload it twice which gets more space and time to upload so create our custom chache and check
 const uploadedImages = {}; // { imageUrl: assetId }
-async function uploadImageToSanity(imageUrl) {
+// async function uploadImageToSanity(imageUrl) {
+//   try {
+//     // ✅ Check if already uploaded
+//     if (uploadedImages[imageUrl]) {
+//       console.log(`🔁 Already uploaded: ${imageUrl}`);
+//       return uploadedImages[imageUrl]; // return existing assetId
+//     }
+
+//     console.log(`📤 Uploading Image: ${imageUrl}`);
+//     const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
+//     const buffer = Buffer.from(response.data);
+
+//     const asset = await client.assets.upload("image", buffer, {
+//       filename: imageUrl.split("/").pop(),
+//     });
+
+//     // ✅ Save to cache
+//     uploadedImages[imageUrl] = asset._id;
+
+//     return asset._id;
+//   } catch (error) {
+//     console.error("❌ Failed to Upload Image:", imageUrl, error.message);
+//     return null;
+//   }
+// }
+
+// Generic helper to fetch reference by type + field
+
+async function uploadImageToSanity(imagePathOrUrl) {
   try {
-    // ✅ Check if already uploaded
-    if (uploadedImages[imageUrl]) {
-      console.log(`🔁 Already uploaded: ${imageUrl}`);
-      return uploadedImages[imageUrl]; // return existing assetId
+    if (uploadedImages[imagePathOrUrl]) {
+      console.log(`🔁 Already uploaded: ${imagePathOrUrl}`);
+      return uploadedImages[imagePathOrUrl];
     }
 
-    console.log(`📤 Uploading Image: ${imageUrl}`);
-    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-    const buffer = Buffer.from(response.data);
+    let buffer;
+    let filename;
 
-    const asset = await client.assets.upload("image", buffer, {
-      filename: imageUrl.split("/").pop(),
-    });
+    if (imagePathOrUrl.startsWith("http")) {
+      // 🌍 Remote URL
+      console.log(`🌍 Fetching remote image: ${imagePathOrUrl}`);
+      const response = await axios.get(imagePathOrUrl, {
+        responseType: "arraybuffer",
+      });
+      buffer = Buffer.from(response.data);
+      filename = imagePathOrUrl.split("/").pop();
+    } else {
+      // 📂 Local file (inside /public folder)
+      console.log(`📂 Reading local image: ${imagePathOrUrl}`);
+      const localPath = path.join(process.cwd(), "public", imagePathOrUrl);
+      buffer = fs.readFileSync(localPath);
+      filename = path.basename(localPath);
+    }
 
-    // ✅ Save to cache
-    uploadedImages[imageUrl] = asset._id;
+    console.log(`⬆️ Uploading image to Sanity: ${filename}...`);
+    const asset = await client.assets.upload("image", buffer, { filename });
+
+    uploadedImages[imagePathOrUrl] = asset._id;
+
+    console.log(`✅ Successfully uploaded: ${filename}`);
+    console.log(`🆔 Sanity Asset ID: ${asset._id}`);
 
     return asset._id;
   } catch (error) {
-    console.error("❌ Failed to Upload Image:", imageUrl, error.message);
+    console.error("❌ Failed to upload:", imagePathOrUrl, error.message);
     return null;
   }
 }
 
-// Generic helper to fetch reference by type + field
+
 async function fetchReference(type, field, value) {
   if (!value) return null;
   try {
@@ -159,124 +205,6 @@ async function importFabrics() {
 }
 
 // Products (with variants, images, references)
-// async function importProducts() {
-//   const products = await fetchData("product");
-
-//   for (const item of products) {
-//     console.log(`➡️ Processing Item: ${item.title}`);
-
-//     // Prepare variants array
-//     const variantsArray = [];
-//     if (item.variants?.length) {
-//       for (const variant of item.variants) {
-
-//          season: item.season || [],
-//       designs: item.designs || [],
-//       occasions: item.occasions || [],
-//       relevantTags: item.relevantTags || [],
-//         // Upload featured image
-//         let featuredImageRef = null;
-//         if (variant.featuredImage) {
-//           const uploaded = await uploadImageToSanity(variant.featuredImage);
-//           if (uploaded)
-//             featuredImageRef = {
-//               _type: "image",
-//               asset: { _type: "reference", _ref: uploaded },
-//             };
-//         }
-
-//         // Upload additional images
-//         let additionalImageRefs = [];
-//         if (variant.additionalImages?.length) {
-//           for (const img of variant.additionalImages) {
-//             const uploaded = await uploadImageToSanity(img);
-//             if (uploaded) {
-//               additionalImageRefs.push({
-//                 _key: uuidv4(),
-//                 _type: "image",
-//                 asset: { _type: "reference", _ref: uploaded },
-//               });
-//             }
-//           }
-//         }
-
-//         // Color reference
-//         const colorRef = await fetchReference("color", "name", variant.color);
-
-//         variantsArray.push({
-//           _key: uuidv4(),
-//           color: colorRef,
-
-//            season: item.season || [],
-//       designs: item.designs || [],
-//       occasions: item.occasions || [],
-//       relevantTags: item.relevantTags || [],
-//           featuredImage: featuredImageRef,
-//           additionalImages: additionalImageRefs,
-//           stock: variant.stock || 0,
-//         });
-//       }
-//     }
-
-//     // Description
-//     const descriptionBlocks = item.description
-//       ? [
-//           {
-//             _type: "block",
-//             _key: uuidv4(),
-//             style: "normal",
-//             markDefs: [],
-//             children: [
-//               {
-//                 _type: "span",
-//                 _key: uuidv4(),
-//                 text: item.description,
-//                 marks: [],
-//               },
-//             ],
-//           },
-//         ]
-//       : [];
-
-//     // References
-//     const fabricRef = await fetchReference("fabric", "name", item.fabric);
-
-//     // Tags
-//     const relevantTags = item.relevantTags || [];
-
-//     const sanityItem = {
-//       _type: "product",
-//       title: item.title,
-//       slug: {
-//         _type: "slug",
-//         current: item.slug || item.title.toLowerCase().replace(/\s+/g, "-"),
-//       },
-//       audience: item.audience,
-//       category: item.category,
-//       price: item.price,
-//       fabric: fabricRef,
-//       variants: variantsArray,
-
-//       description: descriptionBlocks,
-
-//        season: item.season || [],
-//       designs: item.designs || [],
-//       occasions: item.occasions || [],
-//       relevantTags: item.relevantTags || [],
-
-//       isFeatured: item.isFeatured || false,
-
-//     };
-
-//     const result = await client.create(sanityItem);
-//     console.log(`✅ Uploaded: ${result._id}`);
-//     console.log("----------------------------------------------------------\n");
-//   }
-
-//   console.log("🎉 Products import completed successfully!\n");
-// }
-
-// Products (with variants, images, references)
 async function importProducts() {
   const products = await fetchData("product");
 
@@ -353,7 +281,7 @@ async function importProducts() {
     const sanityItem = {
       _type: "product",
       title: item.title,
-      title: item.subtitle || "Not set the subtitle yet",
+      subTtitle: item.subtitle || "Not set the subtitle yet",
       slug: {
         _type: "slug",
         current: item.slug || item.title.toLowerCase().replace(/\s+/g, "-"),
