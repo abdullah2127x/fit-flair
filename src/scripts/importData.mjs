@@ -281,7 +281,7 @@ async function importProducts() {
     const sanityItem = {
       _type: "product",
       title: item.title,
-      subTtitle: item.subtitle || "Not set the subtitle yet",
+      subTitle: item.subTitle || "Not set the subTitle yet",
       slug: {
         _type: "slug",
         current: item.slug || item.title.toLowerCase().replace(/\s+/g, "-"),
