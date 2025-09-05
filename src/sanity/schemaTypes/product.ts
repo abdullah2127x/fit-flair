@@ -355,7 +355,12 @@ export const product = defineType({
       type: "boolean",
       initialValue: false,
     }),
-
+    defineField({
+      name: "isPopular",
+      type: "boolean",
+      title: "Most Popular",
+      initialValue: false,
+    }),
     // defineField({
     //   name: "sku",
     //   title: "SKU",

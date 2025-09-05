@@ -301,6 +301,7 @@ async function importProducts() {
       relevantTags: item.relevantTags || [],
       isFeatured: item.isFeatured || false,
       isNewArrival: item.isNewArrival || false,
+      isPopular: item.isPopular || false,
       discount: item.discount || 0,
     };
 

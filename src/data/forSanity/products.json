@@ -36,7 +36,8 @@
     ],
     "description": "A readyToWear Jumpsuit Outfit perfect for everyday wear.",
     "relevantTags": ["Shorts", "Trouser", "Festive"],
-    "isFeatured": true
+    "isFeatured": true,
+    "isPopular": true
   },
   {
     "title": "Casual Shirt",
@@ -69,7 +70,8 @@
     ],
     "description": "A casual printed shirt suitable for office and daily wear.",
     "relevantTags": ["Shirt", "Casual", "Office"],
-    "isFeatured": false
+    "isFeatured": false,
+    "isPopular": false
   },
   {
     "title": "Formal Suit",
@@ -102,7 +104,8 @@
     ],
     "description": "A premium formal suit perfect for winter weddings and office events.",
     "relevantTags": ["Suit", "Formal", "Winter"],
-    "isFeatured": true
+    "isFeatured": true,
+    "isPopular": true
   },
   {
     "title": "Kurta Set",
@@ -135,7 +138,8 @@
     ],
     "description": "Lightweight embroidered kurta set suitable for summer and festive occasions.",
     "relevantTags": ["Kurta", "Eid", "Festive"],
-    "isFeatured": false
+    "isFeatured": false,
+    "isPopular": true
   },
   {
     "title": "T-Shirt Casual",
@@ -168,7 +172,8 @@
     ],
     "description": "Comfortable printed T-Shirt suitable for summer casual wear.",
     "relevantTags": ["T-Shirt", "Casual", "Summer"],
-    "isFeatured": true
+    "isFeatured": true,
+    "isPopular": true
   },
   {
     "title": "Formal Shirt",
@@ -195,7 +200,8 @@
     ],
     "description": "Elegant formal shirt for office and professional events.",
     "relevantTags": ["Shirt", "Formal", "Office"],
-    "isFeatured": false
+    "isFeatured": false,
+    "isPopular": false
   },
   {
     "title": "Jeans Classic",
@@ -228,7 +234,8 @@
     ],
     "description": "Classic jeans for casual and semi-formal occasions.",
     "relevantTags": ["Jeans", "Casual", "Denim"],
-    "isFeatured": true
+    "isFeatured": true,
+    "isPopular": true
   },
   {
     "title": "Waistcoat Style",
@@ -255,7 +262,8 @@
     ],
     "description": "Stylish velvet waistcoat perfect for formal events.",
     "relevantTags": ["Waistcoat", "Formal", "Winter"],
-    "isFeatured": false
+    "isFeatured": false,
+    "isPopular": false
   },
   {
     "title": "Sherwani Classic",
@@ -282,7 +290,8 @@
     ],
     "description": "Elegant sherwani for weddings and formal events.",
     "relevantTags": ["Sherwani", "Wedding", "Formal"],
-    "isFeatured": true
+    "isFeatured": true,
+    "isPopular": true
   },
   {
     "title": "Polo Modern",
@@ -309,7 +318,8 @@
     ],
     "description": "Trendy striped polo shirt for a casual summer look.",
     "relevantTags": ["Polo", "Casual", "Summer"],
-    "isFeatured": false
+    "isFeatured": false,
+    "isPopular": true
   },
   {
     "title": "Tracksuit Pro",
@@ -336,7 +346,8 @@
     ],
     "description": "Comfortable tracksuit designed for gym and casual wear.",
     "relevantTags": ["Tracksuit", "Gym", "Casual"],
-    "isFeatured": true
+    "isFeatured": true,
+    "isPopular": true
   },
   {
     "title": "Blazer Smart",
@@ -363,7 +374,8 @@
     ],
     "description": "Smart wool blazer ideal for professional and formal occasions.",
     "relevantTags": ["Blazer", "Formal", "Office"],
-    "isFeatured": false
+    "isFeatured": false,
+    "isPopular": false
   },
   {
     "title": "Casual Hoodie",
@@ -390,7 +402,8 @@
     ],
     "description": "Warm fleece hoodie with trendy prints, perfect for casual outings.",
     "relevantTags": ["Hoodie", "Casual", "Winter"],
-    "isFeatured": true
+    "isFeatured": true,
+    "isPopular": true
   },
   {
     "title": "Jogger Pants",
@@ -417,6 +430,7 @@
     ],
     "description": "Comfortable cotton jogger pants for casual wear and gym sessions.",
     "relevantTags": ["Jogger", "Casual", "Gym"],
-    "isFeatured": false
+    "isFeatured": false,
+    "isPopular": true
   }
 ]
