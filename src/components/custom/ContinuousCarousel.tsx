@@ -154,7 +154,7 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
       node.removeEventListener("wheel", handleWheel);
       if (wheelTimeout) clearTimeout(wheelTimeout);
     };
-  }, [emblaApi, enableMouseWheel, mouseWheelSensitivity]);
+  }, [mouseWheelDirection, emblaApi, enableMouseWheel, mouseWheelSensitivity]);
 
   return (
     <div className={`relative w-full ${className}`}>

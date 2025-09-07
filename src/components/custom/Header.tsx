@@ -381,7 +381,6 @@ function DesktopNav() {
   );
 }
 
-
 // ✅ Desktop Search Component
 function DesktopSearch() {
   return (
@@ -395,7 +394,13 @@ function DesktopSearch() {
 }
 
 // ✅ Right Section Component (User, Cart, Mobile Menu)
-function RightSection({ itemCount, setIsCartOpen }: { itemCount: number; setIsCartOpen: (val: boolean) => void }) {
+function RightSection({
+  itemCount,
+  setIsCartOpen,
+}: {
+  itemCount: number;
+  setIsCartOpen: (val: boolean) => void;
+}) {
   return (
     <div className="flex items-center space-x-2">
       <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
@@ -439,14 +444,18 @@ function RightSection({ itemCount, setIsCartOpen }: { itemCount: number; setIsCa
 }
 
 // ✅ Mobile Search Component
-function MobileSearch({ searchRef }: { searchRef: React.RefObject<HTMLDivElement> }) {
+function MobileSearch({
+  searchRef,
+}: {
+  searchRef: React.RefObject<HTMLDivElement>;
+}) {
   return (
     <div
       ref={searchRef}
-      className="md:hidden sticky top-16 z-40 border-b bg-background px-4 py-2"
+      className="md:hidden sticky top-16 z-[998] border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-2"
     >
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+      <div className="relative bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70 rounded-md">
+        <Search className="absolute left-3  top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input placeholder="Search clothing..." className="pl-10" />
       </div>
     </div>
@@ -461,19 +470,26 @@ export default function Header() {
   const searchRef = useRef<HTMLDivElement | null>(null);
   const lastScrollY = useRef(0);
 
+  // control the mobile search bar
   useEffect(() => {
     let scrollTimeout: NodeJS.Timeout;
+    const scrollThreshold = 50;
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       clearTimeout(scrollTimeout);
 
-      if (currentScrollY > lastScrollY.current) {
-        gsap.to(searchRef.current, {
-          y: "-100%",
-          duration: 0.4,
-          opacity: 0,
-          ease: "power3.out",
-        });
+      // check scroll difference
+      const scrollDiff = Math.abs(currentScrollY - lastScrollY.current);
+      if (scrollDiff > scrollThreshold) {
+        if (currentScrollY > lastScrollY.current) {
+          gsap.to(searchRef.current, {
+            y: "-100%",
+            duration: 0.4,
+            opacity: 0,
+            ease: "power3.out",
+          });
+        }
       }
 
       scrollTimeout = setTimeout(() => {
@@ -498,7 +514,7 @@ export default function Header() {
   return (
     <>
       {/* ✅ Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-[999] w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <Logo />
           <DesktopNav />

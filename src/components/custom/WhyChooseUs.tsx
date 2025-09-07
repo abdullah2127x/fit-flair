@@ -3,7 +3,7 @@ import React from "react";
 
 const WhyChooseUs = () => {
   return (
-    <div className="container pb-8">
+    <div className="container ">
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold mb-4">Why Choose Couture</h2>
         <p className="text-xl text-muted-foreground">

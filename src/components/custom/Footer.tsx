@@ -1,9 +1,66 @@
 import Link from "next/link";
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function Footer() {
+  // Social Icons
+  const socials = [Facebook, Twitter, Instagram];
+
+  // Footer Links
+  const quickLinks = [
+    { label: "Home", href: "/" },
+    { label: "Men's Collection", href: "/men" },
+    { label: "Women's Collection", href: "/women" },
+    { label: "About Us", href: "/about" },
+    { label: "Contact", href: "/contact" },
+  ];
+
+  const customerLinks = [
+    { label: "Shipping Info", href: "/shipping" },
+    { label: "Returns", href: "/returns" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Support", href: "/support" },
+  ];
+
+  // Contact Info
+  const contacts = [
+    { icon: Mail, text: "hello@elegance.com" },
+    { icon: Phone, text: "+1 (555) 123-4567" },
+    { icon: MapPin, text: "New York, NY" },
+  ];
+
+  // Reusable Link Section
+  const LinkSection = ({
+    title,
+    links,
+  }: {
+    title: string;
+    links: { label: string; href: string }[];
+  }) => (
+    <div className="flex flex-col items-center md:items-start gap-y-4">
+      <h3 className="font-semibold">{title}</h3>
+      <div className="flex flex-col items-center md:items-start gap-y-2">
+        {links.map((link, i) => (
+          <Link
+            key={i}
+            href={link.href}
+            className="block w-fit text-sm text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:-bottom-0.5 after:left-0 after:h-[1px] after:w-0 after:bg-foreground after:transition-all hover:after:w-full"
+          >
+            {link.label}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <footer className="bg-secondary/50 border-t">
       <div className="container py-12">
@@ -12,16 +69,18 @@ export function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">C</span>
+                <span className="text-primary-foreground font-bold text-sm">
+                  C
+                </span>
               </div>
               <span className="font-bold text-xl">Couture</span>
             </div>
             <p className="text-muted-foreground text-sm">
-              Discover premium clothing crafted with finest fabrics and attention to detail.
-              Your style is our commitment.
+              Discover premium clothing crafted with finest fabrics and
+              attention to detail. Your style is our commitment.
             </p>
             <div className="flex space-x-2">
-              {[Facebook, Twitter, Instagram].map((Icon, i) => (
+              {socials.map((Icon, i) => (
                 <Button
                   key={i}
                   variant="ghost"
@@ -35,64 +94,21 @@ export function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="font-semibold">Quick Links</h3>
-            <div className="space-y-2">
-              {[
-                { label: "Home", href: "/" },
-                { label: "Men's Collection", href: "/men" },
-                { label: "Women's Collection", href: "/women" },
-                { label: "About Us", href: "/about" },
-                { label: "Contact", href: "/contact" },
-              ].map((link, i) => (
-                <Link
-                  key={i}
-                  href={link.href}
-                  className="block text-sm text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:-bottom-0.5 after:left-0 after:h-[1px] after:w-0 after:bg-foreground after:transition-all hover:after:w-full"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+          <LinkSection title="Quick Links" links={quickLinks} />
 
           {/* Customer Service */}
-          <div className="space-y-4">
-            <h3 className="font-semibold">Customer Service</h3>
-            <div className="space-y-2">
-              {[
-                { label: "Shipping Info", href: "/shipping" },
-                { label: "Returns", href: "/returns" },
-                { label: "FAQ", href: "/faq" },
-                { label: "Support", href: "/support" },
-              ].map((link, i) => (
-                <Link
-                  key={i}
-                  href={link.href}
-                  className="block text-sm text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:-bottom-0.5 after:left-0 after:h-[1px] after:w-0 after:bg-foreground after:transition-all hover:after:w-full"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+          <LinkSection title="Customer Service" links={customerLinks} />
 
           {/* Contact & Newsletter */}
-          <div className="space-y-4">
+          <div className="flex flex-col items-center md:items-start gap-y-4">
             <h3 className="font-semibold">Get in Touch</h3>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <div className="flex items-center space-x-2">
-                <Mail className="h-4 w-4" />
-                <span>hello@elegance.com</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4" />
-                <span>New York, NY</span>
-              </div>
+            <div className="flex flex-col gap-y-2 text-sm text-muted-foreground">
+              {contacts.map(({ icon: Icon, text }, i) => (
+                <div key={i} className="flex items-center space-x-2">
+                  <Icon className="h-4 w-4" />
+                  <span>{text}</span>
+                </div>
+              ))}
             </div>
 
             <div className="space-y-2">
@@ -114,7 +130,8 @@ export function Footer() {
 
         <div className="border-t mt-10 pt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            © 2024 Couture. All rights reserved. Crafted with finest fabrics and attention to detail.
+            © 2024 Couture. All rights reserved. Crafted with finest fabrics
+            and attention to detail.
           </p>
         </div>
       </div>

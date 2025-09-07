@@ -6,7 +6,7 @@ import SecondaryHeading from "./SecondaryHeading";
 import EmblaCarousel from "./EmblaCarousel";
 import ProductGrid from "./ProductGrid";
 import PrimaryHeading from "./PrimaryHeading";
-import SubTitle from "./subTitle";
+import SubTitle from "./SubTitle";
 
 const images = [
   "Chambray",
@@ -106,9 +106,9 @@ const womenCollection: CollectionType[] = [
 
 const WomenCollection = () => {
   return (
-    <div className="flex flex-col gap-y-2 w-full justify-center items-center">
-      <PrimaryHeading>Women's Collection</PrimaryHeading>
-      <SubTitle>Discover the latest trends in women's fashion.</SubTitle>
+  <div className="flex flex-col gap-y-4 w-full justify-center items-center">
+      <PrimaryHeading>Women&apos;s Collection</PrimaryHeading>
+      <SubTitle>Discover the latest trends in women&apos;s fashion.</SubTitle>
 
       {/* <ProductGrid rounded="square" slidesToShow={4} slides={products} /> */}
       <ContinuousCarousel
