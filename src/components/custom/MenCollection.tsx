@@ -2,11 +2,8 @@
 
 import ContinuousCarousel from "@/components/custom/ContinuousCarousel";
 import SecondaryHeading from "./SecondaryHeading";
-
-import EmblaCarousel from "./EmblaCarousel";
-import ProductGrid from "./ProductGrid";
 import PrimaryHeading from "./PrimaryHeading";
-import SubTitle from "./SubTitle";
+import SubTitle from "@/components/custom/SubTitle";
 
 const images = [
   "Chambray",

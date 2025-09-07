@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import ProductGrid from "../ProductGrid";
-import SubTitle from "../SubTitle";
+import SubTitle from "@/components/custom/SubTitle";
 import { TabsContent } from "@/components/ui/tabs";
 import { LatestProductsType } from "../OurProducts";
 import { client } from "@/sanity/lib/client";

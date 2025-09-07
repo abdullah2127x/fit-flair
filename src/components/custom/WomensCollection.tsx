@@ -1,39 +1,7 @@
 "use client";
-
 import ContinuousCarousel from "@/components/custom/ContinuousCarousel";
-import SecondaryHeading from "./SecondaryHeading";
-
-import EmblaCarousel from "./EmblaCarousel";
-import ProductGrid from "./ProductGrid";
 import PrimaryHeading from "./PrimaryHeading";
-import SubTitle from "./SubTitle";
-
-const images = [
-  "Chambray",
-  "Jersey",
-  "Fleece",
-  "Georgette",
-  "Wool",
-  "Denim",
-  "Tulle",
-  "Organza",
-  "Nylon",
-  "Silk",
-  "Satin",
-  "Linen",
-];
-
-// Define your Men categories
-const menCategories = [
-  "Polo Shirts",
-  "T-Shirts",
-  "Formal Shirts",
-  "Kurta",
-  "Jeans",
-  "Trousers",
-  "Sherwani",
-  "Formal Suit",
-] as const;
+import SubTitle from "@/components/custom/SubTitle";
 
 type CollectionType = {
   src: string;
@@ -106,7 +74,7 @@ const womenCollection: CollectionType[] = [
 
 const WomenCollection = () => {
   return (
-  <div className="flex flex-col gap-y-4 w-full justify-center items-center">
+    <div className="flex flex-col gap-y-4 w-full justify-center items-center">
       <PrimaryHeading>Women&apos;s Collection</PrimaryHeading>
       <SubTitle>Discover the latest trends in women&apos;s fashion.</SubTitle>
 
