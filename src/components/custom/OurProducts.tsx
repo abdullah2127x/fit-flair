@@ -1,294 +1,142 @@
-import React from "react";
+import React, { useRef } from "react";
 import PrimaryHeading from "./PrimaryHeading";
-import SubTitle from "./SubTitle";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import ProductGrid from "./ProductGrid";
-import NewArrival from "./latest/NewArrival";
-import Popular from "./latest/Popular";
-import SpeacialOffers from "./latest/SpeacialOffers";
-import Trending from "./latest/Trending";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import NewIn from "./ourProductsPages/NewIn";
+import Popular from "./ourProductsPages/Popular";
+import SpeacialOffers from "./ourProductsPages/SpeacialOffers";
+
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export type LatestProductsType = {
   id: number;
   title: string;
   subTitle: string;
   price: number;
+  discount: number;
   src: string;
   href: string;
   showAddToCart: boolean;
   buttonText: string;
 };
 
-// Example product arrays for each tab
-const newArrivals: LatestProductsType[] = [
-  {
-    id: 1,
-    title: "Casual Shirt",
-    subTitle: "Perfect for everyday wear",
-    price: 35,
-    src: "/images/men/t-shirt.jpg",
-    href: "/products/casual-shirt",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 2,
-    title: "Formal Shirt",
-    subTitle: "Sharp & professional",
-    price: 50,
-    src: "/images/men/formal-shirt.jpg",
-    href: "/products/formal-shirt",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 3,
-    title: "Kurta",
-    subTitle: "Traditional & stylish",
-    price: 40,
-    src: "/images/men/kurta.jpg",
-    href: "/products/kurta",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 4,
-    title: "Jeans",
-    subTitle: "Classic denim comfort",
-    price: 55,
-    src: "/images/men/jeans.jpg",
-    href: "/products/jeans",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 5,
-    title: "Trousers",
-    subTitle: "Smart & relaxed fit",
-    price: 45,
-    src: "/images/men/trouser.jpg",
-    href: "/products/trousers",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 6,
-    title: "Formal Suit",
-    subTitle: "Perfect for occasions",
-    price: 120,
-    src: "/images/men/formal-suit.jpg",
-    href: "/products/formal-suit",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 7,
-    title: "Tracksuit",
-    subTitle: "Sporty & comfy",
-    price: 65,
-    src: "/images/men/tracksuit.jpg",
-    href: "/products/tracksuit",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 8,
-    title: "Sherwani",
-    subTitle: "Elegant traditional wear",
-    price: 150,
-    src: "/images/men/sherwani.jpg",
-    href: "/products/sherwani",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-];
-
-const popularProducts = [
-  {
-    id: 9,
-    title: "Hoodie",
-    subTitle: "Warm & comfy style",
-    price: 45,
-    src: "/images/men/hoodie.jpg",
-    href: "/products/hoodie",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 10,
-    title: "Denim Jacket",
-    subTitle: "Rugged fashion essential",
-    price: 70,
-    src: "/images/men/jacket.jpg",
-    href: "/products/denim-jacket",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 11,
-    title: "Polo Shirt",
-    subTitle: "Smart casual must-have",
-    price: 30,
-    src: "/images/men/polo.jpg",
-    href: "/products/polo-shirt",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 12,
-    title: "Sweatpants",
-    subTitle: "Relaxed fit comfort",
-    price: 40,
-    src: "/images/men/sweatpants.jpg",
-    href: "/products/sweatpants",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 13,
-    title: "Leather Jacket",
-    subTitle: "Bold & stylish",
-    price: 200,
-    src: "/images/men/leather-jacket.jpg",
-    href: "/products/leather-jacket",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 14,
-    title: "Kurta Pajama",
-    subTitle: "Traditional comfort",
-    price: 55,
-    src: "/images/men/kurta-pajama.jpg",
-    href: "/products/kurta-pajama",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 15,
-    title: "Casual Sneakers",
-    subTitle: "Everyday footwear",
-    price: 60,
-    src: "/images/men/sneakers.jpg",
-    href: "/products/casual-sneakers",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 16,
-    title: "Wool Sweater",
-    subTitle: "Cozy winter wear",
-    price: 50,
-    src: "/images/men/sweater.jpg",
-    href: "/products/wool-sweater",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-];
-
-const specialOffers = [
-  {
-    id: 17,
-    title: "T-shirt Sale",
-    subTitle: "Limited time discount",
-    price: 20,
-    src: "/images/men/t-shirt.jpg",
-    href: "/products/tshirt-sale",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 18,
-    title: "Jeans Discount",
-    subTitle: "Buy 1 Get 1 Free",
-    price: 50,
-    src: "/images/men/jeans.jpg",
-    href: "/products/jeans-discount",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 19,
-    title: "Kurta Special",
-    subTitle: "Save 20% today",
-    price: 32,
-    src: "/images/men/kurta.jpg",
-    href: "/products/kurta-special",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 20,
-    title: "Formal Suit Deal",
-    subTitle: "Flat 25% off",
-    price: 90,
-    src: "/images/men/formal-suit.jpg",
-    href: "/products/formal-suit-deal",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 21,
-    title: "Tracksuit Sale",
-    subTitle: "Special sportswear offer",
-    price: 50,
-    src: "/images/men/tracksuit.jpg",
-    href: "/products/tracksuit-sale",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 22,
-    title: "Sherwani Deal",
-    subTitle: "Save big on traditionals",
-    price: 120,
-    src: "/images/men/sherwani.jpg",
-    href: "/products/sherwani-deal",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 23,
-    title: "Polo Shirt Offer",
-    subTitle: "Flat 15% discount",
-    price: 25,
-    src: "/images/men/polo.jpg",
-    href: "/products/polo-offer",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-  {
-    id: 24,
-    title: "Winter Hoodie Deal",
-    subTitle: "Extra warm, extra savings",
-    price: 35,
-    src: "/images/men/hoodie.jpg",
-    href: "/products/winter-hoodie-deal",
-    showAddToCart: true,
-    buttonText: "View Detail",
-  },
-];
-
-
 const OurProducts = () => {
+  const tabsRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+
+  //   useGSAP(() => {
+  //     if (tabsRef.current && sectionRef.current) {
+  //       ScrollTrigger.create({
+  //         trigger: sectionRef.current,
+  //         start: "top top", // when OurProducts section hits top of viewport
+  //         end: "bottom top", // until the end of the section
+  //         pin: tabsRef.current, // pin only the TabsList
+  //         pinSpacing: false, // prevent extra white space
+  //         markers:true
+  //       });
+  //       // Refresh ScrollTrigger whenever images or async content load
+  //       const observer = new MutationObserver(() => {
+  //         ScrollTrigger.refresh();
+  //       });
+
+  //       if (sectionRef.current) {
+  //         observer.observe(sectionRef.current, { childList: true, subtree: true });
+  //       }
+
+  //       return () => observer.disconnect();
+  //     }
+  // }, []);
+
+  // useGSAP(() => {
+  //   if (tabsRef.current && sectionRef.current) {
+  //     const st = ScrollTrigger.create({
+  //       trigger: sectionRef.current,
+  //       start: "top top+=62", // ✅ 64px = 16 * 4 (rem to px for top-16)
+  //       // start: "top top",
+  //       end: "bottom 80%",
+  //       pin: tabsRef.current,
+  //       pinSpacing: false,
+        
+  //     });
+
+  //     // ✅ Clean up when component unmounts OR effect re-runs
+  //     return () => {
+  //       st.kill();
+  //     };
+  //   }
+  // }, []);
+useGSAP(() => {
+  if (!sectionRef.current || !tabsRef.current) return;
+
+  const mm = gsap.matchMedia();
+  const HEADER_OFFSET = 28;
+
+  // Desktop: ≥768px
+  mm.add("(min-width: 768px)", () => {
+    const st = ScrollTrigger.create({
+      trigger: sectionRef.current!,
+      start: "top top", // top-0
+      end: "bottom 60%",
+      pin: tabsRef.current!,
+      pinSpacing: false,
+    });
+
+    return () => st.kill();
+  });
+
+  // Mobile: <768px
+  mm.add("(max-width: 767px)", () => {
+    gsap.set(tabsRef.current!, { y: HEADER_OFFSET });
+
+    const st = ScrollTrigger.create({
+      trigger: sectionRef.current!,
+      start: `top top+=${HEADER_OFFSET}`, // top-16
+      end: "bottom 60%",
+      pin: tabsRef.current!,
+      pinSpacing: false,
+      onKill: () => gsap.set(tabsRef.current!, { y: 0 }),
+    });
+
+    return () => {
+      st.kill();
+      gsap.set(tabsRef.current!, { y: 0 });
+    };
+  });
+
+  return () => mm.revert();
+}, []);
+
   return (
-    <div className="flex flex-col gap-y-6 pb-6 w-full justify-center items-center">
+    <div
+      ref={sectionRef}
+      className="flex flex-col gap-y-6 w-full justify-center items-center"
+    >
       <PrimaryHeading>Our Products</PrimaryHeading>
 
-      <Tabs defaultValue="new" className="w-full flex flex-col  gap-y-6">
+      <Tabs defaultValue="new" className="w-full  flex flex-col gap-y-6">
         {/* Tab Buttons */}
-        <TabsList className="flex gap-6 justify-center w-fit mx-auto ">
-          <TabsTrigger value="new">New Arrivals</TabsTrigger>
-          <TabsTrigger value="popular">Most Popular</TabsTrigger>
-          <TabsTrigger value="sale">Special Offers</TabsTrigger>
-          <TabsTrigger value="trending">Trending</TabsTrigger>
-        </TabsList>
+        <div className="z-[997] mb-4 md:mb-0" ref={tabsRef}>
+          <TabsList className="flex sm:gap-6 justify-center w-fit mx-auto shadow-md rounded-lg sm:px-4 py-2">
+            <TabsTrigger className="px-2 sm:px-3 " value="new">
+              New In
+            </TabsTrigger>
+            <TabsTrigger className="px-2 sm:px-3 " value="popular">
+              Most Popular
+            </TabsTrigger>
+            <TabsTrigger className="px-2 sm:px-3 " value="sale">
+              Special Offers
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
-      
-        <NewArrival />
+        {/* Tab Contents */}
+        <NewIn />
         <Popular />
         <SpeacialOffers />
-        <Trending />
       </Tabs>
     </div>
   );
