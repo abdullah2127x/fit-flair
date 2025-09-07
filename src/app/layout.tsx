@@ -3,7 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/custom/Navbar";
 import Header from "@/components/custom/Header";
-import { ThemeProvider } from "@/components/custom/providers/ThemeProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { CartProvider } from "@/contexts/CartContext";
+import { Footer } from "@/components/custom/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,18 +22,21 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          
-          <Navbar />
-          {/* <Header /> */}
-
-          {children}
-        </ThemeProvider>
+        <CartProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {/* <Navbar /> */}
+            <div className="min-h-screen flex flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </ThemeProvider>
+        </CartProvider>
       </body>
     </html>
   );
