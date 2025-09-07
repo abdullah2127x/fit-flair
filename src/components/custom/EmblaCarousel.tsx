@@ -12,7 +12,6 @@ type SlideType = {
   title: string;
   subTitle?: string;
   href?: string; // 👈 optional URL
-  linkEnabled?: boolean;
 };
 
 type CarouselProps = {

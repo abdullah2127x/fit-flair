@@ -4,7 +4,6 @@ import "./globals.css";
 import Navbar from "@/components/custom/Navbar";
 import Header from "@/components/custom/Header";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { CartProvider } from "@/contexts/CartContext";
 import { Footer } from "@/components/custom/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -22,7 +21,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <CartProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -36,7 +34,6 @@ export default function RootLayout({
               <Footer />
             </div>
           </ThemeProvider>
-        </CartProvider>
       </body>
     </html>
   );

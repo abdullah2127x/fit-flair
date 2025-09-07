@@ -5,6 +5,7 @@ import EmblaCarousel from "../custom/EmblaCarousel";
 // Example slides data with all available fabrics
 const allFabrics = [
   {
+    id: "cotton",
     src: "/images/fabrics/Cotton.webp",
     title: "Cotton",
     subTitle: "Natural & Comfortable",
@@ -12,6 +13,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "silk",
     src: "/images/fabrics/Silk.webp",
     title: "Silk",
     subTitle: "Luxury & Elegant",
@@ -19,6 +21,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "wool",
     src: "/images/fabrics/Wool.webp",
     title: "Wool",
     subTitle: "Warm & Durable",
@@ -26,6 +29,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "denim",
     src: "/images/fabrics/Denim.webp",
     title: "Denim",
     subTitle: "Classic & Strong",
@@ -33,6 +37,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "linen",
     src: "/images/fabrics/Linen.webp",
     title: "Linen",
     subTitle: "Breathable & Natural",
@@ -40,6 +45,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "velvet",
     src: "/images/fabrics/Velvet.webp",
     title: "Velvet",
     subTitle: "Soft & Luxurious",
@@ -47,6 +53,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "chiffon",
     src: "/images/fabrics/Chiffon.webp",
     title: "Chiffon",
     subTitle: "Light & Flowy",
@@ -54,6 +61,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "polyester",
     src: "/images/fabrics/Polyester.webp",
     title: "Polyester",
     subTitle: "Durable & Easy Care",
@@ -61,6 +69,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "crepe",
     src: "/images/fabrics/Crepe.webp",
     title: "Crepe",
     subTitle: "Textured & Elegant",
@@ -68,6 +77,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "rayon",
     src: "/images/fabrics/Rayon.webp",
     title: "Rayon",
     subTitle: "Silky & Versatile",
@@ -75,6 +85,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "leather",
     src: "/images/fabrics/Leather.webp",
     title: "Leather",
     subTitle: "Premium & Tough",
@@ -82,6 +93,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "satin",
     src: "/images/fabrics/Satin.webp",
     title: "Satin",
     subTitle: "Smooth & Glossy",
@@ -89,6 +101,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "organza",
     src: "/images/fabrics/Organza.webp",
     title: "Organza",
     subTitle: "Sheer & Delicate",
@@ -96,6 +109,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "nylon",
     src: "/images/fabrics/Nylon.webp",
     title: "Nylon",
     subTitle: "Strong & Lightweight",
@@ -103,6 +117,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "georgette",
     src: "/images/fabrics/Georgette.webp",
     title: "Georgette",
     subTitle: "Crinkled & Flowy",
@@ -110,6 +125,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "tulle",
     src: "/images/fabrics/Tulle.webp",
     title: "Tulle",
     subTitle: "Net & Decorative",
@@ -117,6 +133,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "jersey",
     src: "/images/fabrics/Jersey.webp",
     title: "Jersey",
     subTitle: "Stretchy & Comfortable",
@@ -124,6 +141,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "poplinn",
     src: "/images/fabrics/Poplinn.webp",
     title: "Poplinn",
     subTitle: "Crisp & Structured",
@@ -131,6 +149,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "fleece",
     src: "/images/fabrics/Fleece.webp",
     title: "Fleece",
     subTitle: "Warm & Cozy",
@@ -138,6 +157,7 @@ const allFabrics = [
     linkEnabled: true,
   },
   {
+    id: "chambray",
     src: "/images/fabrics/Chambray.webp",
     title: "Chambray",
     subTitle: "Denim-Like & Casual",
@@ -145,6 +165,7 @@ const allFabrics = [
     linkEnabled: true,
   },
 ];
+
 
 const EmblaCarouselExamples: React.FC = () => {
   return (

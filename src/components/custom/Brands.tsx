@@ -38,7 +38,7 @@ type Slide = {
   title: Category;
   //   subTitle: Fabric;
   href?: string;
-  linkEnabled: boolean;
+  id: string | number;
 };
 
 // generate product array
@@ -46,7 +46,7 @@ const products: Slide[] = brands.map((brand) => ({
   src: `/images/categories/${brand}.webp`,
   title: brand,
   href: `/collections/${brand.toLowerCase()}`,
-  linkEnabled: true,
+  id: brand,
 }));
 
 const Brands = () => {
