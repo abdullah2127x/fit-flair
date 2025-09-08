@@ -20,8 +20,13 @@ const ProductTabContent: React.FC<ProductTabContentProps> = ({
 }) => {
   const [products, setProducts] = useState<OurProductsType[]>([]);
 
-  console.log("the our products tab content component re-rendered");
+  console.log(
+    "the our products tab content component re-rendered before use effect"
+  );
   useEffect(() => {
+    console.log(
+      "the our products tab content component re-rendered inside use effect"
+    );
     const fetchData = async () => {
       try {
         const data = await client.fetch(query);
