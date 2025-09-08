@@ -111,6 +111,9 @@ const OurProducts = () => {
     return () => mm.revert();
   }, []);
 
+  console.log("The New in query is : ", newInQuery);
+  console.log("The Popular query is : ", popularQuery);
+  console.log("The Special offers query is : ", specialOffersQuery);
   return (
     <div
       ref={sectionRef}

@@ -38,7 +38,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   className = "",
   changeColorOnHover,
 }) => {
-  console.log("the slides are : ", slides);
+
   return (
     <div className={`w-full ${className}`}>
       <div className="flex flex-wrap justify-center gap-4">

@@ -24,6 +24,7 @@ const ProductTabContent: React.FC<ProductTabContentProps> = ({
     const fetchData = async () => {
       try {
         const data = await client.fetch(query);
+        console.log(`Fetched products for ${value}:`, data);
 
         const formatted = data.map((item: any) => {
           const customTags = [
