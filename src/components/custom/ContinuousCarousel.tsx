@@ -10,7 +10,7 @@ type SlideType = {
   title: string;
   subTitle?: string;
   href?: string;
-  linkEnabled?: boolean;
+  id: number | string;
 };
 
 type ContinuousCarouselProps = {
@@ -175,7 +175,7 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
         >
           {slides.map((slide, index) => (
             <div
-              key={index}
+              key={slide.id}
               className="px-2"
               style={{
                 flex: `0 0 calc(${100 / slidesToShow}% - 1rem)`,
@@ -183,7 +183,6 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
               }}
             >
               <ImageCard
-                id={slide.title}
                 src={slide?.src}
                 title={slide?.title}
                 subTitle={slide?.subTitle}

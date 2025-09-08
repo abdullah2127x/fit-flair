@@ -48,15 +48,34 @@ export default function WinterStyles() {
         </div>
 
         {/* Right Image */}
-        <div className="flex-1 flex justify-center">
-          <Image
-            src="/images/winter-styles.jpg"
-            alt="Winter Outfit"
-            width={400} // set your preferred width
-            height={400} // set your preferred height
-            className="w-full max-w-sm rounded-2xl shadow-lg hover:scale-105 transition-transform"
-            
-          />
+        <div className="flex-1  flex justify-center">
+          <div className="flex overflow-hidden justify-center items-center rounded-2xl">
+            <Image
+              src="/images/winter-styles.jpg"
+              alt="Winter Outfit"
+              width={400} // set your preferred width
+              height={400} // set your preferred height
+              className="w-full max-w-sm rounded-2xl shadow-lg hover:scale-105 transition-transform duration-500 "
+            />
+             {/* <ImageCard
+                          buttonText={slide.buttonText}
+                          showAddToCart={slide.showAddToCart}
+                          src={slide.src}
+                          price={slide.price}
+                          discount={slide.discount}
+                          title={slide.title}
+                          subTitle={slide.subTitle}
+                          rounded={rounded}
+                          ripple={ripple}
+                          rippleColor={rippleColor}
+                          rippleOpacity={rippleOpacity}
+                          href={slide.href}
+                          colorCode={slide.colorCode}
+                          colorName={slide.colorName}
+                          tags={slide.tags}
+                          changeColorOnHover={changeColorOnHover}
+                        /> */}
+          </div>
         </div>
       </section>
     </div>

@@ -1,18 +1,19 @@
 import React, { useRef } from "react";
 import PrimaryHeading from "./PrimaryHeading";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-import NewIn from "./ourProductsPages/NewIn";
-import Popular from "./ourProductsPages/Popular";
-import SpeacialOffers from "./ourProductsPages/SpeacialOffers";
-
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import OurProductsTabContent from "./OurProductsTabContent";
+import {
+  newInQuery,
+  popularQuery,
+  specialOffersQuery,
+} from "@/lib/GroqQueries";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export type LatestProductsType = {
+export type OurProductsType = {
   id: number;
   title: string;
   subTitle: string;
@@ -60,7 +61,7 @@ const OurProducts = () => {
   //       end: "bottom 80%",
   //       pin: tabsRef.current,
   //       pinSpacing: false,
-        
+
   //     });
 
   //     // ✅ Clean up when component unmounts OR effect re-runs
@@ -69,46 +70,46 @@ const OurProducts = () => {
   //     };
   //   }
   // }, []);
-useGSAP(() => {
-  if (!sectionRef.current || !tabsRef.current) return;
+  useGSAP(() => {
+    if (!sectionRef.current || !tabsRef.current) return;
 
-  const mm = gsap.matchMedia();
-  const HEADER_OFFSET = 28;
+    const mm = gsap.matchMedia();
+    const HEADER_OFFSET = 32;
 
-  // Desktop: ≥768px
-  mm.add("(min-width: 768px)", () => {
-    const st = ScrollTrigger.create({
-      trigger: sectionRef.current!,
-      start: "top top", // top-0
-      end: "bottom 60%",
-      pin: tabsRef.current!,
-      pinSpacing: false,
+    // Desktop: ≥768px
+    mm.add("(min-width: 768px)", () => {
+      const st = ScrollTrigger.create({
+        trigger: sectionRef.current!,
+        start: "top top", // top-0
+        end: "bottom 60%",
+        pin: tabsRef.current!,
+        pinSpacing: false,
+      });
+
+      return () => st.kill();
     });
 
-    return () => st.kill();
-  });
+    // Mobile: <768px
+    mm.add("(max-width: 767px)", () => {
+      gsap.set(tabsRef.current!, { y: HEADER_OFFSET });
 
-  // Mobile: <768px
-  mm.add("(max-width: 767px)", () => {
-    gsap.set(tabsRef.current!, { y: HEADER_OFFSET });
+      const st = ScrollTrigger.create({
+        trigger: sectionRef.current!,
+        start: `top top+=${HEADER_OFFSET}`, // top-16
+        end: "bottom 60%",
+        pin: tabsRef.current!,
+        pinSpacing: false,
+        onKill: () => gsap.set(tabsRef.current!, { y: 0 }),
+      });
 
-    const st = ScrollTrigger.create({
-      trigger: sectionRef.current!,
-      start: `top top+=${HEADER_OFFSET}`, // top-16
-      end: "bottom 60%",
-      pin: tabsRef.current!,
-      pinSpacing: false,
-      onKill: () => gsap.set(tabsRef.current!, { y: 0 }),
+      return () => {
+        st.kill();
+        gsap.set(tabsRef.current!, { y: 0 });
+      };
     });
 
-    return () => {
-      st.kill();
-      gsap.set(tabsRef.current!, { y: 0 });
-    };
-  });
-
-  return () => mm.revert();
-}, []);
+    return () => mm.revert();
+  }, []);
 
   return (
     <div
@@ -134,9 +135,26 @@ useGSAP(() => {
         </div>
 
         {/* Tab Contents */}
-        <NewIn />
+        {/* <NewIn />
         <Popular />
-        <SpeacialOffers />
+        <SpeacialOffers /> */}
+
+        {/* Tab Contents */}
+        <OurProductsTabContent
+          value="new"
+          subtitle="Fresh arrivals just in for you."
+          query={newInQuery}
+        />
+        <OurProductsTabContent
+          value="popular"
+          subtitle="Popular products just for you."
+          query={popularQuery}
+        />
+        <OurProductsTabContent
+          value="sale"
+          subtitle="Special offers just for you."
+          query={specialOffersQuery}
+        />
       </Tabs>
     </div>
   );

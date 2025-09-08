@@ -337,6 +337,7 @@ const run = async () => {
       break;
     case "color":
       await importColors();
+      break;
     case "product":
       await importProducts();
       break;

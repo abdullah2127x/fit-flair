@@ -6,8 +6,7 @@ import RippleEffect from "./RippleEffect";
 import { Button } from "../ui/button";
 import { IoMdCart } from "react-icons/io";
 
-type ImageCardProps = {
-  id: string;
+export type ImageCardProps = {
   src: string; //image path
   title: string;
   href?: string;
@@ -24,10 +23,11 @@ type ImageCardProps = {
   buttonText?: string; // 👈 customizable button text
   showAddToCart?: boolean; // 👈 new prop to control button visibility
   tags?: string[]; // 👈 new prop for the tag name
+
+  changeColorOnHover?: boolean; // 👈 new prop for color change on hover
 };
 
 const ImageCard: React.FC<ImageCardProps> = ({
-  id,
   src,
   title,
   price,
@@ -43,13 +43,17 @@ const ImageCard: React.FC<ImageCardProps> = ({
   tags,
   colorCode,
   colorName,
+  changeColorOnHover = false,
 }) => {
   return (
-    <div className="flex group flex-col items-center gap-1.5">
+    <div
+      className={`flex group ${changeColorOnHover ? "md:hover:bg-secondary" : ""}  rounded-lg  flex-col items-center h-full relative `}
+    >
+      {/* image */}
       <div
-        className={`relative w-full aspect-square bg-gray-300 group ${
-          rounded === "circle" ? "rounded-full" : "rounded-lg"
-        } overflow-hidden flex items-center justify-center`}
+        className={`relative w-full aspect-square bg-secondary ${
+          rounded === "circle" ? "rounded-full" : "rounded-lg "
+        } overflow-hidden flex items-center justify-center group-hover:rounded-b-none`}
       >
         {/* just view in mobile devices */}
         <Link href={"/ad"} className="md:hidden">
@@ -59,24 +63,21 @@ const ImageCard: React.FC<ImageCardProps> = ({
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority={true}
-            className="object-cover object-top"
+            className="object-cover object-top "
           />
         </Link>
-        {/* Image */}
+        {/* Desktop image */}
         <Image
           src={src}
           alt={title || "slide"}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           priority={true}
-          className="object-cover object-top md:block  hidden"
+          className="object-cover object-top md:block hidden transition-transform duration-500 group-hover:scale-110 "
         />
 
         {/* Hidden overlay with buttons */}
-        <div
-          className=" hidden md:flex absolute inset-0  bg-black/30 opacity-0 group-hover:opacity-100 
-                        items-end justify-center transition-opacity duration-300"
-        >
+        <div className=" hidden md:flex absolute inset-0  bg-black/30 opacity-0 group-hover:opacity-100 items-end justify-center transition-opacity duration-300">
           {ripple && (
             <RippleEffect
               rippleColor={rippleColor}
@@ -88,8 +89,8 @@ const ImageCard: React.FC<ImageCardProps> = ({
           {showAddToCart && (
             <Button
               className="absolute left-[10%] top-[20%] size-8
-          bg-white text-black shadow hover:bg-white/90
-          "
+            bg-white text-black shadow hover:bg-white/90
+            "
               size="icon"
             >
               <IoMdCart />
@@ -97,8 +98,8 @@ const ImageCard: React.FC<ImageCardProps> = ({
           )}
           <Button
             className="absolute bottom-[10%]
-            bg-white text-black shadow hover:bg-white/90
-            "
+              bg-white text-black shadow hover:bg-white/90
+              "
             asChild
           >
             <Link href={href ? href : ""}>{buttonText}</Link>
@@ -106,6 +107,7 @@ const ImageCard: React.FC<ImageCardProps> = ({
         </div>
       </div>
 
+      {/* add to cart button in mobile devices */}
       {showAddToCart && (
         <Button className="md:hidden flex gap-2 w-full justify-center items-center mx-3 text-sm ">
           <IoMdCart />
@@ -113,7 +115,8 @@ const ImageCard: React.FC<ImageCardProps> = ({
         </Button>
       )}
 
-      <div className="flex flex-col gap-">
+      {/* Text content */}
+      <div className="flex flex-1 flex-col gap-2 justify-between py-3 w-full">
         {/* Title & Subtitle */}
         {title && (
           <h3 className="text-center px-3 text-lg font-semibold ">{title}</h3>
@@ -123,39 +126,49 @@ const ImageCard: React.FC<ImageCardProps> = ({
             {subTitle}
           </p>
         )}
-        <div className="flex items-center justify-between px-3">
-          {price && (
-            <p className="text-center text-base  justify-self-start px-3 font-medium">
-              ${price}
-            </p>
-          )}
-          {colorCode && colorName && (
-            <div className="flex items-center gap-1 text-sm">
-              {/* Circle */}
-              <span
-                className="w-3 h-3 rounded-full border border-gray-300"
-                style={{
-                  backgroundColor: /^#([0-9A-F]{3}){1,2}$/i.test(colorCode)
-                    ? colorCode // ✅ use hex if valid
-                    : colorName, // ❌ fallback to CSS color name
-                }}
-              ></span>
 
-              {/* Text */}
-              <p className="font-medium text-center">
-                {/^#([0-9A-F]{3}){1,2}$/i.test(colorCode)
-                  ? colorCode
-                  : colorName}
+        {/*  price and color */}
+        <div className="flex items-center  justify-between px-2">
+          {/* price and discount */}
+          {price && (
+            <div className="flex gap-1 items-center">
+              <p className="text-center text-base font-semibold">
+                $
+                {(discount > 0
+                  ? price - (price * discount) / 100
+                  : price
+                ).toFixed(2)}
               </p>
+
+              {discount > 0 && (
+                <span className="text-xs line-through text-muted-foreground">
+                  ${price.toFixed(2)}
+                </span>
+              )}
             </div>
           )}
 
-          {/* {tagName && (
-            <p className="text-center text-base font-medium">
-              {tagName}
-            </p>
-          )} */}
+          {/* color name */}
+          {colorName && colorCode && (
+            <div className="flex items-center text-sm gap-1">
+              <span className="font-medium">Color: </span>
+              <p className="font-semibold text-center">{colorName}</p>
+            </div>
+          )}
         </div>
+        {/* tags */}
+        {tags && tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 px-3">
+            {tags.map((tag, index) => (
+              <span
+                key={index}
+                className="bg-secondary group-hover:bg-primary-foreground text-secondary-foreground text-xs font-medium px-2 py-0.5 rounded"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

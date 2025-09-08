@@ -131,17 +131,17 @@ type Fabric = (typeof fabrics)[number];
 type Slide = {
   src: string;
   title: Fabric;
-
+  subTitle?: Category;
   href?: string;
-  linkEnabled: boolean;
+  id: string | number;
 };
 
 // generate product array
-const products: Slide[] = fabrics.map((fabric) => ({
+const products: Slide[] = fabrics.map((fabric, index) => ({
   src: `/images/fabrics/${fabric}.webp`,
   title: fabric,
   href: `/collections/${fabric.toLowerCase()}`,
-  linkEnabled: true,
+  id: index + 1,
 }));
 
 const Fabrics = () => {

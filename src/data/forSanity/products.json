@@ -310,7 +310,7 @@
     "isNewArrival": true,
     "variants": [
       {
-        "color": "Navy",
+        "color": "Navy Blue",
         "featuredImage": "/images/men/polo.jpg",
         "additionalImages": ["/images/men/jeans.jpg", "/images/men/trouser.jpg", "/images/men/t-shirt.jpg"],
         "stock": 35
@@ -366,7 +366,7 @@
     "isNewArrival": false,
     "variants": [
       {
-        "color": "Charcoal",
+        "color": "Brown",
         "featuredImage": "/images/men/formal-suit.jpg",
         "additionalImages": ["/images/men/trouser.jpg", "/images/men/jeans.jpg", "/images/men/formal-shirt.jpg"],
         "stock": 20

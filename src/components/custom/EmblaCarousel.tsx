@@ -318,7 +318,7 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
         >
           {slides.map((slide, index) => (
             <div
-              key={index}
+              key={slide.id}
               className="px-2"
               style={{
                 flex: `0 0 calc(${100 / slidesToShow}% - 1rem)`,
@@ -326,7 +326,6 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
               }}
             >
               <ImageCard
-                id={slide.title}
                 src={slide.src}
                 title={slide.title}
                 href={slide.href}
