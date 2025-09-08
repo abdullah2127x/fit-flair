@@ -20,6 +20,7 @@ const ProductTabContent: React.FC<ProductTabContentProps> = ({
 }) => {
   const [products, setProducts] = useState<OurProductsType[]>([]);
 
+  console.log("the our products tab content component re-rendered");
   useEffect(() => {
     const fetchData = async () => {
       try {
