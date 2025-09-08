@@ -21,10 +21,12 @@ const ProductTabContent: React.FC<ProductTabContentProps> = ({
   const [products, setProducts] = useState<OurProductsType[]>([]);
 
   useEffect(() => {
-  console.log(`[${value}] useEffect started → query:`, query);
-
   const fetchData = async () => {
     try {
+      console.log("sanity dataset: ", process.env.NEXT_PUBLIC_SANITY_DATASET);
+      console.log("project is: ", process.env.NEXT_PUBLIC_SANITY_PROJECT_ID);
+      console.log("sanity api token: ", process.env.SANITY_API_TOKEN);
+      console.log("api base url: ", process.env.NEXT_PUBLIC_API_BASE_URL);
       console.log(`[${value}] Fetching products...`);
 
       const data = await client.fetch(query);
