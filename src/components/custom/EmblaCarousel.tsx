@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import ImageCard from "./ImageCard";
 
 type SlideType = {
-  id: string;
+  id: string | number;
   src: string;
   title: string;
   subTitle?: string;
@@ -150,42 +150,42 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
   }, [emblaApi, onSelect, checkCanScroll]);
 
   // Center scale effect
-  useEffect(() => {
-    if (!emblaApi || !centerScale) return;
+  // useEffect(() => {
+  //   if (!emblaApi || !centerScale) return;
 
-    const slides = emblaApi.slideNodes();
+  //   const slides = emblaApi.slideNodes();
 
-    const applyScale = () => {
-      const viewport = emblaApi.rootNode();
-      const viewportWidth = viewport.offsetWidth;
-      const viewportCenter = viewportWidth / 2;
+  //   const applyScale = () => {
+  //     const viewport = emblaApi.rootNode();
+  //     const viewportWidth = viewport.offsetWidth;
+  //     const viewportCenter = viewportWidth / 2;
 
-      slides.forEach((slide) => {
-        const rect = slide.getBoundingClientRect();
-        const slideCenter = rect.left + rect.width / 2;
-        const distance = Math.abs(viewportCenter - slideCenter);
+  //     slides.forEach((slide) => {
+  //       const rect = slide.getBoundingClientRect();
+  //       const slideCenter = rect.left + rect.width / 2;
+  //       const distance = Math.abs(viewportCenter - slideCenter);
 
-        // Normalize distance (0 = center, 1 = far away)
-        const maxDistance = viewportWidth / 2;
-        const normalized = Math.min(distance / maxDistance, 1);
+  //       // Normalize distance (0 = center, 1 = far away)
+  //       const maxDistance = viewportWidth / 2;
+  //       const normalized = Math.min(distance / maxDistance, 1);
 
-        // Scale calculation
-        const scale = 1 - normalized * 0.3; // 👈 adjust 0.3 for intensity
-        slide.style.transform = `scale(${scale})`;
-        slide.style.transition = "transform 0.3s ease-out";
-      });
-    };
+  //       // Scale calculation
+  //       const scale = 1 - normalized * 0.3; // 👈 adjust 0.3 for intensity
+  //       slide.style.transform = `scale(${scale})`;
+  //       slide.style.transition = "transform 0.3s ease-out";
+  //     });
+  //   };
 
-    emblaApi.on("scroll", applyScale);
-    emblaApi.on("reInit", applyScale);
+  //   emblaApi.on("scroll", applyScale);
+  //   emblaApi.on("reInit", applyScale);
 
-    applyScale(); // initial
+  //   applyScale(); // initial
 
-    return () => {
-      emblaApi.off("scroll", applyScale);
-      emblaApi.off("reInit", applyScale);
-    };
-  }, [emblaApi, centerScale]);
+  //   return () => {
+  //     emblaApi.off("scroll", applyScale);
+  //     emblaApi.off("reInit", applyScale);
+  //   };
+  // }, [emblaApi, centerScale]);
 
   // step autoplay (slide by slide with loop)
   useEffect(() => {

@@ -86,10 +86,10 @@
 //    discount
 
 // }
-"use client";
 
-import ContinuousCarousel from "@/components/custom/ContinuousCarousel";
+"use client";
 import SecondaryHeading from "./SecondaryHeading";
+import EmblaCarousel from "./EmblaCarousel";
 
 const slides = [
   "/carouselImages/image1.jpg",
@@ -129,11 +129,10 @@ type Category = "Ready to Wear" | "Un Stitched";
 type Fabric = (typeof fabrics)[number];
 
 type Slide = {
+  id: string | number;
   src: string;
   title: Fabric;
-  subTitle?: Category;
   href?: string;
-  id: string | number;
 };
 
 // generate product array
@@ -151,16 +150,19 @@ const Fabrics = () => {
         FABRICS
       </SecondaryHeading>
 
-      <ContinuousCarousel
+      <EmblaCarousel
         slides={products}
-        slidesToShow={5}
+        slidesToShow={3}
+        stepAutoPlay
+        showNavigation
         autoPlaySpeed={2}
         stopOnHover
-        ripple
-        rippleColor="gold"
+        rounded="square"
         emblaOptions={{ loop: true, align: "start" }}
-        className="my-8"
         centerIfFew
+        showPagination
+        mouseWheelDirection="horizontal"
+        freeScroll={false}
       />
     </div>
   );

@@ -1,14 +1,12 @@
 "use client";
 import Hero from "@/components/custom/Hero";
-import Fabrics from "@/components/custom/Fabrics";
-import Categories from "@/components/custom/Categories";
-import Brands from "@/components/custom/Brands";
 import MenCollection from "@/components/custom/MenCollection";
 import WomenCollection from "@/components/custom/WomensCollection";
 import WhyChooseUs from "@/components/custom/WhyChooseUs";
 import CTA from "@/components/custom/CTA";
 import OurProducts from "@/components/custom/OurProducts";
 import WinterStyles from "@/components/custom/WinterStyles";
+import Fabrics from "@/components/custom/Fabrics";
 export default function Home() {
   return (
     <div className=" flex flex-col overflow-hidden ">
@@ -23,17 +21,17 @@ export default function Home() {
       <div className="container  mx-auto flex flex-col gap-10 my-10">
         <WomenCollection />
       </div>
+
+      {/* winter styles banner like */}
       <div className="bg-secondary w-full ">
         <div className="container mx-auto flex flex-col my-10 ">
           <WinterStyles />
         </div>
       </div>
 
+      {/* our products */}
       <div className="container  mx-auto flex flex-col gap-10 my-10">
         <OurProducts />
-        {/* <Fabrics /> */}
-        {/* <Categories />
-        <Brands /> */}
       </div>
 
       {/* why choose us  */}
@@ -41,6 +39,11 @@ export default function Home() {
         <div className="container mx-auto flex flex-col justify-center items-center my-10 ">
           <WhyChooseUs />
         </div>
+      </div>
+
+      {/* fabrics */}
+      <div className="container  mx-auto flex flex-col gap-10 my-10">
+        <Fabrics />
       </div>
       {/* CTA */}
       <div className=" bg-primary text-primary-foreground">
