@@ -240,7 +240,7 @@ function MobileSearch({
   return (
     <div
       ref={searchRef}
-      className="md:hidden sticky top-16 z-[998] border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-2"
+      className="md:hidden sticky top-16 z-30 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-2"
     >
       <div className="relative bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70 rounded-md">
         <Search className="absolute left-3  top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -301,7 +301,7 @@ export default function Header() {
   return (
     <>
       {/* ✅ Header */}
-      <header className="sticky top-0 z-[999] w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <Logo />
           <DesktopNav />

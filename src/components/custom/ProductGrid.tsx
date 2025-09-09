@@ -1,6 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import ImageCard from "./ImageCard";
+import QuickViewDialog from "@/components/custom/QuickViewDialog";
 
 type SlideType = {
   id: number | string;
@@ -38,10 +39,18 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   className = "",
   changeColorOnHover,
 }) => {
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null
+  );
 
+  const handleQuickView = (id: string) => {
+    setSelectedProductId(id);
+    setIsQuickViewOpen(true);
+  };
   return (
     <div className={`w-full ${className}`}>
-      <div className="flex flex-wrap justify-center gap-4">
+      <div className="flex flex-wrap justify-center gap-y-10 gap-4">
         {slides.map((slide, index) => (
           <div
             key={slide.id}
@@ -58,10 +67,11 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
             className={`
               flex-[0_0_calc(100%_-_1rem)] sm:flex-[0_0_calc(50%_-_1rem)] md:flex-[0_0_calc(33.333%_-_1rem)] lg:flex-[0_0_calc(25%_-_1rem)]
-              min-w-[150px]
+              min-w-[150px] bg-secondary/30 rounded-lg
             `}
           >
             <ImageCard
+              id={slide.id.toString()}
               buttonText={slide.buttonText}
               showAddToCart={slide.showAddToCart}
               src={slide.src}
@@ -78,10 +88,21 @@ const ProductGrid: React.FC<ProductGridProps> = ({
               colorName={slide.colorName}
               tags={slide.tags}
               changeColorOnHover={changeColorOnHover}
+              showQuickView={true} // 👈 enable quick view button
+              onQuickView={handleQuickView} // 👈 pass down
             />
           </div>
         ))}
       </div>
+
+      {/* Only one QuickViewDialog shared for all products */}
+      {selectedProductId && (
+        <QuickViewDialog
+          isOpen={isQuickViewOpen}
+          onOpenChange={setIsQuickViewOpen}
+          productId={selectedProductId}
+        />
+      )}
     </div>
   );
 };

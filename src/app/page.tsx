@@ -11,15 +11,10 @@ export default function Home() {
   return (
     <div className=" flex flex-col overflow-hidden ">
       <Hero />
-      {/* men */}
-      <div className="bg-secondary/30 w-full ">
-        <div className="container mx-auto flex flex-col my-10 ">
-          <MenCollection />
-        </div>
-      </div>
-      {/* women */}
-      <div className="container  mx-auto flex flex-col gap-10 my-10">
-        <WomenCollection />
+
+      {/* fabrics */}
+      <div className="container mx-auto my-10 flex relative ">
+        <Fabrics />
       </div>
 
       {/* winter styles banner like */}
@@ -29,9 +24,16 @@ export default function Home() {
         </div>
       </div>
 
-      {/* our products */}
+      {/* men */}
+      <div className="bg-secondary/30 w-full ">
+        <div className="container mx-auto flex flex-col my-10 ">
+          <MenCollection />
+        </div>
+      </div>
+
+      {/* women */}
       <div className="container  mx-auto flex flex-col gap-10 my-10">
-        <OurProducts />
+        <WomenCollection />
       </div>
 
       {/* why choose us  */}
@@ -41,10 +43,11 @@ export default function Home() {
         </div>
       </div>
 
-      {/* fabrics */}
+      {/* our products */}
       <div className="container  mx-auto flex flex-col gap-10 my-10">
-        <Fabrics />
+        <OurProducts />
       </div>
+
       {/* CTA */}
       <div className=" bg-primary text-primary-foreground">
         <div className="container mx-auto   my-16 ">

@@ -80,8 +80,8 @@ const MenCollection = () => {
         autoPlaySpeed={2}
         stopOnHover 
         rounded="circle"
-        ripple
-        rippleColor="gold"
+        // ripple
+        // rippleColor="gold"
         emblaOptions={{ loop: true, align: "start" }}
         className="my-8"
         centerIfFew

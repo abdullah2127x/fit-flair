@@ -183,6 +183,7 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
               }}
             >
               <ImageCard
+                id={slide.id.toString()}
                 src={slide?.src}
                 title={slide?.title}
                 subTitle={slide?.subTitle}

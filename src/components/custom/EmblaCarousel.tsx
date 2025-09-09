@@ -326,6 +326,7 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
               }}
             >
               <ImageCard
+                id={slide.id.toString()}
                 src={slide.src}
                 title={slide.title}
                 href={slide.href}
