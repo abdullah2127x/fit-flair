@@ -4,17 +4,11 @@ import useEmblaCarousel from "embla-carousel-react";
 import { EmblaOptionsType } from "embla-carousel";
 import AutoScroll from "embla-carousel-auto-scroll";
 import ImageCard from "./ImageCard";
+import { ProductCollectionSchema } from "@/schemas/product";
 
-type SlideType = {
-  src: string;
-  title: string;
-  subTitle?: string;
-  href?: string;
-  id: number | string;
-};
 
 type ContinuousCarouselProps = {
-  slides: SlideType[];
+  slides: ProductCollectionSchema[];
   showAddToCart?: boolean;
   buttonText?: string;
   slidesToShow?: number;
@@ -184,14 +178,13 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
             >
               <ImageCard
                 id={slide.id.toString()}
+                slug={slide.slug}
                 src={slide?.src}
                 title={slide?.title}
-                subTitle={slide?.subTitle}
                 rounded={rounded}
                 ripple={ripple}
                 rippleColor={rippleColor}
                 rippleOpacity={rippleOpacity}
-                href={slide.href}
                 showAddToCart={showAddToCart}
                 buttonText={buttonText}
               />

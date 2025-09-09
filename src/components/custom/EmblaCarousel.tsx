@@ -5,17 +5,12 @@ import { EmblaOptionsType } from "embla-carousel";
 import AutoScroll from "embla-carousel-auto-scroll";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ImageCard from "./ImageCard";
+import { ProductCollectionSchema } from "@/schemas/product";
 
-type SlideType = {
-  id: string | number;
-  src: string;
-  title: string;
-  subTitle?: string;
-  href?: string; // 👈 optional URL
-};
+
 
 type CarouselProps = {
-  slides: SlideType[];
+  slides: ProductCollectionSchema[];
 
   slidesToShow?: number;
 
@@ -58,17 +53,18 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
   slides,
   slidesToShow = 6,
 
-  autoPlay = false, // continuous smooth scroll
-  autoPlaySpeed = 2,
-
-  stepAutoPlay = false,
-  stepAutoPlayDelay = 3,
-
   rounded = "circle",
 
   ripple = false,
   rippleColor = "white",
   rippleOpacity = 0.3,
+
+  ///////////////////////
+  autoPlay = false, // continuous smooth scroll
+  autoPlaySpeed = 2,
+
+  stepAutoPlay = false,
+  stepAutoPlayDelay = 3,
 
   emblaOptions = { loop: true },
   className = "",
@@ -327,10 +323,9 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
             >
               <ImageCard
                 id={slide.id.toString()}
+                slug={slide.slug ? slide.slug : "#"}
                 src={slide.src}
                 title={slide.title}
-                href={slide.href}
-                subTitle={slide.subTitle}
                 rounded={rounded}
                 ripple={ripple}
                 rippleColor={rippleColor}

@@ -4,8 +4,9 @@ import React, { useEffect, useState } from "react";
 import ProductGrid from "@/components/custom/ProductGrid";
 import SubTitle from "@/components/custom/SubTitle";
 import { TabsContent } from "@/components/ui/tabs";
-import { OurProductsType } from "@/components/custom/OurProducts";
+
 import { client } from "@/sanity/lib/client";
+import { ProductShowcaseSchema } from "@/schemas/product";
 
 type ProductTabContentProps = {
   value: string; // tab value
@@ -18,35 +19,38 @@ const ProductTabContent: React.FC<ProductTabContentProps> = ({
   subtitle,
   query,
 }) => {
-  const [products, setProducts] = useState<OurProductsType[]>([]);
+  const [products, setProducts] = useState<ProductShowcaseSchema[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await client.fetch(query);
 
-        const formatted = data.map((item: any) => {
+        const formatted = data.map((item: any): ProductShowcaseSchema => {
           const customTags = [
             item.audience || "",
             item.fabric || "",
             ...(item.season || []),
+            ...(item.designs || []),
+            ...(item.occasions || []),
             item.outFitType || "",
             item.category || "",
             item.subCategory || "",
           ].filter(Boolean);
 
+          const randomVariant = item.variants?.length
+            ? item.variants[Math.floor(Math.random() * item.variants.length)]
+            : null;
+
           return {
             id: item.id,
+            slug: item.slug,
             title: item.title,
             subTitle: item.subTitle,
             price: item.price,
-            src: item.variants?.[0]?.featuredImage || "/fallback.jpg",
-            colorCode: item.variants?.[0]?.colorCode || "",
-            colorName: item.variants?.[0]?.colorName || "",
+            src: randomVariant?.featuredImage || "/fallback.jpg",
+            colorName: randomVariant?.colorName || "",
             tags: customTags,
-            href: `/products/${item.slug}`,
-            showAddToCart: true,
-            buttonText: "View Detail",
             discount: item.discount || 0,
           };
         });
@@ -63,7 +67,7 @@ const ProductTabContent: React.FC<ProductTabContentProps> = ({
   return (
     <TabsContent value={value} className="flex flex-col gap-y-6 items-center">
       <SubTitle>{subtitle}</SubTitle>
-      <ProductGrid rounded="square" slides={products} changeColorOnHover />
+      <ProductGrid products={products} />
     </TabsContent>
   );
 };

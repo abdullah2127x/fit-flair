@@ -3,67 +3,62 @@
 import ContinuousCarousel from "@/components/custom/ContinuousCarousel";
 import PrimaryHeading from "./PrimaryHeading";
 import SubTitle from "@/components/custom/SubTitle";
+import { ProductCollectionSchema } from "@/schemas/product";
 
-type CollectionType = {
-  src: string;
-  title: string;
-  href?: string;
-};
-
-const menCollection: (CollectionType & { id: number })[] = [
+const menCollection: ProductCollectionSchema[] = [
   {
-    id: 1,
+    id: "1",
     src: "/images/men/polo.jpg",
     title: "Polo Shirts",
-    href: "/collections/men/polo",
+    slug: "/collections/men/polo",
   },
   {
-    id: 2,
+    id: "2",
     src: "/images/men/t-shirt.jpg",
     title: "T-Shirts",
-    href: "/collections/men/t-shirt",
+    slug: "/collections/men/t-shirt",
   },
   {
-    id: 3,
+    id: "3",
     src: "/images/men/formal-shirt.jpg",
     title: "Formal Shirts",
-    href: "/collections/men/formal-shirt",
+    slug: "/collections/men/formal-shirt",
   },
   {
-    id: 4,
+    id: "4",
     src: "/images/men/kurta.jpg",
     title: "Kurta",
-    href: "/collections/men/kurta",
+    slug: "/collections/men/kurta",
   },
   {
-    id: 5,
+    id: "5",
     src: "/images/men/jeans.jpg",
     title: "Jeans",
-    href: "/collections/men/jeans",
+    slug: "/collections/men/jeans",
   },
   {
-    id: 6,
+    id: "6",
     src: "/images/men/trouser.jpg",
     title: "Trousers",
-    href: "/collections/men/trouser",
+    slug: "/collections/men/trouser",
   },
   {
-    id: 7,
+    id: "7",
     src: "/images/men/formal-suit.jpg",
     title: "Formal Suit",
-    href: "/collections/men/formal-suit",
+    slug: "/collections/men/formal-suit",
   },
   {
-    id: 8,
+    id: "8",
     src: "/images/men/tracksuit.jpg",
     title: "Tracksuit",
-    href: "/collections/men/tracksuit",
+    slug: "/collections/men/tracksuit",
   },
   {
-    id: 9,
+    id: "9",
     src: "/images/men/sherwani.jpg",
     title: "Sherwani",
-    href: "/collections/men/sherwani",
+    slug: "/collections/men/sherwani",
   },
 ];
 

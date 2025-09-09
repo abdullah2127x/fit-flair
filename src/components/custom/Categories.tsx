@@ -4,6 +4,7 @@ import ContinuousCarousel from "@/components/custom/ContinuousCarousel";
 import SecondaryHeading from "./SecondaryHeading";
 import EmblaCarousel from "./EmblaCarousel";
 import ProductGrid from "./ProductGrid";
+import { ProductCollectionSchema } from "@/schemas/product";
 
 const images = [
   "Chambray",
@@ -62,21 +63,21 @@ const categories = [
 // type Category = "Ready to Wear" | "Un Stitched";
 type Category = (typeof categories)[number];
 
-type Slide = {
-  id:string
-  src: string;
-  title: Category;
-  //   subTitle: Fabric;
-  href?: string;
-  linkEnabled: boolean;
-};
+// type Slide = {
+//   id:string
+//   src: string;
+//   title: Category;
+//   //   subTitle: Fabric;
+//   href?: string;
+//   linkEnabled: boolean;
+// };
 
 // generate product array
-const products: Slide[] = categories.map((category) => ({
+const products: ProductCollectionSchema[] = categories.map((category) => ({
   id: `category-${category}`,
   src: `/images/categories/${category}.webp`,
   title: category,
-  href: `/collections/${category.toLowerCase()}`,
+  slug: `/collections/${category.toLowerCase()}`,
   linkEnabled: true,
 }));
 

@@ -14,7 +14,7 @@ const CTA = () => {
         clothing
       </p>
       <Button size="lg" variant="secondary" className="text-lg px-8" asChild>
-        <Link href="/products">
+        <Link href="/shop">
           Start Shopping <ArrowRight className="ml-2 h-5 w-5" />
         </Link>
       </Button>

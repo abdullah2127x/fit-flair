@@ -22,12 +22,12 @@ export default function WinterStyles() {
 
       <section className="flex w-full flex-col-reverse md:flex-row  justify-between gap-10  md:px-6  md:py-8 ">
         {/* Left Content */}
-        <div className="max-w-xl text-center md:text-left flex flex-col md:py-12 items-start">
+        <div className=" text-center md:text-left flex flex-col md:py-12 items-start">
           <PrimaryHeading>20% Off Winter Styles</PrimaryHeading>
           <h3 className="text-secondary-foreground text-xl font-semibold mb-4">
             Exclusive Collection
           </h3>
-          <p className="text-secondary-foreground mb-6">
+          <p className="text-secondary-foreground max-w-2xl mb-6">
             Discover cozy and stylish outfits for this winter season. Limited
             time offer on our hottest picks.
           </p>
@@ -55,9 +55,9 @@ export default function WinterStyles() {
               alt="Winter Outfit"
               width={400} // set your preferred width
               height={400} // set your preferred height
-              className="w-full max-w-sm rounded-2xl shadow-lg hover:scale-105 transition-transform duration-500 "
+              className="w-full max-w-sm rounded-2xl shadow-lg hover:scale-125 transition-transform duration-500 "
             />
-             {/* <ImageCard
+            {/* <ImageCard
                           buttonText={slide.buttonText}
                           showAddToCart={slide.showAddToCart}
                           src={slide.src}

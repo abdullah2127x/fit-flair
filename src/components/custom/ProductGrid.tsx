@@ -2,66 +2,69 @@
 import React, { useState } from "react";
 import ImageCard from "./ImageCard";
 import QuickViewDialog from "@/components/custom/QuickViewDialog";
+import { ProductShowcaseSchema } from "@/schemas/product";
 
-type SlideType = {
-  id: number | string;
-  src: string;
-  title: string;
-  subTitle?: string;
-  discount?: number;
-  price?: number;
-  href?: string;
-  showAddToCart?: boolean;
-  buttonText?: string;
-  colorCode?: string;
-  colorName?: string;
-  tags?: string[];
-};
+// type SlideType = {
+//   id: number | string;
+//   src: string;
+//   title: string;
+//   subTitle?: string;
+//   discount?: number;
+//   price?: number;
+//   href?: string;
+//   showAddToCart?: boolean;
+
+//   colorName?: string;
+//   tags?: string[];
+// };
 
 type ProductGridProps = {
-  slides: SlideType[];
-  slidesToShow?: number; // ✅ how many products per row
-  rounded?: "circle" | "square";
+  products: ProductShowcaseSchema[];
+  productsToShow?: number; // ✅ how many products per row
   ripple?: boolean;
   rippleColor?: string;
   rippleOpacity?: number;
   className?: string;
-  changeColorOnHover?: boolean; // 👈 new prop for color change on hover
 };
 
 const ProductGrid: React.FC<ProductGridProps> = ({
-  slides,
-  slidesToShow = 4, // default 4 per row
-  rounded = "circle",
+  products,
+  productsToShow = 4, // default 4 per row
+
   ripple = false,
   rippleColor = "white",
   rippleOpacity = 0.3,
   className = "",
-  changeColorOnHover,
 }) => {
+  // To manage Quick View dialog state for specific product by id
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(
     null
   );
+  const [selectedColorName, setSelectedColorName] = useState<string | null>(
+    null
+  );
 
-  const handleQuickView = (id: string) => {
+  const handleQuickView = (id: string, colorName: string) => {
+    setSelectedColorName(colorName);
     setSelectedProductId(id);
     setIsQuickViewOpen(true);
   };
+
   return (
     <div className={`w-full ${className}`}>
       <div className="flex flex-wrap justify-center gap-y-10 gap-4">
-        {slides.map((slide, index) => (
+        {products.map((product, index) => (
           <div
-            key={slide.id}
+            key={product.id}
             // style={{
-            //   flex: `0 0 calc(${100 / slidesToShow}% - 1rem)`, // 👈 controls width per row
+            //   flex: `0 0 calc(${100 / productsToShow}% - 1rem)`, // 👈 controls width per row
             //   minWidth: "150px", // 👈 prevents items from shrinking too small
             // }}
 
             // className="w-full md:w-auto"
             // style={{
-            //   flex: `0 0 calc(${100 / slidesToShow}% - 1rem)`,
+            //   flex: `0 0 calc(${100 / productsToShow}% - 1rem)`,
             //   minWidth: "150px",
             // }}
 
@@ -71,23 +74,23 @@ const ProductGrid: React.FC<ProductGridProps> = ({
             `}
           >
             <ImageCard
-              id={slide.id.toString()}
-              buttonText={slide.buttonText}
-              showAddToCart={slide.showAddToCart}
-              src={slide.src}
-              price={slide.price}
-              discount={slide.discount}
-              title={slide.title}
-              subTitle={slide.subTitle}
-              rounded={rounded}
+              id={product.id.toString()}
+              slug={product.slug}
+              title={product.title}
+              subTitle={product.subTitle}
+              src={product.src}
+              price={product.price}
+              discount={product.discount}
+              colorName={product.colorName}
+              tags={product.tags}
               ripple={ripple}
               rippleColor={rippleColor}
               rippleOpacity={rippleOpacity}
-              href={slide.href}
-              colorCode={slide.colorCode}
-              colorName={slide.colorName}
-              tags={slide.tags}
-              changeColorOnHover={changeColorOnHover}
+              rounded="square"
+              aspectRatio="square"
+              buttonText="View Detail"
+              showAddToCart={true}
+              changeColorOnHover={true}
               showQuickView={true} // 👈 enable quick view button
               onQuickView={handleQuickView} // 👈 pass down
             />
@@ -96,11 +99,12 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       </div>
 
       {/* Only one QuickViewDialog shared for all products */}
-      {selectedProductId && (
+      {selectedProductId && selectedColorName && (
         <QuickViewDialog
           isOpen={isQuickViewOpen}
           onOpenChange={setIsQuickViewOpen}
           productId={selectedProductId}
+          colorName={selectedColorName}
         />
       )}
     </div>

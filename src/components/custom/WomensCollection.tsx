@@ -2,86 +2,80 @@
 import ContinuousCarousel from "@/components/custom/ContinuousCarousel";
 import PrimaryHeading from "./PrimaryHeading";
 import SubTitle from "@/components/custom/SubTitle";
+import { ProductCollectionSchema } from "@/schemas/product";
 
-type CollectionType = {
-  src: string;
-  title: string;
-  href?: string;
-  id: number | string;
-};
-
-const womenCollection: CollectionType[] = [
+const womenCollection: ProductCollectionSchema[] = [
   {
-    id: 1,
+    id: "1",
+    slug: "/collections/women/3piece",
     src: "/images/women/3-piece-suit.jpg",
     title: "3 Piece Suits",
-    href: "/collections/women/3piece",
   },
   {
-    id: 2,
+    id: "2",
+    slug: "/collections/women/jeans-trousers",
     src: "/images/women/jeans-trousers.jpg",
     title: "Jeans & Trousers",
-    href: "/collections/women/jeans-trousers",
   },
   {
-    id: 3,
+    id: "3",
+    slug: "/collections/women/skirt",
     src: "/images/women/skirt.jpg",
     title: "Skirts",
-    href: "/collections/women/skirt",
   },
   {
-    id: 4,
+    id: "4",
+    slug: "/collections/women/tracksuit",
     src: "/images/women/tracksuit.jpg",
     title: "Tracksuits & Gym Wear",
-    href: "/collections/women/tracksuit",
   },
   {
-    id: 5,
+    id: "5",
+    slug: "/collections/women/kurti",
     src: "/images/women/kurti.jpg",
     title: "Kurti / Shirt",
-    href: "/collections/women/kurti",
   },
   {
-    id: 6,
+    id: "6",
+    slug: "/collections/women/polo",
     src: "/images/women/polo.jpg",
     title: "Polo Shirts",
-    href: "/collections/women/polo",
   },
   {
-    id: 7,
+    id: "7",
+    slug: "/collections/women/t-shirt",
     src: "/images/women/t-shirt.jpg",
     title: "T-Shirts",
-    href: "/collections/women/t-shirt",
   },
   {
-    id: 8,
+    id: "8",
+    slug: "/collections/women/dress",
     src: "/images/women/dress.jpg",
     title: "Dresses & Maxi",
-    href: "/collections/women/dress",
   },
   {
-    id: 9,
+    id: "9",
+    slug: "/collections/women/gown",
     src: "/images/women/gown.jpg",
     title: "Gowns",
-    href: "/collections/women/gown",
   },
   {
-    id: 10,
+    id: "10",
+    slug: "/collections/women/lehenga",
     src: "/images/women/lehenga.jpg",
     title: "Lehenga Choli",
-    href: "/collections/women/lehenga",
   },
   {
-    id: 11,
+    id: "11",
+    slug: "/collections/women/anarkali",
     src: "/images/women/anarkali.jpg",
     title: "Anarkali Suits",
-    href: "/collections/women/anarkali",
   },
   {
-    id: 12,
+    id: "12",
+    slug: "/collections/women/2piece",
     src: "/images/women/2-piece-suit.jpg",
     title: "2 Piece Suits",
-    href: "/collections/women/2piece",
   },
 ];
 

@@ -7,6 +7,8 @@ import CTA from "@/components/custom/CTA";
 import OurProducts from "@/components/custom/OurProducts";
 import WinterStyles from "@/components/custom/WinterStyles";
 import Fabrics from "@/components/custom/Fabrics";
+import EmblaCarouselExamples from "@/components/examples/EmblaCarouselExamples";
+import ContinuousCarouselExamples from "@/components/examples/ContinuousCarouselExamples";
 export default function Home() {
   return (
     <div className=" flex flex-col overflow-hidden ">
@@ -55,5 +57,9 @@ export default function Home() {
         </div>
       </div>
     </div>
+    // <>
+    //   <EmblaCarouselExamples />
+    //   <ContinuousCarouselExamples />
+    // </>
   );
 }

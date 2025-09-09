@@ -1,128 +1,3 @@
-// *[
-//     _type == "product" &&
-//     defined(title) &&
-//     defined(slug.current) &&
-//     defined(description) &&
-//     defined(price) &&
-//     defined(variants)
-//   ]
-//   {
-//   "id":_id,
-//   title,
-//   subTitle,
-//   "slug": slug.current,
-//   price,
-//   discount,
-//   "category": category,
-//   "subCategory": subCategory,
-//   "fabric": fabric->name,
-//   "audience": audience,
-//   designs,
-//   occasions,
-//   variants[] {
-//     stock,
-//     "featuredImage": featuredImage.asset->url,
-//     "additionalImages": additionalImages[].asset->url,
-//     "colorName": color->name,
-//     "colorCode": color->code,
-//   },
-//   "description": pt::text(description),
-//   "uploadedAt":_createdAt,
-//   isFeatured,
-//   isNewArrival,
-//   isPopular,
-//   relevantTags,
-//   "outFitType": select(
-//     audience == "men" => menOutfitType,
-//     audience == "women" => menOutfitType,
-//     [] // fallback empty array
-//   ),
-
-// }
-
-// "use client";
-// import SecondaryHeading from "./SecondaryHeading";
-// import EmblaCarousel from "./EmblaCarousel";
-
-// const slides = [
-//   "/carouselImages/image1.jpg",
-//   "/carouselImages/image2.jpg",
-//   "/carouselImages/image3.jpg",
-//   "/carouselImages/image4.jpg",
-//   "/carouselImages/image5.jpg",
-//   "/carouselImages/image1.jpg",
-//   "/carouselImages/image2.jpg",
-//   "/carouselImages/image3.jpg",
-//   "/carouselImages/image4.jpg",
-//   "/carouselImages/image5.jpg",
-// ];
-// const fabrics = [
-//   "Chiffon",
-//   "Cotton",
-//   "Polyester",
-//   "Crepe",
-//   "Rayon",
-//   "Leather",
-//   "Velvet",
-//   "Satin",
-//   "Denim",
-//   "Organza",
-//   "Nylon",
-//   "Silk",
-//   "Linen",
-//   "Wool",
-//   "Georgette",
-//   "Tulle",
-//   "Jersey",
-//   "Fleece",
-//   "Chambray",
-// ] as const;
-
-// type Category = "Ready to Wear" | "Un Stitched";
-// type Fabric = (typeof fabrics)[number];
-
-// type Slide = {
-//   id: string | number;
-//   src: string;
-//   title: Fabric;
-//   href?: string;
-// };
-
-// // generate product array
-// const products: Slide[] = fabrics.map((fabric, index) => ({
-//   src: `/images/fabrics/${fabric}.webp`,
-//   title: fabric,
-//   href: `/collections/${fabric.toLowerCase()}`,
-//   id: index + 1,
-// }));
-
-// const Fabrics = () => {
-//   return (
-//     <div className="flex flex-col gap-y-4 w-full justify-center items-center">
-//       <SecondaryHeading className="text-3xl md:text-5xl">
-//         FABRICS
-//       </SecondaryHeading>
-
-//       <EmblaCarousel
-//         slides={products}
-//         slidesToShow={3}
-//         stepAutoPlay
-//         showNavigation
-//         autoPlaySpeed={2}
-//         stopOnHover
-//         rounded="square"
-//         emblaOptions={{ loop: true, align: "start" }}
-//         centerIfFew
-//         showPagination
-//         mouseWheelDirection="horizontal"
-//         freeScroll={false}
-//       />
-//     </div>
-//   );
-// };
-
-// export default Fabrics;
-
 "use client";
 
 import Autoplay from "embla-carousel-autoplay";
@@ -139,67 +14,10 @@ import {
 import ImageCard from "./ImageCard";
 import PrimaryHeading from "./PrimaryHeading";
 import SubTitle from "./SubTitle";
+import { ProductCollectionSchema } from "@/schemas/product";
 
-const fabrics = [
-  "Chiffon",
-  "Cotton",
-  "Polyester",
-  "Crepe",
-  "Rayon",
-  "Leather",
-  "Velvet",
-  "Satin",
-  "Denim",
-  "Organza",
-  "Nylon",
-  "Silk",
-  "Linen",
-  "Wool",
-  "Georgette",
-  "Tulle",
-  "Jersey",
-  "Fleece",
-  "Chambray",
-] as const;
-
-type Fabric = (typeof fabrics)[number];
-
-type Slide = {
-  id: string | number;
-  src: string;
-  title: Fabric;
-  href?: string;
-};
-
-const Skiper54 = () => {
-  // generate product array
-  const images: Slide[] = fabrics.map((fabric, index) => ({
-    id: index + 1,
-    src: `/images/fabrics/${fabric}.webp`,
-    title: fabric,
-    href: `/collections/${fabric.toLowerCase()}`,
-  }));
-
-  return (
-    <div className="flex flex-col gap-y-4 h-full w-screen items-center justify-center overflow-hidden ">
-      <PrimaryHeading>Fabric Collection</PrimaryHeading>
-      <SubTitle>
-        Explore premium fabrics crafted for comfort and style.
-      </SubTitle>
-
-      <Carousel_006
-        images={images}
-        className=""
-        loop={true}
-        showNavigation={true}
-        showPagination={true}
-      />
-    </div>
-  );
-};
-
-interface Carousel_006Props {
-  images: Slide[];
+interface CarouselCompProps {
+  products: ProductCollectionSchema[];
   className?: string;
   autoplay?: boolean;
   loop?: boolean;
@@ -207,14 +25,14 @@ interface Carousel_006Props {
   showPagination?: boolean;
 }
 
-const Carousel_006 = ({
-  images,
+const CarouselComp = ({
+  products,
   className,
   autoplay = true,
   loop = true,
   showNavigation = true,
   showPagination = true,
-}: Carousel_006Props) => {
+}: CarouselCompProps) => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
@@ -247,7 +65,7 @@ const Carousel_006 = ({
       }
     >
       <CarouselContent className="flex h-[500px] w-full">
-        {images.map((slide, index) => (
+        {products.map((product, index) => (
           <CarouselItem
             key={index}
             className="relative flex h-[81.5%] w-full basis-[73%] items-center justify-center sm:basis-[50%] md:basis-[30%] lg:basis-[25%] xl:basis-[21%]"
@@ -264,9 +82,9 @@ const Carousel_006 = ({
             >
               <div className="relative h-full w-full overflow-hidden">
                 <ImageCard
-                  id={slide.title.toString()}
-                  src={slide.src}
-                  href={slide.href}
+                  id={product.id}
+                  src={product.src}
+                  slug={product.slug}
                   aspectRatio="h-full"
                   rounded="square"
                 />
@@ -280,7 +98,7 @@ const Carousel_006 = ({
                   transition={{ duration: 0.5 }}
                   className="absolute bottom-0 left-2 flex h-[14%] w-full translate-y-full items-center justify-center p-2 text-center font-medium tracking-tight text-primary text-lg"
                 >
-                  {slide.title}
+                  {product.title}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -310,7 +128,7 @@ const Carousel_006 = ({
       {showPagination && (
         <div className="flex w-full items-center justify-center">
           <div className="flex items-center justify-center gap-2">
-            {Array.from({ length: images.length }).map((_, index) => (
+            {Array.from({ length: products.length }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => api?.scrollTo(index)}
@@ -328,4 +146,56 @@ const Carousel_006 = ({
   );
 };
 
-export default Skiper54;
+// ==============Main Fabrics======================
+const FabricCollection = () => {
+  const fabrics = [
+    "Chiffon",
+    "Cotton",
+    "Polyester",
+    "Crepe",
+    "Rayon",
+    "Leather",
+    "Velvet",
+    "Satin",
+    "Denim",
+    "Organza",
+    "Nylon",
+    "Silk",
+    "Linen",
+    "Wool",
+    "Georgette",
+    "Tulle",
+    "Jersey",
+    "Fleece",
+    "Chambray",
+  ] as const;
+
+  // generate product array
+  const products: ProductCollectionSchema[] = fabrics.map(
+    (fabric, index): ProductCollectionSchema => ({
+      id: (index + 1).toString(),
+      slug: `/shop/${fabric.toLowerCase()}`,
+      src: `/images/fabrics/${fabric}.webp`,
+      title: fabric,
+    })
+  );
+
+  return (
+    <div className="flex flex-col gap-y-4 h-full w-screen items-center justify-center overflow-hidden ">
+      <PrimaryHeading>Fabric Collection</PrimaryHeading>
+      <SubTitle>
+        Explore premium fabrics crafted for comfort and style.
+      </SubTitle>
+
+      <CarouselComp
+        products={products}
+        className=""
+        loop={true}
+        showNavigation={true}
+        showPagination={true}
+      />
+    </div>
+  );
+};
+
+export default FabricCollection;

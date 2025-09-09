@@ -9,13 +9,13 @@ import { IoMdCart } from "react-icons/io";
 
 export type ImageCardProps = {
   id: string; // 👈  for product ID
+
   src: string; //image path
   title?: string;
-  href?: string;
   subTitle?: string;
+  slug: string;
   price?: number;
   discount?: number;
-  colorCode?: string;
   colorName?: string;
   rounded?: "circle" | "square";
   ripple?: boolean;
@@ -32,11 +32,12 @@ export type ImageCardProps = {
 
   showQuickView?: boolean; // 👈 new prop to control quick view button
 
-  onQuickView?: (id: string) => void;
+  onQuickView?: (id: string, colorName: string) => void;
 };
 
 const ImageCard: React.FC<ImageCardProps> = ({
   id,
+  slug,
   src,
   title,
   price,
@@ -47,13 +48,11 @@ const ImageCard: React.FC<ImageCardProps> = ({
   rippleColor = "white",
   rippleOpacity = 0.3,
   aspectRatio = "square",
-  href,
   showAddToCart = false,
   buttonText = "Show All",
   tags,
-  colorCode,
 
-  colorName,
+  colorName = "",
   changeColorOnHover = false,
 
   showQuickView = false,
@@ -72,7 +71,7 @@ const ImageCard: React.FC<ImageCardProps> = ({
             overflow-hidden flex items-center justify-center rounded-full group-hover:rounded-b-none`}
       >
         {/* just view in mobile devices */}
-        <Link href={"/ad"} className="md:hidden">
+        <Link href={`/shop/${slug}`} className="md:hidden">
           <Image
             src={src}
             alt={title || "slide"}
@@ -122,12 +121,12 @@ const ImageCard: React.FC<ImageCardProps> = ({
             "
               asChild
             >
-              <Link href={href ? href : ""}>{buttonText}</Link>
+              <Link href={slug ? slug : ""}>{buttonText}</Link>
             </Button>
             {showQuickView && (
               <>
                 <Button
-                  onClick={() => onQuickView?.(id)}
+                  onClick={() => onQuickView?.(id, colorName)}
                   className="
         bg-secondary text-secondary-foreground shadow hover:bg-secondary/90
       "
@@ -151,7 +150,7 @@ const ImageCard: React.FC<ImageCardProps> = ({
           )}
           {showQuickView && (
             <Button
-              onClick={() => onQuickView?.(id)}
+              onClick={() => onQuickView?.(id, colorName)}
               className=" flex gap-2 w-full justify-center items-center text-sm "
             >
               Quick View
@@ -196,7 +195,7 @@ const ImageCard: React.FC<ImageCardProps> = ({
             )}
 
             {/* color name */}
-            {colorName && colorCode && (
+            {colorName && (
               <div className="flex items-center text-sm gap-1">
                 <span className="font-medium">Color: </span>
                 <p className="font-semibold text-center">{colorName}</p>
