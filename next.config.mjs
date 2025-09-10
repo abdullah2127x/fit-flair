@@ -14,6 +14,12 @@ const nextConfig = {
         port: "",
         pathname: "/photos/**",
       },
+      {
+        protocol: "http",
+        hostname: "feature.com",
+        // port: "",
+        // pathname: "/photos/**",
+      },
     ],
     // domains: ["example.com","unsplash.com","images.pexels.com", "another-domain.net","cdn.sanity.io"],
   },

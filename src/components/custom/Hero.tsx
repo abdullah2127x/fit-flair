@@ -174,8 +174,7 @@ const slides: Slide[] = [
     accent: "Couture",
     subtitle:
       "Premium clothing crafted with finest fabrics and attention to detail",
-    imageUrl:
-      "https://images.pexels.com/photos/298863/pexels-photo-298863.jpeg",
+    imageUrl: "/images/heroImages/image2.jpg",
   },
   {
     id: 2,
@@ -184,7 +183,7 @@ const slides: Slide[] = [
     subtitle:
       "Experience timeless fashion with our premium unstitched collection",
     imageUrl:
-      "https://images.pexels.com/photos/6311669/pexels-photo-6311669.jpeg",
+      "/images/heroImages/image3.jpg",
   },
   {
     id: 3,
@@ -192,7 +191,7 @@ const slides: Slide[] = [
     accent: "Heritage",
     subtitle: "Where tradition meets modern design, crafted to perfection",
     imageUrl:
-      "https://images.pexels.com/photos/2983464/pexels-photo-2983464.jpeg",
+      "/images/heroImages/image1.png",
   },
 ];
 

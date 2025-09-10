@@ -8,15 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeToggleButton from "../ui/theme-toggle-button";
-
-// ✅ Nav links array
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/men", label: "Men" },
-  { href: "/women", label: "Women" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-];
+import { navLinks } from "@/data/navLinks";
 
 // ✅ Logo Component
 function Logo() {
