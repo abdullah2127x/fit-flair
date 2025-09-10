@@ -174,7 +174,7 @@ const slides: Slide[] = [
     accent: "Couture",
     subtitle:
       "Premium clothing crafted with finest fabrics and attention to detail",
-    imageUrl: "/images/heroImages/image2.jpg",
+    imageUrl: "/images/heroImages/image1.png",
   },
   {
     id: 2,
@@ -182,16 +182,14 @@ const slides: Slide[] = [
     accent: "Elegance",
     subtitle:
       "Experience timeless fashion with our premium unstitched collection",
-    imageUrl:
-      "/images/heroImages/image3.jpg",
+    imageUrl: "/images/heroImages/image3.jpg",
   },
   {
     id: 3,
     title: "Modern",
     accent: "Heritage",
     subtitle: "Where tradition meets modern design, crafted to perfection",
-    imageUrl:
-      "/images/heroImages/image1.png",
+    imageUrl: "/images/heroImages/image2.jpg",
   },
 ];
 
@@ -247,7 +245,7 @@ export default function HeroCarousel() {
                   src={slide.imageUrl}
                   alt={slide.title}
                   fill
-                  className="object-cover"
+                  className="object-cover object-top"
                   priority
                 />
                 <div className="absolute inset-0 bg-black/40" />

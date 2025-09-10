@@ -15,7 +15,7 @@ const nextConfig = {
         pathname: "/photos/**",
       },
       {
-        protocol: "http",
+        protocol: "https",
         hostname: "feature.com",
         // port: "",
         // pathname: "/photos/**",
