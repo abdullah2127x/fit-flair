@@ -1,6 +1,7 @@
 "use client";
 
 import Autoplay from "embla-carousel-autoplay";
+import WheelGesturesPlugin from "embla-carousel-wheel-gestures";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -34,7 +35,8 @@ const CarouselComp = ({
   showPagination = true,
 }: CarouselCompProps) => {
   const [api, setApi] = useState<CarouselApi>();
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState<number | null>(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (!api) return;
@@ -52,23 +54,26 @@ const CarouselComp = ({
         loop,
         slidesToScroll: 1,
       }}
-      plugins={
-        autoplay
+      plugins={[
+        ...(autoplay
           ? [
               Autoplay({
-                delay: 1000,
+                delay: 2000,
                 stopOnInteraction: false,
                 stopOnMouseEnter: true,
               }),
             ]
-          : []
-      }
+          : []),
+        WheelGesturesPlugin(),
+      ]}
     >
       <CarouselContent className="flex h-[500px] w-full">
         {products.map((product, index) => (
           <CarouselItem
             key={index}
             className="relative flex h-[81.5%] w-full basis-[73%] items-center justify-center sm:basis-[50%] md:basis-[30%] lg:basis-[25%] xl:basis-[21%]"
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
           >
             <motion.div
               initial={false}
@@ -91,10 +96,11 @@ const CarouselComp = ({
               </div>
             </motion.div>
             <AnimatePresence mode="wait">
-              {current === index && (
+              {(current === index || hoveredIndex === index) && (
                 <motion.div
                   initial={{ opacity: 0, filter: "blur(10px)" }}
                   animate={{ opacity: 1, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, filter: "blur(10px)", y: 20 }}
                   transition={{ duration: 0.5 }}
                   className="absolute bottom-0 left-2 flex h-[14%] w-full translate-y-full items-center justify-center p-2 text-center font-medium tracking-tight text-primary text-lg"
                 >

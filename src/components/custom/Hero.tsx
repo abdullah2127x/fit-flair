@@ -275,7 +275,7 @@ export default function HeroCarousel() {
                     </Link>
                   </Button> */}
                   <span>
-                    <WrapButton className="" href="/about">
+                    <WrapButton className="" href="/shop">
                       <PiShoppingBagOpenFill className=" " />
                       Shop Now
                     </WrapButton>
