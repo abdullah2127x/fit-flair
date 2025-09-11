@@ -86,6 +86,20 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
 
   direction = "forward",
 }) => {
+  // ✅ Track window width safely
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setWindowWidth(window.innerWidth);
+
+      const handleResize = () => setWindowWidth(window.innerWidth);
+      window.addEventListener("resize", handleResize);
+
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
+  
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       ...emblaOptions,
@@ -311,33 +325,35 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
             centerIfFew && slides.length <= 3 ? "justify-center" : ""
           }`}
         >
-          {slides.map((slide) => (
-            <div
-              key={slide.id}
-              className="px-2"
-              style={{
-                // flex: `0 0 calc(${100 / slidesToShow}% - 1rem)`,
-                flex: `0 0 calc(${100 / (window.innerWidth < 768 ? 1 : slidesToShow)}% - 1rem)`,
-                // minWidth: "150px",
-              }}
-            >
-              <ImageCard
-                id={slide.id.toString()}
-                slug={slide.slug ? slide.slug : "#"}
-                src={slide.src}
-                title={slide.title}
-                subTitle={"subTitle" in slide ? slide.subTitle : ""}
-                price={"price" in slide ? slide.price : undefined}
-                discount={"discount" in slide ? slide.discount : undefined}
-                colorName={"colorName" in slide ? slide.colorName : ""}
-                tags={"tags" in slide ? slide.tags : []}
-                rounded={rounded}
-                ripple={ripple}
-                rippleColor={rippleColor}
-                rippleOpacity={rippleOpacity}
-              />
-            </div>
-          ))}
+          {slides.map((slide) => {
+            const itemsToShow =
+              windowWidth !== null && windowWidth < 768 ? 1 : slidesToShow;
+            return (
+              <div
+                key={slide.id}
+                className="px-2"
+                style={{
+                  flex: `0 0 calc(${100 / itemsToShow}% - 1rem)`,
+                }}
+              >
+                <ImageCard
+                  id={slide.id.toString()}
+                  slug={slide.slug ? slide.slug : "#"}
+                  src={slide.src}
+                  title={slide.title}
+                  subTitle={"subTitle" in slide ? slide.subTitle : ""}
+                  price={"price" in slide ? slide.price : undefined}
+                  discount={"discount" in slide ? slide.discount : undefined}
+                  colorName={"colorName" in slide ? slide.colorName : ""}
+                  tags={"tags" in slide ? slide.tags : []}
+                  rounded={rounded}
+                  ripple={ripple}
+                  rippleColor={rippleColor}
+                  rippleOpacity={rippleOpacity}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 

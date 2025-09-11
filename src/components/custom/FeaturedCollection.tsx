@@ -50,7 +50,7 @@ const FeaturedCollection = () => {
     };
 
     fetchData();
-  }, [featuredCollectionQuery]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-y-4 w-full justify-center items-center">

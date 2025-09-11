@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { EmblaOptionsType } from "embla-carousel";
 import AutoScroll from "embla-carousel-auto-scroll";
@@ -45,6 +45,20 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
   mouseWheelSensitivity = 1, // 🆕 Default sensitivity
   direction = "forward",
 }) => {
+  // ✅ Track window width safely
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setWindowWidth(window.innerWidth);
+
+      const handleResize = () => setWindowWidth(window.innerWidth);
+      window.addEventListener("resize", handleResize);
+
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
+
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       ...emblaOptions,
@@ -166,7 +180,7 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
             centerIfFew && slides.length <= 3 ? "justify-center" : ""
           }`}
         >
-          {slides.map((slide, index) => (
+          {slides.map((slide, index) => {
             // <div
             //   key={slide.id}
             //   // className="px-2 min-w-[33.33%] md:w-auto"
@@ -176,27 +190,33 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
             //   // }}
             //   className="px-2 flex-[0_0_calc(33.33%-1rem)] md:flex-auto min-w-[150px]"
             // >
-            <div
-              key={slide.id}
-              className="px-2"
-              style={{
-                flex: `0 0 calc(${100 / (window.innerWidth < 768 ? 3 : slidesToShow)}% - 1rem)`,
-              }}
-            >
-              <ImageCard
-                id={slide.id.toString()}
-                slug={slide.slug}
-                src={slide?.src}
-                title={slide?.title}
-                rounded={rounded}
-                ripple={ripple}
-                rippleColor={rippleColor}
-                rippleOpacity={rippleOpacity}
-                showAddToCart={showAddToCart}
-                buttonText={buttonText}
-              />
-            </div>
-          ))}
+
+            const itemsToShow =
+              windowWidth !== null && windowWidth < 768 ? 3 : slidesToShow;
+
+            return (
+              <div
+                key={slide.id}
+                className="px-2"
+                style={{
+                  flex: `0 0 calc(${100 / itemsToShow}% - 1rem)`,
+                }}
+              >
+                <ImageCard
+                  id={slide.id.toString()}
+                  slug={slide.slug}
+                  src={slide?.src}
+                  title={slide?.title}
+                  rounded={rounded}
+                  ripple={ripple}
+                  rippleColor={rippleColor}
+                  rippleOpacity={rippleOpacity}
+                  showAddToCart={showAddToCart}
+                  buttonText={buttonText}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
