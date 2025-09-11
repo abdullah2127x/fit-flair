@@ -6,7 +6,6 @@ import AutoScroll from "embla-carousel-auto-scroll";
 import ImageCard from "./ImageCard";
 import { ProductCollectionSchema } from "@/schemas/product";
 
-
 type ContinuousCarouselProps = {
   slides: ProductCollectionSchema[];
   showAddToCart?: boolean;
@@ -168,12 +167,20 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
           }`}
         >
           {slides.map((slide, index) => (
+            // <div
+            //   key={slide.id}
+            //   // className="px-2 min-w-[33.33%] md:w-auto"
+            //   // style={{
+            //   //   flex: `0 0 calc(${100 / slidesToShow}% - 1rem)`,
+            //   // minWidth: "150px",
+            //   // }}
+            //   className="px-2 flex-[0_0_calc(33.33%-1rem)] md:flex-auto min-w-[150px]"
+            // >
             <div
               key={slide.id}
               className="px-2"
               style={{
-                flex: `0 0 calc(${100 / slidesToShow}% - 1rem)`,
-                minWidth: "150px",
+                flex: `0 0 calc(${100 / (window.innerWidth < 768 ? 3 : slidesToShow)}% - 1rem)`,
               }}
             >
               <ImageCard

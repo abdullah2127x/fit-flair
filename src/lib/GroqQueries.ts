@@ -1,5 +1,48 @@
 // queries.ts
 // groq query for product detail and define queries types, product detail schema
+export const featuredCollectionQuery = `*[
+  _type == "product" &&
+  isFeatured == true &&
+  defined(title) &&
+  defined(slug.current) &&
+  defined(description) &&
+  defined(price) &&
+  defined(variants)
+] | order(publishedAt desc)
+    [0..11]
+  {
+  "id": _id,
+  title,
+  subTitle,
+  "slug": slug.current,
+  price,
+  "category": category,
+  season,
+  "subCategory": subCategory,
+  "fabric": fabric->name,
+  designs,
+  occasions,
+  "audience": audience,
+  variants[] {
+    stock,
+    "featuredImage": featuredImage.asset->url,
+    "additionalImages": additionalImages[].asset->url,
+    "colorName": color->name,
+    "colorCode": color->code
+  },
+  "description": pt::text(description),
+  "uploadedAt": _createdAt,
+  isFeatured,
+  isNewArrival,
+  relevantTags,
+  "outFitType": select(
+    audience == "men" => menOutfitType,
+    audience == "women" => womenOutfitType,
+    []
+  ),
+  discount
+}`;
+
 export const newInQuery = `*[
   _type == "product" &&
   isNewArrival == true &&

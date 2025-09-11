@@ -5,12 +5,13 @@ import { EmblaOptionsType } from "embla-carousel";
 import AutoScroll from "embla-carousel-auto-scroll";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ImageCard from "./ImageCard";
-import { ProductCollectionSchema } from "@/schemas/product";
-
-
+import {
+  ProductCollectionSchema,
+  ProductShowcaseSchema,
+} from "@/schemas/product";
 
 type CarouselProps = {
-  slides: ProductCollectionSchema[];
+  slides: ProductCollectionSchema[] | ProductShowcaseSchema[];
 
   slidesToShow?: number;
 
@@ -39,7 +40,6 @@ type CarouselProps = {
   stopOnHover?: boolean;
   freeScroll?: boolean;
   centerIfFew?: boolean;
-  centerScale?: boolean;
 
   enableMouseWheel?: boolean;
   mouseWheelDirection?: "horizontal" | "vertical" | "both";
@@ -78,7 +78,6 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
   stopOnHover = true,
   freeScroll = true,
   centerIfFew = true,
-  centerScale = false,
 
   enableMouseWheel = true,
   mouseWheelDirection = "both",
@@ -312,13 +311,14 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
             centerIfFew && slides.length <= 3 ? "justify-center" : ""
           }`}
         >
-          {slides.map((slide, index) => (
+          {slides.map((slide) => (
             <div
               key={slide.id}
               className="px-2"
               style={{
-                flex: `0 0 calc(${100 / slidesToShow}% - 1rem)`,
-                minWidth: "150px",
+                // flex: `0 0 calc(${100 / slidesToShow}% - 1rem)`,
+                flex: `0 0 calc(${100 / (window.innerWidth < 768 ? 1 : slidesToShow)}% - 1rem)`,
+                // minWidth: "150px",
               }}
             >
               <ImageCard
@@ -326,6 +326,11 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
                 slug={slide.slug ? slide.slug : "#"}
                 src={slide.src}
                 title={slide.title}
+                subTitle={"subTitle" in slide ? slide.subTitle : ""}
+                price={"price" in slide ? slide.price : undefined}
+                discount={"discount" in slide ? slide.discount : undefined}
+                colorName={"colorName" in slide ? slide.colorName : ""}
+                tags={"tags" in slide ? slide.tags : []}
                 rounded={rounded}
                 ripple={ripple}
                 rippleColor={rippleColor}

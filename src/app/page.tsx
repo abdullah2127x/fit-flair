@@ -9,11 +9,16 @@ import WinterStyles from "@/components/custom/WinterStyles";
 import Fabrics from "@/components/custom/Fabrics";
 import EmblaCarouselExamples from "@/components/examples/EmblaCarouselExamples";
 import ContinuousCarouselExamples from "@/components/examples/ContinuousCarouselExamples";
+import FeaturedCollection from "@/components/custom/FeaturedCollection";
 export default function Home() {
   return (
     <div className=" flex flex-col overflow-hidden ">
       <Hero />
 
+      {/* featured */}
+      <div className="container mx-auto my-10 flex relative ">
+        <FeaturedCollection />
+      </div>
       {/* fabrics */}
       <div className="container mx-auto my-10 flex relative ">
         <Fabrics />
