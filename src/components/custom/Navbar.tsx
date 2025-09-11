@@ -39,8 +39,8 @@ export default function Navbar() {
                   <SheetTitle>Menu</SheetTitle>
                 </SheetHeader>
                 <div className="mt-4 flex flex-col gap-4">
-                  {navLinks.map((link:NavLink) => (
-                    <Link key={link.id} href={link.href} className="text-lg font-medium hover:text-primary">
+                  {navLinks.map((link:NavLink,idx:number) => (
+                    <Link key={idx} href={link.href} className="text-lg font-medium hover:text-primary">
                       {link.label}
                     </Link>
                   ))}
