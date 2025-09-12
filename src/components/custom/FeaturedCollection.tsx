@@ -58,6 +58,7 @@ const FeaturedCollection = () => {
       <SubTitle>Discover the latest trends in men&apos;s fashion.</SubTitle>
 
       <EmblaCarousel
+        changeColorOnHover
         slides={products}
         slidesToShow={4}
         autoPlay={false}

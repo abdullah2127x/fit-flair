@@ -52,7 +52,7 @@ export function Footer() {
           <Link
             key={i}
             href={link.href}
-            className="block w-fit text-sm text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:-bottom-0.5 after:left-0 after:h-[1px] after:w-0 after:bg-foreground after:transition-all hover:after:w-full"
+            className="block w-fit text-sm  transition-colors relative after:absolute after:-bottom-0.5 after:left-0 after:h-[1px] after:w-0 after:bg-foreground after:transition-all hover:after:w-full"
           >
             {link.label}
           </Link>
@@ -62,78 +62,80 @@ export function Footer() {
   );
 
   return (
-    <footer className="bg-secondary/50 border-t">
-      <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand Section */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">
-                  C
-                </span>
-              </div>
-              <span className="font-bold text-xl">Couture</span>
+    <footer className="px-4 py-12 text-secondary-foreground">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        {/* Brand Section */}
+        <div className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <div className="h-8 w-8 bg-primary-foreground rounded-lg flex items-center justify-center">
+              <span className="text-primary font-bold text-sm">C</span>
             </div>
-            <p className="text-muted-foreground text-sm">
-              Discover premium clothing crafted with finest fabrics and
-              attention to detail. Your style is our commitment.
-            </p>
-            <div className="flex space-x-2">
-              {socials.map((Icon, i) => (
-                <Button
-                  key={i}
-                  variant="ghost"
-                  size="icon"
-                  className="hover:text-primary transition-transform hover:scale-110"
-                >
-                  <Icon className="h-4 w-4" />
-                </Button>
-              ))}
-            </div>
+            <span className="font-bold text-xl text-primary-foreground">
+              Couture
+            </span>
           </div>
-
-          {/* Quick Links */}
-          <LinkSection title="Quick Links" links={quickLinks} />
-
-          {/* Customer Service */}
-          <LinkSection title="Customer Service" links={customerLinks} />
-
-          {/* Contact & Newsletter */}
-          <div className="flex flex-col items-center md:items-start gap-y-4">
-            <h3 className="font-semibold">Get in Touch</h3>
-            <div className="flex flex-col gap-y-2 text-sm text-muted-foreground">
-              {contacts.map(({ icon: Icon, text }, i) => (
-                <div key={i} className="flex items-center space-x-2">
-                  <Icon className="h-4 w-4" />
-                  <span>{text}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Newsletter</p>
-              <form className="flex space-x-2">
-                <Input
-                  placeholder="Enter email"
-                  type="email"
-                  required
-                  className="flex-1"
-                />
-                <Button size="sm" type="submit">
-                  Subscribe
-                </Button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t mt-10 pt-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            © 2024 Couture. All rights reserved. Crafted with finest fabrics
-            and attention to detail.
+          <p className="text-sm">
+            Discover premium clothing crafted with finest fabrics and attention
+            to detail. Your style is our commitment.
           </p>
+          <div className="flex space-x-2">
+            {socials.map((Icon, i) => (
+              <Button
+                key={i}
+                variant="ghost"
+                size="icon"
+                className="hover:bg-accent-foreground hover:text-accent transition-transform hover:scale-110"
+              >
+                <Icon className="h-4 w-4" />
+              </Button>
+            ))}
+          </div>
         </div>
+
+        {/* Quick Links */}
+        <LinkSection title="Quick Links" links={quickLinks} />
+
+        {/* Customer Service */}
+        <LinkSection title="Customer Service" links={customerLinks} />
+
+        {/* Contact & Newsletter */}
+        <div className="flex flex-col items-center md:items-start gap-y-4">
+          <h3 className="font-semibold">Get in Touch</h3>
+          <div className="flex flex-col gap-y-2 text-sm text-secondary-foreground">
+            {contacts.map(({ icon: Icon, text }, i) => (
+              <div key={i} className="flex items-center gap-x-2">
+                <Icon className="h-4 w-4" />
+                <span>{text}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-sm font-medium">Newsletter</p>
+            <form className="flex items-center gap-x-2">
+              <Input
+                placeholder="Enter email"
+                type="email"
+                required
+                className="flex-1"
+              />
+              <Button
+                size="sm"
+                className="bg-secondary-foreground text-secondary"
+                type="submit"
+              >
+                Subscribe
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t mt-10 pt-8 text-center">
+        <p className="text-sm text-muted-foreground">
+          © 2024 Couture. All rights reserved. Crafted with finest fabrics and
+          attention to detail.
+        </p>
       </div>
     </footer>
   );

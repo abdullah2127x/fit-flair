@@ -111,7 +111,7 @@ export default function QuickViewDialog({
                 className="rounded-lg"
               />
               <div className="flex flex-col justify-between">
-                <p className="text-gray-600">{product.description}</p>
+                <p className="text-secondary-foreground">{product.description}</p>
                 <p className="mt-2 text-lg font-semibold">
                   ${product.price.toFixed(2)}
                 </p>

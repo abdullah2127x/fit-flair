@@ -42,7 +42,7 @@ export default function WinterStyles() {
             ))}
           </div>
 
-          <Button asChild className=" px-8 py-3 font-semibold">
+          <Button asChild className="px-8 py-3 bg-secondary-foreground text-secondary font-semibold">
             <Link href="/shop">Shop Now</Link>
           </Button>
         </div>
@@ -57,24 +57,6 @@ export default function WinterStyles() {
               height={400} // set your preferred height
               className="w-full max-w-sm rounded-2xl shadow-lg hover:scale-125 transition-transform duration-500 "
             />
-            {/* <ImageCard
-                          buttonText={slide.buttonText}
-                          showAddToCart={slide.showAddToCart}
-                          src={slide.src}
-                          price={slide.price}
-                          discount={slide.discount}
-                          title={slide.title}
-                          subTitle={slide.subTitle}
-                          rounded={rounded}
-                          ripple={ripple}
-                          rippleColor={rippleColor}
-                          rippleOpacity={rippleOpacity}
-                          href={slide.href}
-                          colorCode={slide.colorCode}
-                          colorName={slide.colorName}
-                          tags={slide.tags}
-                          changeColorOnHover={changeColorOnHover}
-                        /> */}
           </div>
         </div>
       </section>

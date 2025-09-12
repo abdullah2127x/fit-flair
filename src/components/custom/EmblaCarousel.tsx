@@ -45,14 +45,14 @@ type CarouselProps = {
   mouseWheelDirection?: "horizontal" | "vertical" | "both";
 
   mouseWheelSensitivity?: number;
-
+  changeColorOnHover?: boolean;
   direction?: "forward" | "backward";
 };
 
 const EmblaCarousel: React.FC<CarouselProps> = ({
   slides,
   slidesToShow = 6,
-
+  changeColorOnHover = false,
   rounded = "circle",
 
   ripple = false,
@@ -99,7 +99,7 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
       return () => window.removeEventListener("resize", handleResize);
     }
   }, []);
-  
+
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       ...emblaOptions,
@@ -312,7 +312,7 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
       {/* Mouse wheel hint */}
       {enableMouseWheel && (
         <div className="absolute top-2 right-2 z-10">
-          <div className="bg-black/20 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity duration-300">
+          <div className="bg-secondary/20 text-secondary-foreground text-xs px-2 py-1 rounded-full backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity duration-300">
             🖱️ Use mouse wheel to scroll
           </div>
         </div>
@@ -338,6 +338,7 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
               >
                 <ImageCard
                   id={slide.id.toString()}
+                  changeColorOnHover={changeColorOnHover}
                   slug={slide.slug ? slide.slug : "#"}
                   src={slide.src}
                   title={slide.title}
@@ -409,7 +410,7 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
               key={i}
               onClick={() => emblaApi?.scrollTo(i)}
               className={`w-2 h-2 rounded-full transition ${
-                i === selectedIndex ? "bg-primary scale-125" : "bg-gray-300"
+                i === selectedIndex ? "bg-primary-foreground scale-125" : "bg-gray-300"
               }`}
             />
           ))}

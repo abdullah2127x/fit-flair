@@ -61,7 +61,7 @@ const ImageCard: React.FC<ImageCardProps> = ({
 }) => {
   return (
     <div
-      className={`flex group ${changeColorOnHover ? "md:hover:bg-secondary" : ""}   rounded-lg flex-col items-center h-full  relative `}
+      className={`flex text-secondary-foreground  group ${changeColorOnHover ? "bg-secondary/30 md:hover:bg-secondary" : ""}   rounded-lg flex-col items-center h-full  relative `}
     >
       {/* image */}
       <div
@@ -116,9 +116,7 @@ const ImageCard: React.FC<ImageCardProps> = ({
           {/* showmore and quick view buttons desktop*/}
           <div className="flex absolute top-[70%] gap-2 ">
             <Button
-              className="
-            bg-secondary text-secondary-foreground shadow hover:bg-secondary/90
-            "
+              className="bg-secondary text-secondary-foreground shadow hover:bg-secondary/90"
               asChild
             >
               <Link href={slug ? slug : ""}>{buttonText}</Link>
@@ -127,9 +125,7 @@ const ImageCard: React.FC<ImageCardProps> = ({
               <>
                 <Button
                   onClick={() => onQuickView?.(id, colorName)}
-                  className="
-        bg-secondary text-secondary-foreground shadow hover:bg-secondary/90
-      "
+                  className="bg-secondary text-secondary-foreground shadow hover:bg-secondary/90"
                 >
                   Quick View
                 </Button>
@@ -141,7 +137,7 @@ const ImageCard: React.FC<ImageCardProps> = ({
 
       {/* add to cart button in mobile devices */}
       {(showAddToCart || showQuickView) && (
-        <div className="flex flex-ol gap-1 mt-2 md:hidden w-full">
+        <div className="flex gap-1 mt-2 md:hidden w-full">
           {showAddToCart && (
             <Button className=" flex gap-2 w-full justify-center items-center  text-sm ">
               <IoMdCart />
@@ -164,17 +160,19 @@ const ImageCard: React.FC<ImageCardProps> = ({
         <div className="flex flex-1 flex-col gap-2 justify-between py-3 w-full">
           {/* Title & Subtitle */}
           {title && (
-            <h3 className="text-center px-3 text-lg font-semibold ">{title}</h3>
+            <h3 className="text-center text-primary-foreground px-3 text-lg font-semibold ">
+              {title}
+            </h3>
           )}
 
           {subTitle && (
-            <p className=" text-sm leading-5 justify-self-start px-3 font-normal">
+            <p className="text-sm leading-5 justify-self-start px-3 font-normal">
               {subTitle}
             </p>
           )}
 
           {/*  price and color */}
-          <div className="flex items-center  justify-between px-2">
+          <div className="flex items-center  justify-between px-4">
             {/* price and discount */}
             {price && (
               <div className="flex gap-1 items-center">
@@ -196,7 +194,7 @@ const ImageCard: React.FC<ImageCardProps> = ({
 
             {/* color name */}
             {colorName && (
-              <div className="flex items-center text-sm gap-1">
+              <div className="flex items-center  text-sm gap-1">
                 <span className="font-medium">Color: </span>
                 <p className="font-semibold text-center">{colorName}</p>
               </div>
@@ -209,7 +207,7 @@ const ImageCard: React.FC<ImageCardProps> = ({
               {tags.map((tag, index) => (
                 <span
                   key={index}
-                  className="bg-secondary group-hover:bg-primary-foreground text-secondary-foreground text-xs font-medium px-2 py-0.5 rounded"
+                  className="bg-secondary group-hover:bg-primary/50 group-hover:text-secondary-foreground text-xs font-medium px-2 py-0.5 rounded"
                 >
                   {tag}
                 </span>

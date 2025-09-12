@@ -102,7 +102,7 @@ const CarouselComp = ({
                   animate={{ opacity: 1, filter: "blur(0px)" }}
                   exit={{ opacity: 0, filter: "blur(10px)", y: 20 }}
                   transition={{ duration: 0.5 }}
-                  className="absolute bottom-0 left-2 flex h-[14%] w-full translate-y-full items-center justify-center p-2 text-center font-medium tracking-tight text-primary text-lg"
+                  className="absolute bottom-0 left-2 flex h-[14%] w-full translate-y-full items-center justify-center p-2 text-center font-medium tracking-tight text-primary-foreground text-lg"
                 >
                   {product.title}
                 </motion.div>

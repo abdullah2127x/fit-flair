@@ -69,7 +69,7 @@ const OurProducts = () => {
       <Tabs defaultValue="new" className="w-full  flex flex-col gap-y-6">
         {/* Tab Buttons */}
         <div className="z-40 mb-4 md:mb-0" ref={tabsRef}>
-          <TabsList className="flex sm:gap-6 justify-center w-fit mx-auto shadow-md rounded-lg sm:px-4 py-2">
+          <TabsList className="flex sm:gap-6 bg-secondary text-secondary-foreground justify-center w-fit mx-auto shadow-md rounded-lg sm:px-4 py-2">
             <TabsTrigger className="px-2 sm:px-3 " value="new">
               New In
             </TabsTrigger>

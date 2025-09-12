@@ -21,19 +21,23 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {/* <Navbar /> */}
-            <div className="min-h-screen flex flex-col">
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {/* <Navbar /> */}
+          <div className="min-h-screen bg-background text-foreground flex flex-col">
+            <Header />
+            <main>{children}</main>
+            <div className=" bg-secondary text-secondary-foreground">
+              <div className="container mx-auto">
+                <Footer />
+              </div>
             </div>
-          </ThemeProvider>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

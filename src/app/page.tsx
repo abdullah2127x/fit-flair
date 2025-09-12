@@ -12,59 +12,58 @@ import ContinuousCarouselExamples from "@/components/examples/ContinuousCarousel
 import FeaturedCollection from "@/components/custom/FeaturedCollection";
 export default function Home() {
   return (
-    <div className=" flex flex-col overflow-hidden ">
+    <div className="flex flex-col overflow-hidden">
       <Hero />
 
       {/* featured */}
-      <div className="container mx-auto my-10 flex relative ">
+      <div className="container mx-auto relative flex flex-col my-10 ">
         <FeaturedCollection />
       </div>
+
       {/* fabrics */}
-      <div className="container mx-auto my-10 flex relative ">
-        <Fabrics />
+      <div className="bg-secondary/30 w-full ">
+        <div className="container mx-auto my-10 flex relative ">
+          <Fabrics />
+        </div>
       </div>
 
-      {/* winter styles banner like */}
+      {/* here add one more banner */}
+
+      {/* men */}
+        <div className="container mx-auto flex flex-col my-10 ">
+          <MenCollection />
+        </div>
+
+      {/* winter styles, banner like */}
       <div className="bg-secondary w-full ">
         <div className="container mx-auto flex flex-col my-10 ">
           <WinterStyles />
         </div>
       </div>
 
-      {/* men */}
-      <div className="bg-secondary/30 w-full ">
-        <div className="container mx-auto flex flex-col my-10 ">
-          <MenCollection />
-        </div>
-      </div>
-
       {/* women */}
-      <div className="container  mx-auto flex flex-col gap-10 my-10">
+      <div className="container  mx-auto flex gap-10 my-10">
         <WomenCollection />
       </div>
 
       {/* why choose us  */}
       <div className="bg-secondary w-full ">
-        <div className="container mx-auto flex flex-col justify-center items-center my-10 ">
+        <div className="container mx-auto flex justify-center items-center my-10 ">
           <WhyChooseUs />
         </div>
       </div>
 
       {/* our products */}
-      <div className="container  mx-auto flex flex-col gap-10 my-10">
+      <div className="container  mx-auto flex flex-col my-10">
         <OurProducts />
       </div>
 
       {/* CTA */}
-      <div className=" bg-primary text-primary-foreground">
+      <div className=" bg-primary-foreground text-primary">
         <div className="container mx-auto   my-16 ">
           <CTA />
         </div>
       </div>
     </div>
-    // <>
-    //   <EmblaCarouselExamples />
-    //   <ContinuousCarouselExamples />
-    // </>
   );
 }

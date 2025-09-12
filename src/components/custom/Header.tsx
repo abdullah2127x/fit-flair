@@ -14,8 +14,8 @@ import { navLinks } from "@/data/navLinks";
 function Logo() {
   return (
     <Link href="/" className="flex items-center space-x-2">
-      <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-        <span className="text-primary-foreground font-bold text-sm">C</span>
+      <div className="h-8 w-8 bg-primary-foreground rounded-lg flex items-center justify-center">
+        <span className="text-primary font-bold text-sm">C</span>
       </div>
       <span className="font-bold text-xl">Couture</span>
     </Link>
@@ -113,7 +113,7 @@ function DesktopNav() {
           onMouseLeave={() => animateOut(idx)}
         >
           {/* Front Layer */}
-          <div className="w-full h-full flex  items-center justify-center">
+          <div className="w-full h-full flex text-primary-foreground items-center justify-center">
             {link.label.split("").map((char, charIdx) => (
               <span
                 key={charIdx}
@@ -131,7 +131,7 @@ function DesktopNav() {
           </div>
 
           {/* Back Layer */}
-          <div className="w-full absolute h-full flex items-center justify-center">
+          <div className="w-full absolute h-full flex items-center justify-center text-secondary-foreground">
             {link.label.split("").map((char, charIdx) => (
               <span
                 key={charIdx}
@@ -153,7 +153,7 @@ function DesktopNav() {
             ref={(el) => {
               if (el) underlineRef.current[idx] = el;
             }}
-            className="bg-secondary-foreground/90 underline rounded-full absolute bottom-0 h-[2px] w-full scale-x-0"
+            className="bg-secondary-foreground underline rounded-full absolute bottom-0 h-[2px] w-full scale-x-0"
           ></div>
         </Link>
       ))}
@@ -195,7 +195,7 @@ function RightSection({
       >
         <ShoppingBag className="h-5 w-5" />
         {itemCount > 0 && (
-          <span className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 h-5 w-5 bg-primary-foreground text-primary text-xs rounded-full flex items-center justify-center">
             {itemCount}
           </span>
         )}

@@ -66,7 +66,7 @@ const ProductTabContent: React.FC<ProductTabContentProps> = ({
 
   return (
     <TabsContent value={value} className="flex flex-col gap-y-6 items-center">
-      <SubTitle>{subtitle}</SubTitle>
+      <SubTitle className="text-secondary-foreground">{subtitle}</SubTitle>
       <ProductGrid products={products} />
     </TabsContent>
   );

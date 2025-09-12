@@ -168,7 +168,7 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
       {/* Mouse wheel hint */}
       {enableMouseWheel && (
         <div className="absolute top-2 right-2 z-10">
-          <div className="bg-black/20 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity duration-300">
+          <div className="bg-secondary/20 text-secondary-foreground text-xs px-2 py-1 rounded-full backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity duration-300">
             🖱️ Use mouse wheel to scroll
           </div>
         </div>
