@@ -1,16 +1,16 @@
 "use client";
-import Hero from "@/components/custom/Hero";
-import MenCollection from "@/components/custom/MenCollection";
-import WomenCollection from "@/components/custom/WomensCollection";
-import WhyChooseUs from "@/components/custom/WhyChooseUs";
-import CTA from "@/components/custom/CTA";
-import OurProducts from "@/components/custom/OurProducts";
-import WinterStyles from "@/components/custom/WinterStyles";
-import Fabrics from "@/components/custom/Fabrics";
-import EmblaCarouselExamples from "@/components/examples/EmblaCarouselExamples";
-import ContinuousCarouselExamples from "@/components/examples/ContinuousCarouselExamples";
-import FeaturedCollection from "@/components/custom/FeaturedCollection";
-import BlackFridayBanner from "@/components/custom/BlackFriday";
+import Hero from "@/components/custom/home/Hero";
+import MenCollection from "@/components/custom/home/MenCollection";
+import WomenCollection from "@/components/custom/home/WomensCollection";
+import CTA from "@/components/custom/home/CTA";
+import OurProducts from "@/components/custom/home/OurProducts";
+import WinterStyles from "@/components/custom/home/WinterStyles";
+import Fabrics from "@/components/custom/home/Fabrics";
+import FeaturedCollection from "@/components/custom/home/FeaturedCollection";
+import BlackFridayBanner from "@/components/custom/home/BlackFriday";
+import WhyChooseUs from "@/components/custom/home/WhyChooseUs";
+
+
 export default function Home() {
   return (
     <div className="flex flex-col overflow-hidden">

@@ -6,9 +6,9 @@ import Image from "next/image";
 import { Autoplay } from "swiper/modules";
 import { useRef } from "react";
 import { PiShoppingBagOpenFill } from "react-icons/pi";
-import WrapButton from "../ui/wrap-button";
-import ScrollToExplore from "./ScrollToExplore";
-import SubTitle from "./SubTitle";
+import WrapButton from "@/components/ui/wrap-button";
+import ScrollToExplore from "@/components/custom/home/ScrollToExplore";
+import SubTitle from "@/components/custom/SubTitle";
 
 interface Slide {
   id: number;

@@ -1,8 +1,8 @@
 import React from "react";
 import SubTitle from "@/components/custom/SubTitle";
-import PrimaryHeading from "./PrimaryHeading";
+import PrimaryHeading from "../PrimaryHeading";
 import { IoIosCheckmark } from "react-icons/io";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import Link from "next/link";
 import Image from "next/image";
 

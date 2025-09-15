@@ -1,7 +1,7 @@
 import { Headphones, RefreshCw, Shield, Truck } from "lucide-react";
 import React from "react";
-import PrimaryHeading from "./PrimaryHeading";
-import SubTitle from "./SubTitle";
+import PrimaryHeading from "../PrimaryHeading";
+import SubTitle from "../SubTitle";
 
 const WhyChooseUs = () => {
   type Feature = {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import EmblaCarousel from "./EmblaCarousel";
-import SubTitle from "./SubTitle";
-import PrimaryHeading from "./PrimaryHeading";
+import EmblaCarousel from "@/components/custom/EmblaCarousel";
+import SubTitle from "@/components/custom/SubTitle";
+import PrimaryHeading from "@/components/custom/PrimaryHeading";
 import { ProductShowcaseSchema } from "@/schemas/product";
 import { client } from "@/sanity/lib/client";
 import { featuredCollectionQuery } from "@/lib/GroqQueries";

@@ -1,10 +1,10 @@
 import React, { useRef } from "react";
-import PrimaryHeading from "./PrimaryHeading";
+import PrimaryHeading from "@/components/custom/PrimaryHeading";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import OurProductsTabContent from "./OurProductsTabContent";
+import OurProductsTabContent from "@/components/custom/home/OurProductsTabContent";
 import {
   newInQuery,
   popularQuery,

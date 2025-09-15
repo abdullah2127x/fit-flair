@@ -12,9 +12,9 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import ImageCard from "./ImageCard";
-import PrimaryHeading from "./PrimaryHeading";
-import SubTitle from "./SubTitle";
+import ImageCard from "@/components/custom/ImageCard";
+import PrimaryHeading from "@/components/custom/PrimaryHeading";
+import SubTitle from "@/components/custom/SubTitle";
 import { ProductCollectionSchema } from "@/schemas/product";
 
 interface CarouselCompProps {
