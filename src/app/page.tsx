@@ -10,6 +10,7 @@ import Fabrics from "@/components/custom/Fabrics";
 import EmblaCarouselExamples from "@/components/examples/EmblaCarouselExamples";
 import ContinuousCarouselExamples from "@/components/examples/ContinuousCarouselExamples";
 import FeaturedCollection from "@/components/custom/FeaturedCollection";
+import BlackFridayBanner from "@/components/custom/BlackFriday";
 export default function Home() {
   return (
     <div className="flex flex-col overflow-hidden">
@@ -28,11 +29,16 @@ export default function Home() {
       </div>
 
       {/* here add one more banner */}
+      <div className="bg-secondary w-full ">
+        <div className="container mx-auto flex my-10 ">
+          <BlackFridayBanner />
+        </div>
+      </div>
 
       {/* men */}
-        <div className="container mx-auto flex flex-col my-10 ">
-          <MenCollection />
-        </div>
+      <div className="container mx-auto flex flex-col my-10 ">
+        <MenCollection />
+      </div>
 
       {/* winter styles, banner like */}
       <div className="bg-secondary w-full ">
