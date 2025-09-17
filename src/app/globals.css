@@ -106,7 +106,7 @@
     --popover: 47 28% 96%;
     --popover-foreground: 50 71% 11%;
 
-    --primary: 60 19% 95%;
+    --primary: 60 19% 93%;
     --primary-foreground: 50 60% 5%;
 
     --secondary: 45 15% 88%; /* Muted beige */
@@ -115,7 +115,7 @@
     --muted: 47 18% 85%;
     --muted-foreground: 0 0% 38%;
 
-    --accent: 43 24% 87%; 
+    --accent: 43 24% 87%;
     /* --accent: 41 27% 85%; */
     --accent-foreground: 50 71% 11%;
 
@@ -154,9 +154,8 @@
     --muted: 0 0% 14%;
     --muted-foreground: 40 15% 70%;
 
-     --accent: 50 71% 11%; /* Soft warm accent */
+    --accent: 50 71% 11%; /* Soft warm accent */
     --accent-foreground: 43 24% 87%;
-
 
     --destructive: 0 65% 42%;
     --destructive-foreground: 0 0% 96%;

@@ -15,7 +15,7 @@ import {
 import ImageCard from "@/components/custom/ImageCard";
 import PrimaryHeading from "@/components/custom/PrimaryHeading";
 import SubTitle from "@/components/custom/SubTitle";
-import { ProductCollectionSchema } from "@/schemas/product";
+import { ProductCollectionSchema } from "@/types/product";
 
 interface CarouselCompProps {
   products: ProductCollectionSchema[];

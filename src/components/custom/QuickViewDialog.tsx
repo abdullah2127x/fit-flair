@@ -13,7 +13,7 @@ import {
 import { client } from "@/sanity/lib/client";
 import { ProductSkeleton } from "./ProductSkeleton";
 import { quickViewProductQuery } from "@/lib/GroqQueries";
-import { QuickViewProductSchema } from "@/schemas/product";
+import { QuickViewProductSchema } from "@/types/product";
 
 interface QuickViewDialogProps {
   isOpen: boolean;
@@ -103,8 +103,8 @@ export default function QuickViewDialog({
 
             <div className="flex flex-col md:flex-row gap-6">
               <Image
-                src={product.variant.additionalImages[2]}
-                // src={product.variant.featuredImage}
+                // src={product.variant.additionalImages[2]}
+                src={product.variant.featuredImage}
                 alt={product.title}
                 width={250}
                 height={250}

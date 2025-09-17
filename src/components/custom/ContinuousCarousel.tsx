@@ -4,7 +4,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { EmblaOptionsType } from "embla-carousel";
 import AutoScroll from "embla-carousel-auto-scroll";
 import ImageCard from "./ImageCard";
-import { ProductCollectionSchema } from "@/schemas/product";
+import { ProductCollectionSchema } from "@/types/product";
 
 type ContinuousCarouselProps = {
   slides: ProductCollectionSchema[];

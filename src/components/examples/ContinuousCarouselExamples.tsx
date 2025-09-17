@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import ContinuousCarousel from "../custom/ContinuousCarousel";
-import { ProductCollectionSchema } from "@/schemas/product";
+import { ProductCollectionSchema } from "@/types/product";
 
 // Example slides data with all available fabrics
 const allFabrics: ProductCollectionSchema[] = [

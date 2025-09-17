@@ -116,7 +116,8 @@ const ImageCard: React.FC<ImageCardProps> = ({
           {/* showmore and quick view buttons desktop*/}
           <div className="flex absolute top-[70%] gap-2 ">
             <Button
-              className="bg-secondary text-secondary-foreground shadow hover:bg-secondary/90"
+              // className="bg-secondary text-secondary-foreground shadow hover:bg-secondary/90"
+              variant="default"
               asChild
             >
               <Link href={slug ? slug : ""}>{buttonText}</Link>

@@ -2,7 +2,7 @@
 import ContinuousCarousel from "@/components/custom/ContinuousCarousel";
 import PrimaryHeading from "../PrimaryHeading";
 import SubTitle from "@/components/custom/SubTitle";
-import { ProductCollectionSchema } from "@/schemas/product";
+import { ProductCollectionSchema } from "@/types/product";
 
 const womenCollection: ProductCollectionSchema[] = [
   {

@@ -5,6 +5,7 @@ import { IoIosCheckmark } from "react-icons/io";
 import { Button } from "../../ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import MyButton from "../MyButton";
 
 // ✅ Features List Data from Black Friday
 const features = [
@@ -42,10 +43,7 @@ export default function BlackFriday() {
             ))}
           </div>
 
-          <Button
-            asChild
-            className="px-8 py-3 bg-secondary-foreground text-secondary font-semibold"
-          >
+          <Button size="lg" asChild variant="secondary">
             <Link href="/shop">Grab Deals</Link>
           </Button>
         </div>

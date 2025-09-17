@@ -5,6 +5,7 @@ import Navbar from "@/components/custom/Navbar";
 import Header from "@/components/custom/Header";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Footer } from "@/components/custom/Footer";
+import ReduxStoreProvider from "@/components/providers/ReduxStoreProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,15 +29,17 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {/* <Navbar /> */}
-          <div className="min-h-screen bg-background text-foreground flex flex-col">
-            <Header />
-            <main>{children}</main>
-            <div className=" bg-secondary text-secondary-foreground">
-              <div className="container mx-auto">
-                <Footer />
+          <ReduxStoreProvider>
+            <div className="min-h-screen bg-background text-foreground flex flex-col">
+              <Header />
+              <main>{children}</main>
+              <div className=" bg-secondary text-secondary-foreground">
+                <div className="container mx-auto">
+                  <Footer />
+                </div>
               </div>
             </div>
-          </div>
+          </ReduxStoreProvider>
         </ThemeProvider>
       </body>
     </html>

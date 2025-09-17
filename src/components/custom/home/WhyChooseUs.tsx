@@ -34,7 +34,7 @@ const WhyChooseUs = () => {
   ];
 
   return (
-    <div className="">
+    <div className="flex flex-col items-center justify-center">
       <div className="text-center mb-12">
         <PrimaryHeading>Why Choose Couture</PrimaryHeading>
         <SubTitle>

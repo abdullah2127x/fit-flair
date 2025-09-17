@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import EmblaCarousel from "@/components/custom/EmblaCarousel";
 import SubTitle from "@/components/custom/SubTitle";
 import PrimaryHeading from "@/components/custom/PrimaryHeading";
-import { ProductShowcaseSchema } from "@/schemas/product";
+import { ProductShowcaseSchema } from "@/types/product";
 import { client } from "@/sanity/lib/client";
 import { featuredCollectionQuery } from "@/lib/GroqQueries";
 

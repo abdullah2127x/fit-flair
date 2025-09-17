@@ -6,7 +6,7 @@ import SubTitle from "@/components/custom/SubTitle";
 import { TabsContent } from "@/components/ui/tabs";
 
 import { client } from "@/sanity/lib/client";
-import { ProductShowcaseSchema } from "@/schemas/product";
+import { ProductShowcaseSchema } from "@/types/product";
 
 type ProductTabContentProps = {
   value: string; // tab value
@@ -20,9 +20,11 @@ const ProductTabContent: React.FC<ProductTabContentProps> = ({
   query,
 }) => {
   const [products, setProducts] = useState<ProductShowcaseSchema[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // ✅ loading state
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true); // start loading
       try {
         const data = await client.fetch(query);
 
@@ -58,6 +60,8 @@ const ProductTabContent: React.FC<ProductTabContentProps> = ({
         setProducts(formatted);
       } catch (error) {
         console.error(`Error fetching products for ${value}:`, error);
+      } finally {
+        setLoading(false); // stop loading
       }
     };
 
@@ -67,7 +71,8 @@ const ProductTabContent: React.FC<ProductTabContentProps> = ({
   return (
     <TabsContent value={value} className="flex flex-col gap-y-6 items-center">
       <SubTitle className="text-secondary-foreground">{subtitle}</SubTitle>
-      <ProductGrid products={products} />
+      {/* ✅ pass loading state */}
+      <ProductGrid products={products} loading={loading} />
     </TabsContent>
   );
 };

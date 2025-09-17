@@ -8,7 +8,8 @@ import ImageCard from "./ImageCard";
 import {
   ProductCollectionSchema,
   ProductShowcaseSchema,
-} from "@/schemas/product";
+} from "@/types/product";
+import { Button } from "../ui/button";
 
 type CarouselProps = {
   slides: ProductCollectionSchema[] | ProductShowcaseSchema[];
@@ -361,18 +362,20 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
       {/* Navigation Arrows middle*/}
       {showNavigation && canScroll && navigationPosition === "middle" && (
         <>
-          <button
+          <Button
+            variant="secondary"
             onClick={() => emblaApi?.scrollPrev()}
-            className="absolute top-1/2 left-4 -translate-y-1/2 bg-secondary shadow-lg rounded-full p-3 hover:scale-110 transition"
+            className="absolute top-1/2 left-4 -translate-y-1/2 shadow-lg rounded-full p-3 hover:scale-110 transition"
           >
             <ChevronLeft className="w-6 h-6 text-secondary-foreground" />
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="secondary"
             onClick={() => emblaApi?.scrollNext()}
-            className="absolute top-1/2 right-4 -translate-y-1/2 bg-secondary shadow-lg rounded-full p-3 hover:scale-110 transition"
+            className="absolute top-1/2 right-4 -translate-y-1/2 shadow-lg rounded-full p-3 hover:scale-110 transition"
           >
             <ChevronRight className="w-6 h-6 text-secondary-foreground" />
-          </button>
+          </Button>
         </>
       )}
 
@@ -410,7 +413,9 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
               key={i}
               onClick={() => emblaApi?.scrollTo(i)}
               className={`w-2 h-2 rounded-full transition ${
-                i === selectedIndex ? "bg-primary-foreground scale-125" : "bg-gray-300"
+                i === selectedIndex
+                  ? "bg-primary-foreground scale-125"
+                  : "bg-gray-300"
               }`}
             />
           ))}

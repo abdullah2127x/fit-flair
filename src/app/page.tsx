@@ -2,14 +2,13 @@
 import Hero from "@/components/custom/home/Hero";
 import MenCollection from "@/components/custom/home/MenCollection";
 import WomenCollection from "@/components/custom/home/WomensCollection";
-import CTA from "@/components/custom/home/CTA";
+import ReadyToExperience from "@/components/custom/home/ReadyToExperience";
 import OurProducts from "@/components/custom/home/OurProducts";
 import WinterStyles from "@/components/custom/home/WinterStyles";
 import Fabrics from "@/components/custom/home/Fabrics";
 import FeaturedCollection from "@/components/custom/home/FeaturedCollection";
 import BlackFridayBanner from "@/components/custom/home/BlackFriday";
 import WhyChooseUs from "@/components/custom/home/WhyChooseUs";
-
 
 export default function Home() {
   return (
@@ -67,7 +66,7 @@ export default function Home() {
       {/* CTA */}
       <div className=" bg-primary-foreground text-primary">
         <div className="container mx-auto   my-16 ">
-          <CTA />
+          <ReadyToExperience />
         </div>
       </div>
     </div>
