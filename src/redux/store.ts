@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import filterSidebarReducer from "@/redux/slices/filterSidebarSlice";
+import cartSidebarReducer from "@/redux/slices/cartSidebarSlice";
+import cartReducer from "@/redux/slices/cartSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
+      cart: cartReducer,
+      cartSidebar: cartSidebarReducer,
       filterSidebar: filterSidebarReducer,
     },
   });

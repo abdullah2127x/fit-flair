@@ -10,28 +10,34 @@ import {
   ProductShowcaseSchema,
 } from "@/types/product";
 import { Button } from "../ui/button";
+import QuickViewDialog from "./QuickViewDialog";
+import SkeletonImageCard from "./skeletons/SkeletonImageCard";
+type CollectionSlides = {
+  variant: "collection";
+  slides: ProductCollectionSchema[];
+};
 
-type CarouselProps = {
-  slides: ProductCollectionSchema[] | ProductShowcaseSchema[];
+type ShowcaseSlides = {
+  variant: "showcase";
+  slides: ProductShowcaseSchema[];
+};
 
+// 🔹 General carousel props (apply to all variants)
+type CarouselSharedProps = {
   slidesToShow?: number;
-
-  autoPlay?: boolean; // continuous smooth autoplay
+  loading?: boolean; // 👈 new
+  skeletonCount?: number; // 👈 optional skeleton count
+  autoPlay?: boolean;
   autoPlaySpeed?: number;
-
   rounded?: "circle" | "square";
-
-  ripple?: boolean;
-  rippleColor?: string;
-  rippleOpacity?: number;
-
   emblaOptions?: EmblaOptionsType;
   className?: string;
 
   stepAutoPlay?: boolean;
   stepAutoPlayDelay?: number;
 
-  // interactive features
+  buttonText?: string;
+
   showPagination?: boolean;
   paginationPosition?: "below" | "center";
 
@@ -44,49 +50,72 @@ type CarouselProps = {
 
   enableMouseWheel?: boolean;
   mouseWheelDirection?: "horizontal" | "vertical" | "both";
-
   mouseWheelSensitivity?: number;
+
   changeColorOnHover?: boolean;
   direction?: "forward" | "backward";
 };
 
-const EmblaCarousel: React.FC<CarouselProps> = ({
-  slides,
-  slidesToShow = 6,
-  changeColorOnHover = false,
-  rounded = "circle",
+// 🔹 Union of variants + shared props
+export type CarouselProps =
+  | (CollectionSlides & CarouselSharedProps)
+  | (ShowcaseSlides & CarouselSharedProps);
 
-  ripple = false,
-  rippleColor = "white",
-  rippleOpacity = 0.3,
+const EmblaCarousel: React.FC<CarouselProps> = (props) => {
+  const {
+    slides,
+    // variant,
+    variant = "showcase",
+    slidesToShow = 6,
+    changeColorOnHover = false,
+    rounded = "circle",
 
-  ///////////////////////
-  autoPlay = false, // continuous smooth scroll
-  autoPlaySpeed = 2,
+    loading = false,
+    skeletonCount = 4,
 
-  stepAutoPlay = false,
-  stepAutoPlayDelay = 3,
+    ///////////////////////
+    autoPlay = false, // continuous smooth scroll
+    autoPlaySpeed = 2,
 
-  emblaOptions = { loop: true },
-  className = "",
+    stepAutoPlay = false,
+    stepAutoPlayDelay = 3,
 
-  showPagination = false,
-  paginationPosition = "below",
+    buttonText,
+    emblaOptions = { loop: true },
+    className = "",
 
-  showNavigation = false,
-  navigationPosition = "middle",
+    showPagination = false,
+    paginationPosition = "below",
 
-  stopOnHover = true,
-  freeScroll = true,
-  centerIfFew = true,
+    showNavigation = false,
+    navigationPosition = "middle",
 
-  enableMouseWheel = true,
-  mouseWheelDirection = "both",
+    stopOnHover = true,
+    freeScroll = true,
+    centerIfFew = true,
 
-  mouseWheelSensitivity = 1,
+    enableMouseWheel = true,
+    mouseWheelDirection = "both",
 
-  direction = "forward",
-}) => {
+    mouseWheelSensitivity = 1,
+
+    direction = "forward",
+  } = props;
+
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null
+  );
+  const [selectedColorName, setSelectedColorName] = useState<string | null>(
+    null
+  );
+
+  const handleQuickView = (id: string, colorName: string) => {
+    setSelectedColorName(colorName);
+    setSelectedProductId(id);
+    setIsQuickViewOpen(true);
+  };
+
   // ✅ Track window width safely
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
 
@@ -158,44 +187,6 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
       emblaApi.off("resize", checkCanScroll);
     };
   }, [emblaApi, onSelect, checkCanScroll]);
-
-  // Center scale effect
-  // useEffect(() => {
-  //   if (!emblaApi || !centerScale) return;
-
-  //   const slides = emblaApi.slideNodes();
-
-  //   const applyScale = () => {
-  //     const viewport = emblaApi.rootNode();
-  //     const viewportWidth = viewport.offsetWidth;
-  //     const viewportCenter = viewportWidth / 2;
-
-  //     slides.forEach((slide) => {
-  //       const rect = slide.getBoundingClientRect();
-  //       const slideCenter = rect.left + rect.width / 2;
-  //       const distance = Math.abs(viewportCenter - slideCenter);
-
-  //       // Normalize distance (0 = center, 1 = far away)
-  //       const maxDistance = viewportWidth / 2;
-  //       const normalized = Math.min(distance / maxDistance, 1);
-
-  //       // Scale calculation
-  //       const scale = 1 - normalized * 0.3; // 👈 adjust 0.3 for intensity
-  //       slide.style.transform = `scale(${scale})`;
-  //       slide.style.transition = "transform 0.3s ease-out";
-  //     });
-  //   };
-
-  //   emblaApi.on("scroll", applyScale);
-  //   emblaApi.on("reInit", applyScale);
-
-  //   applyScale(); // initial
-
-  //   return () => {
-  //     emblaApi.off("scroll", applyScale);
-  //     emblaApi.off("reInit", applyScale);
-  //   };
-  // }, [emblaApi, centerScale]);
 
   // step autoplay (slide by slide with loop)
   useEffect(() => {
@@ -326,36 +317,86 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
             centerIfFew && slides.length <= 3 ? "justify-center" : ""
           }`}
         >
-          {slides.map((slide) => {
-            const itemsToShow =
-              windowWidth !== null && windowWidth < 768 ? 1 : slidesToShow;
-            return (
-              <div
-                key={slide.id}
-                className="px-2"
-                style={{
-                  flex: `0 0 calc(${100 / itemsToShow}% - 1rem)`,
-                }}
-              >
-                <ImageCard
-                  id={slide.id.toString()}
-                  changeColorOnHover={changeColorOnHover}
-                  slug={slide.slug ? slide.slug : "#"}
-                  src={slide.src}
-                  title={slide.title}
-                  subTitle={"subTitle" in slide ? slide.subTitle : ""}
-                  price={"price" in slide ? slide.price : undefined}
-                  discount={"discount" in slide ? slide.discount : undefined}
-                  colorName={"colorName" in slide ? slide.colorName : ""}
-                  tags={"tags" in slide ? slide.tags : []}
-                  rounded={rounded}
-                  ripple={ripple}
-                  rippleColor={rippleColor}
-                  rippleOpacity={rippleOpacity}
-                />
-              </div>
-            );
-          })}
+          {loading
+            ? Array.from({ length: skeletonCount }).map((_, i) => {
+                const itemsToShow =
+                  windowWidth !== null && windowWidth < 768 ? 1 : slidesToShow;
+
+                return (
+                  <div
+                    key={i}
+                    className="px-2"
+                    style={{
+                      flex: `0 0 calc(${100 / itemsToShow}% - 1rem)`,
+                    }}
+                  >
+                    <SkeletonImageCard tags={3} />
+                  </div>
+                );
+              })
+            : variant === "collection"
+              ? (slides as ProductCollectionSchema[]).map((slide) => {
+                  const itemsToShow =
+                    windowWidth !== null && windowWidth < 768
+                      ? 1
+                      : slidesToShow;
+                  return (
+                    <div
+                      key={slide.id}
+                      className="px-2"
+                      style={{
+                        flex: `0 0 calc(${100 / itemsToShow}% - 1rem)`,
+                      }}
+                    >
+                      <ImageCard
+                        variant="collection"
+                        id={slide.id}
+                        src={slide.src}
+                        slug={slide.slug}
+                        title={slide.title}
+                        rounded={rounded}
+                        changeColorOnHover={changeColorOnHover}
+                        buttonText="Show More"
+                      />
+                    </div>
+                  );
+                })
+              : variant === "showcase"
+                ? (slides as ProductShowcaseSchema[]).map((slide) => {
+                    const itemsToShow =
+                      windowWidth !== null && windowWidth < 768
+                        ? 1
+                        : slidesToShow;
+                    return (
+                      <div
+                        key={slide.id}
+                        className="px-2"
+                        style={{
+                          flex: `0 0 calc(${100 / itemsToShow}% - 1rem)`,
+                        }}
+                      >
+                        <ImageCard
+                          id={slide.id.toString()}
+                          variant="showcase"
+                          src={slide.src}
+                          slug={slide.slug}
+                          title={slide.title}
+                          subTitle={slide.subTitle}
+                          price={slide.price}
+                          discount={slide.discount}
+                          colorName={slide.colorName}
+                          tags={slide.tags}
+                          rounded={rounded}
+                          changeColorOnHover={changeColorOnHover}
+                          showAddToCart={true}
+                          showQuickView={true}
+                          onQuickView={handleQuickView}
+                          buttonText={buttonText}
+                        />
+                      </div>
+                    );
+                  })
+                : null}
         </div>
       </div>
 
@@ -363,16 +404,15 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
       {showNavigation && canScroll && navigationPosition === "middle" && (
         <>
           <Button
-            variant="secondary"
+            variant="default"
             onClick={() => emblaApi?.scrollPrev()}
-            className="absolute top-1/2 left-4 -translate-y-1/2 shadow-lg rounded-full p-3 hover:scale-110 transition"
+            className="absolute aspect-square bg-secondary  top-1/2 left-4 -translate-y-1/2 shadow-lg rounded-full p-3 hover:scale-110 transition"
           >
             <ChevronLeft className="w-6 h-6 text-secondary-foreground" />
           </Button>
           <Button
-            variant="secondary"
             onClick={() => emblaApi?.scrollNext()}
-            className="absolute top-1/2 right-4 -translate-y-1/2 shadow-lg rounded-full p-3 hover:scale-110 transition"
+            className="absolute top-1/2 right-4 bg-secondary aspect-square -translate-y-1/2 shadow-lg rounded-full p-3 hover:scale-110 transition"
           >
             <ChevronRight className="w-6 h-6 text-secondary-foreground" />
           </Button>
@@ -420,6 +460,21 @@ const EmblaCarousel: React.FC<CarouselProps> = ({
             />
           ))}
         </div>
+      )}
+
+      {selectedProductId && selectedColorName && (
+        <QuickViewDialog
+          isOpen={isQuickViewOpen}
+          onOpenChange={(open) => {
+            setIsQuickViewOpen(open);
+            if (!open) {
+              setSelectedProductId(null);
+              setSelectedColorName(null);
+            }
+          }}
+          productId={selectedProductId}
+          colorName={selectedColorName}
+        />
       )}
     </div>
   );

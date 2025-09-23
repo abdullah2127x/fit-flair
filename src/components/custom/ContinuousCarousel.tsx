@@ -8,15 +8,12 @@ import { ProductCollectionSchema } from "@/types/product";
 
 type ContinuousCarouselProps = {
   slides: ProductCollectionSchema[];
-  showAddToCart?: boolean;
+
   buttonText?: string;
   slidesToShow?: number;
   autoPlaySpeed?: number;
   stopOnHover?: boolean;
   rounded?: "circle" | "square";
-  ripple?: boolean;
-  rippleColor?: string;
-  rippleOpacity?: number;
   emblaOptions?: EmblaOptionsType;
   className?: string;
   centerIfFew?: boolean;
@@ -28,15 +25,12 @@ type ContinuousCarouselProps = {
 
 const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
   slides,
-  showAddToCart,
+
   buttonText,
   slidesToShow = 6,
   autoPlaySpeed = 2,
   stopOnHover = true,
   rounded = "circle",
-  ripple = false,
-  rippleColor = "white",
-  rippleOpacity = 0.3,
   emblaOptions = { loop: true },
   className = "",
   centerIfFew = true,
@@ -203,15 +197,12 @@ const ContinuousCarousel: React.FC<ContinuousCarouselProps> = ({
                 }}
               >
                 <ImageCard
+                  variant="collection"
                   id={slide.id.toString()}
                   slug={slide.slug}
                   src={slide?.src}
                   title={slide?.title}
                   rounded={rounded}
-                  ripple={ripple}
-                  rippleColor={rippleColor}
-                  rippleOpacity={rippleOpacity}
-                  showAddToCart={showAddToCart}
                   buttonText={buttonText}
                 />
               </div>

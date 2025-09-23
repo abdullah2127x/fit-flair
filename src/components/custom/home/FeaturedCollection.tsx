@@ -4,10 +4,11 @@ import SubTitle from "@/components/custom/SubTitle";
 import PrimaryHeading from "@/components/custom/PrimaryHeading";
 import { ProductShowcaseSchema } from "@/types/product";
 import { client } from "@/sanity/lib/client";
-import { featuredCollectionQuery } from "@/lib/GroqQueries";
+import { featuredCollectionQuery } from "@/lib/groqQueries";
 
 const FeaturedCollection = () => {
   const [products, setProducts] = useState<ProductShowcaseSchema[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +47,8 @@ const FeaturedCollection = () => {
         setProducts(formatted);
       } catch (error) {
         console.error(`Error fetching products: `, error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -58,6 +61,9 @@ const FeaturedCollection = () => {
       <SubTitle>Discover the latest trends in men&apos;s fashion.</SubTitle>
 
       <EmblaCarousel
+        variant="showcase"
+        loading={loading}
+        skeletonCount={4}
         changeColorOnHover
         slides={products}
         slidesToShow={4}

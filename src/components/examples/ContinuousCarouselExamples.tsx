@@ -134,7 +134,7 @@ const ContinuousCarouselExamples: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">1. Fast Continuous Scroll</h2>
         <p className="text-gray-600 mb-4">
-          High-speed continuous scrolling with blue ripple effects.
+          High-speed continuous scrolling.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -142,9 +142,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={1.2}
           stopOnHover={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="blue"
-          rippleOpacity={0.3}
           className="max-w-7xl mx-auto"
         />
       </div>
@@ -161,7 +158,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={4}
           stopOnHover={true}
           rounded="square"
-          ripple={false}
           className="max-w-5xl mx-auto"
         />
       </div>
@@ -170,7 +166,7 @@ const ContinuousCarouselExamples: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">3. Compact Grid Display</h2>
         <p className="text-gray-600 mb-4">
-          Many items in a compact grid with purple ripple effects.
+          Many items in a compact grid.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -178,9 +174,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={2.5}
           stopOnHover={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="purple"
-          rippleOpacity={0.4}
           className="max-w-8xl mx-auto"
         />
       </div>
@@ -189,7 +182,7 @@ const ContinuousCarouselExamples: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">4. Large Showcase</h2>
         <p className="text-gray-600 mb-4">
-          Large items with green ripple effects for prominent display.
+          Large items for prominent display.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -197,9 +190,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={3}
           stopOnHover={true}
           rounded="square"
-          ripple={true}
-          rippleColor="green"
-          rippleOpacity={0.25}
           className="max-w-4xl mx-auto"
         />
       </div>
@@ -208,7 +198,7 @@ const ContinuousCarouselExamples: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">5. Ultra Fast Ticker</h2>
         <p className="text-gray-600 mb-4">
-          Very fast scrolling like a news ticker with red effects.
+          Very fast scrolling like a news ticker.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -216,20 +206,17 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={0.8}
           stopOnHover={false}
           rounded="circle"
-          ripple={true}
-          rippleColor="red"
-          rippleOpacity={0.2}
           className="max-w-9xl mx-auto"
         />
       </div>
 
-      {/* Example 6: Medium Speed with Orange Ripple */}
+      {/* Example 6: Medium Speed */}
       <div>
         <h2 className="text-2xl font-bold mb-4">
-          6. Medium Speed with Orange Ripple
+          6. Medium Speed
         </h2>
         <p className="text-gray-600 mb-4">
-          Balanced speed with warm orange ripple effects.
+          Balanced speed.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -237,9 +224,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={2}
           stopOnHover={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="orange"
-          rippleOpacity={0.35}
           className="max-w-6xl mx-auto"
         />
       </div>
@@ -248,7 +232,7 @@ const ContinuousCarouselExamples: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">7. Minimalist Display</h2>
         <p className="text-gray-600 mb-4">
-          Clean, simple design without ripple effects.
+          Clean, simple design without effects.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -256,16 +240,15 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={2.8}
           stopOnHover={true}
           rounded="square"
-          ripple={false}
           className="max-w-5xl mx-auto"
         />
       </div>
 
-      {/* Example 8: Pink Ripple Effect */}
+      {/* Example 8: Medium Speed */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">8. Pink Ripple Effect</h2>
+        <h2 className="text-2xl font-bold mb-4">8. Medium Speed</h2>
         <p className="text-gray-600 mb-4">
-          Elegant pink ripple effects with medium speed.
+          Medium speed scrolling.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -273,9 +256,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={2.2}
           stopOnHover={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="pink"
-          rippleOpacity={0.3}
           className="max-w-7xl mx-auto"
         />
       </div>
@@ -284,7 +264,7 @@ const ContinuousCarouselExamples: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">9. Wide Grid Layout</h2>
         <p className="text-gray-600 mb-4">
-          Wide layout showing many items with teal effects.
+          Wide layout showing many items.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -292,18 +272,15 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={1.8}
           stopOnHover={true}
           rounded="square"
-          ripple={true}
-          rippleColor="teal"
-          rippleOpacity={0.25}
           className="max-w-8xl mx-auto"
         />
       </div>
 
-      {/* Example 10: Slow Motion with Indigo */}
+      {/* Example 10: Slow Motion */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">10. Slow Motion with Indigo</h2>
+        <h2 className="text-2xl font-bold mb-4">10. Slow Motion</h2>
         <p className="text-gray-600 mb-4">
-          Very slow, deliberate scrolling with indigo ripple effects.
+          Very slow, deliberate scrolling.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -311,9 +288,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={5}
           stopOnHover={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="indigo"
-          rippleOpacity={0.4}
           className="max-w-4xl mx-auto"
         />
       </div>
@@ -322,7 +296,7 @@ const ContinuousCarouselExamples: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">11. Compact Speed</h2>
         <p className="text-gray-600 mb-4">
-          Fast scrolling in a compact layout with yellow effects.
+          Fast scrolling in a compact layout.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -330,20 +304,17 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={1.5}
           stopOnHover={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="yellow"
-          rippleOpacity={0.3}
           className="max-w-7xl mx-auto"
         />
       </div>
 
-      {/* Example 12: Large Items with Brown Ripple */}
+      {/* Example 12: Large Items */}
       <div>
         <h2 className="text-2xl font-bold mb-4">
-          12. Large Items with Brown Ripple
+          12. Large Items
         </h2>
         <p className="text-gray-600 mb-4">
-          Large display items with warm brown ripple effects.
+          Large display items.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -351,9 +322,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={3.5}
           stopOnHover={true}
           rounded="square"
-          ripple={true}
-          rippleColor="brown"
-          rippleOpacity={0.35}
           className="max-w-3xl mx-auto"
         />
       </div>
@@ -362,7 +330,7 @@ const ContinuousCarouselExamples: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">13. Ultra Wide Layout</h2>
         <p className="text-gray-600 mb-4">
-          Maximum width layout showing many items with cyan effects.
+          Maximum width layout showing many items.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -370,9 +338,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={1.6}
           stopOnHover={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="cyan"
-          rippleOpacity={0.2}
           className="max-w-9xl mx-auto"
         />
       </div>
@@ -381,7 +346,7 @@ const ContinuousCarouselExamples: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">14. Centered Focus</h2>
         <p className="text-gray-600 mb-4">
-          Centered layout with lime green ripple effects.
+          Centered layout.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -389,9 +354,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={2.4}
           stopOnHover={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="lime"
-          rippleOpacity={0.3}
           className="max-w-6xl mx-auto"
           centerIfFew={true}
         />
@@ -401,7 +363,7 @@ const ContinuousCarouselExamples: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">15. Premium Display</h2>
         <p className="text-gray-600 mb-4">
-          Premium layout with gold ripple effects for luxury feel.
+          Premium layout.
         </p>
         <ContinuousCarousel
           slides={allFabrics}
@@ -409,9 +371,6 @@ const ContinuousCarouselExamples: React.FC = () => {
           autoPlaySpeed={2.8}
           stopOnHover={true}
           rounded="square"
-          ripple={true}
-          rippleColor="gold"
-          rippleOpacity={0.4}
           className="max-w-5xl mx-auto"
         />
       </div>

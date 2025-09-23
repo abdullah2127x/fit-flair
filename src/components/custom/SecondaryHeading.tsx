@@ -7,7 +7,7 @@ interface SecondaryHeadingProps {
 
 const SecondaryHeading: React.FC<SecondaryHeadingProps> = ({ children, className }) => {
   return (
-    <h2 className={`text-2xl md:text-3xl lg:text-4xl font-medium leading-tight ${className || ''}`}>
+    <h2 className={`text-lg md:text-xl lg:text-2xl font-bold leading-tight ${className || ''}`}>
       {children}
     </h2>
   )

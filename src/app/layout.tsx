@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/custom/Navbar";
 import Header from "@/components/custom/Header";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Footer } from "@/components/custom/Footer";
 import ReduxStoreProvider from "@/components/providers/ReduxStoreProvider";
+import CartSidebar from "@/components/custom/cart/CartSidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,28 +22,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {/* <Navbar /> */}
-          <ReduxStoreProvider>
-            <div className="min-h-screen bg-background text-foreground flex flex-col">
-              <Header />
-              <main>{children}</main>
-              <div className=" bg-secondary text-secondary-foreground">
-                <div className="container mx-auto">
-                  <Footer />
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={inter.className}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {/* <Navbar /> */}
+            <ReduxStoreProvider>
+              <div className="min-h-screen bg-background text-foreground flex flex-col">
+                <Header />
+                <main>{children}</main>
+                <div className=" bg-secondary text-secondary-foreground">
+                  <div className="container mx-auto">
+                    <Footer />
+                  </div>
                 </div>
               </div>
-            </div>
-          </ReduxStoreProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+              <CartSidebar />
+            </ReduxStoreProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

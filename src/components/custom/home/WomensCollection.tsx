@@ -92,8 +92,6 @@ const WomenCollection = () => {
         autoPlaySpeed={2}
         stopOnHover
         rounded="circle"
-        // ripple
-        // rippleColor="gold"
         emblaOptions={{ loop: true, align: "start" }}
         className="my-8"
         centerIfFew
@@ -101,7 +99,6 @@ const WomenCollection = () => {
         mouseWheelDirection="horizontal"
         mouseWheelSensitivity={1}
         direction="forward"
-        showAddToCart={false}
         buttonText="Show All"
       />
     </div>

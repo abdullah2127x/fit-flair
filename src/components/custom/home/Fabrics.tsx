@@ -87,6 +87,7 @@ const CarouselComp = ({
             >
               <div className="relative h-full w-full overflow-hidden">
                 <ImageCard
+                  variant="base"
                   id={product.id}
                   src={product.src}
                   slug={product.slug}

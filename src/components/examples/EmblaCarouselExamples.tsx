@@ -4,7 +4,7 @@ import EmblaCarousel from "../custom/EmblaCarousel";
 import { ProductCollectionSchema } from "@/types/product";
 
 // Example slides data with all available fabrics
-const allFabrics:ProductCollectionSchema[] = [
+const allFabrics: ProductCollectionSchema[] = [
   {
     id: "cotton",
     src: "/images/fabrics/Cotton.webp",
@@ -127,17 +127,19 @@ const allFabrics:ProductCollectionSchema[] = [
   },
 ];
 
-
 const EmblaCarouselExamples: React.FC = () => {
   return (
     <div className="space-y-16 p-6">
       {/* Example 1: Manual Navigation with Middle Arrows */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">1. Manual Navigation with Middle Arrows</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          1. Manual Navigation with Middle Arrows
+        </h2>
         <p className="text-gray-600 mb-4">
           Interactive carousel with navigation arrows positioned in the middle.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={4}
           autoPlay={false}
@@ -145,20 +147,21 @@ const EmblaCarouselExamples: React.FC = () => {
           navigationPosition="middle"
           showPagination={false}
           rounded="circle"
-          ripple={true}
-          rippleColor="blue"
-          rippleOpacity={0.3}
           className="max-w-5xl mx-auto"
         />
       </div>
 
       {/* Example 2: Auto-play with Pagination Dots */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">2. Auto-play with Pagination Dots</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          2. Auto-play with Pagination Dots
+        </h2>
         <p className="text-gray-600 mb-4">
-          Auto-playing carousel with pagination dots below, stops on interaction.
+          Auto-playing carousel with pagination dots below, stops on
+          interaction.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={5}
           autoPlay={true}
@@ -168,18 +171,20 @@ const EmblaCarouselExamples: React.FC = () => {
           showNavigation={false}
           stopOnHover={true}
           rounded="square"
-          ripple={false}
           className="max-w-6xl mx-auto"
         />
       </div>
 
       {/* Example 3: Navigation Below with Free Scroll */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">3. Navigation Below with Free Scroll</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          3. Navigation Below with Free Scroll
+        </h2>
         <p className="text-gray-600 mb-4">
           Navigation arrows below with free scrolling enabled.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={6}
           autoPlay={false}
@@ -188,20 +193,20 @@ const EmblaCarouselExamples: React.FC = () => {
           showPagination={false}
           freeScroll={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="purple"
-          rippleOpacity={0.4}
           className="max-w-7xl mx-auto"
         />
       </div>
 
       {/* Example 4: Centered Pagination with Auto-play */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">4. Centered Pagination with Auto-play</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          4. Centered Pagination with Auto-play
+        </h2>
         <p className="text-gray-600 mb-4">
           Auto-playing carousel with centered pagination dots.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={3}
           autoPlay={true}
@@ -211,20 +216,20 @@ const EmblaCarouselExamples: React.FC = () => {
           showNavigation={false}
           stopOnHover={true}
           rounded="square"
-          ripple={true}
-          rippleColor="green"
-          rippleOpacity={0.25}
           className="max-w-4xl mx-auto"
         />
       </div>
 
       {/* Example 5: Full Interactive Controls */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">5. Full Interactive Controls</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          5. Full Interactive Controls
+        </h2>
         <p className="text-gray-600 mb-4">
           Complete interactive carousel with both navigation and pagination.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={4}
           autoPlay={false}
@@ -234,20 +239,20 @@ const EmblaCarouselExamples: React.FC = () => {
           paginationPosition="below"
           freeScroll={false}
           rounded="circle"
-          ripple={true}
-          rippleColor="red"
-          rippleOpacity={0.3}
           className="max-w-5xl mx-auto"
         />
       </div>
 
       {/* Example 6: Fast Auto-play with Hover Pause */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">6. Fast Auto-play with Hover Pause</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          6. Fast Auto-play with Hover Pause
+        </h2>
         <p className="text-gray-600 mb-4">
           Fast auto-playing carousel that pauses on hover.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={7}
           autoPlay={true}
@@ -257,18 +262,20 @@ const EmblaCarouselExamples: React.FC = () => {
           showNavigation={false}
           stopOnHover={true}
           rounded="square"
-          ripple={false}
           className="max-w-7xl mx-auto"
         />
       </div>
 
       {/* Example 7: Large Items with Middle Navigation */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">7. Large Items with Middle Navigation</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          7. Large Items with Middle Navigation
+        </h2>
         <p className="text-gray-600 mb-4">
           Large display items with middle-positioned navigation arrows.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={2}
           autoPlay={false}
@@ -276,20 +283,20 @@ const EmblaCarouselExamples: React.FC = () => {
           navigationPosition="middle"
           showPagination={false}
           rounded="circle"
-          ripple={true}
-          rippleColor="orange"
-          rippleOpacity={0.35}
           className="max-w-3xl mx-auto"
         />
       </div>
 
       {/* Example 8: Compact Grid with Pagination */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">8. Compact Grid with Pagination</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          8. Compact Grid with Pagination
+        </h2>
         <p className="text-gray-600 mb-4">
           Compact grid layout with pagination dots only.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={8}
           autoPlay={false}
@@ -297,20 +304,20 @@ const EmblaCarouselExamples: React.FC = () => {
           showPagination={true}
           paginationPosition="below"
           rounded="square"
-          ripple={true}
-          rippleColor="pink"
-          rippleOpacity={0.3}
           className="max-w-8xl mx-auto"
         />
       </div>
 
       {/* Example 9: Slow Auto-play with Navigation Below */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">9. Slow Auto-play with Navigation Below</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          9. Slow Auto-play with Navigation Below
+        </h2>
         <p className="text-gray-600 mb-4">
           Slow auto-playing carousel with navigation arrows below.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={5}
           autoPlay={true}
@@ -320,20 +327,20 @@ const EmblaCarouselExamples: React.FC = () => {
           showPagination={false}
           stopOnHover={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="teal"
-          rippleOpacity={0.25}
           className="max-w-6xl mx-auto"
         />
       </div>
 
       {/* Example 10: Minimalist with Center Pagination */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">10. Minimalist with Center Pagination</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          10. Minimalist with Center Pagination
+        </h2>
         <p className="text-gray-600 mb-4">
           Clean, minimalist design with centered pagination dots.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={4}
           autoPlay={false}
@@ -341,18 +348,20 @@ const EmblaCarouselExamples: React.FC = () => {
           showPagination={true}
           paginationPosition="center"
           rounded="square"
-          ripple={false}
           className="max-w-5xl mx-auto"
         />
       </div>
 
       {/* Example 11: Free Scroll with Middle Navigation */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">11. Free Scroll with Middle Navigation</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          11. Free Scroll with Middle Navigation
+        </h2>
         <p className="text-gray-600 mb-4">
           Free scrolling enabled with middle-positioned navigation arrows.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={6}
           autoPlay={false}
@@ -361,20 +370,20 @@ const EmblaCarouselExamples: React.FC = () => {
           showPagination={false}
           freeScroll={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="indigo"
-          rippleOpacity={0.4}
           className="max-w-7xl mx-auto"
         />
       </div>
 
       {/* Example 12: Auto-play with Both Controls */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">12. Auto-play with Both Controls</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          12. Auto-play with Both Controls
+        </h2>
         <p className="text-gray-600 mb-4">
           Auto-playing carousel with both navigation and pagination controls.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={3}
           autoPlay={true}
@@ -385,20 +394,20 @@ const EmblaCarouselExamples: React.FC = () => {
           paginationPosition="center"
           stopOnHover={true}
           rounded="square"
-          ripple={true}
-          rippleColor="yellow"
-          rippleOpacity={0.3}
           className="max-w-4xl mx-auto"
         />
       </div>
 
       {/* Example 13: Wide Layout with Navigation */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">13. Wide Layout with Navigation</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          13. Wide Layout with Navigation
+        </h2>
         <p className="text-gray-600 mb-4">
           Wide layout showing many items with navigation arrows.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={9}
           autoPlay={false}
@@ -406,20 +415,18 @@ const EmblaCarouselExamples: React.FC = () => {
           navigationPosition="middle"
           showPagination={false}
           rounded="circle"
-          ripple={true}
-          rippleColor="cyan"
-          rippleOpacity={0.2}
           className="max-w-8xl mx-auto"
         />
       </div>
 
       {/* Example 14: Premium Auto-play Experience */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">14. Premium Auto-play Experience</h2>
-        <p className="text-gray-600 mb-4">
-          Premium auto-playing experience with gold ripple effects.
-        </p>
+        <h2 className="text-2xl font-bold mb-4">
+          14. Premium Auto-play Experience
+        </h2>
+        <p className="text-gray-600 mb-4">Premium auto-playing experience.</p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={4}
           autoPlay={true}
@@ -429,9 +436,6 @@ const EmblaCarouselExamples: React.FC = () => {
           showNavigation={false}
           stopOnHover={true}
           rounded="circle"
-          ripple={true}
-          rippleColor="gold"
-          rippleOpacity={0.4}
           className="max-w-5xl mx-auto"
         />
       </div>
@@ -443,6 +447,7 @@ const EmblaCarouselExamples: React.FC = () => {
           Complete interactive showcase with all features enabled.
         </p>
         <EmblaCarousel
+          variant="collection"
           slides={allFabrics}
           slidesToShow={5}
           autoPlay={true}
@@ -454,9 +459,6 @@ const EmblaCarouselExamples: React.FC = () => {
           stopOnHover={true}
           freeScroll={false}
           rounded="square"
-          ripple={true}
-          rippleColor="lime"
-          rippleOpacity={0.3}
           className="max-w-6xl mx-auto"
         />
       </div>

@@ -10,6 +10,26 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeToggleButton from "../ui/theme-toggle-button";
 import { navLinks } from "@/data/navLinks";
 
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { openSidebar } from "@/redux/slices/cartSidebarSlice";
+import { selectCartCount } from "@/redux/slices/cartSlice";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
+import AuthButton from "./AuthButton";
+
 // ✅ Logo Component
 function Logo() {
   return (
@@ -174,24 +194,25 @@ function DesktopSearch() {
 }
 
 // ✅ Right Section Component (User, Cart, Mobile Menu)
-function RightSection({
-  itemCount,
-  setIsCartOpen,
-}: {
-  itemCount: number;
-  setIsCartOpen: (val: boolean) => void;
-}) {
+function RightSection() {
+  const dispatch = useAppDispatch();
+  const itemCount = useAppSelector(selectCartCount);
+
   return (
     <div className="flex items-center space-x-2">
-      <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
-        <User className="h-5 w-5" />
-      </Button>
+      {/* Sign In button icon */}
+      <AuthButton />
+
+      {/* if signed in user button */}
+      {/* <SignedIn>
+        <UserButton />
+      </SignedIn> */}
 
       <Button
         variant="ghost"
         size="icon"
         className="relative"
-        onClick={() => setIsCartOpen(true)}
+        onClick={() => dispatch(openSidebar())} // ✅ opens sidebar via Redux
       >
         <ShoppingBag className="h-5 w-5" />
         {itemCount > 0 && (
@@ -244,8 +265,6 @@ function MobileSearch({
 
 // ✅ Main Header Component
 export default function Header() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
   const searchRef = useRef<HTMLDivElement | null>(null);
   const lastScrollY = useRef(0);
 
@@ -298,7 +317,7 @@ export default function Header() {
           <Logo />
           <DesktopNav />
           <DesktopSearch />
-          <RightSection itemCount={0} setIsCartOpen={setIsCartOpen} />
+          <RightSection />
           {/* <RightSection itemCount={itemCount} setIsCartOpen={setIsCartOpen} /> */}
         </div>
       </header>

@@ -15,7 +15,7 @@ const FilterButton = ({ view }: FilterButtonProps) => {
   return (
     <Button
       size="lg"
-      className="h-fit"
+      className="h-fit text-xl shadow-md border "
       onClick={() => {
         dispatch(toggleSidebar());
         view == "desktop"
@@ -25,7 +25,7 @@ const FilterButton = ({ view }: FilterButtonProps) => {
     >
       <IoFilter className="text-lg" />
       <span>Filter</span>
-      <div className="px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-400 font-semibold">
+      <div className="px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-600 font-semibold">
         New
       </div>
     </Button>

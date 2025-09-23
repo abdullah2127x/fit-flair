@@ -1,6 +1,6 @@
 "use client";
 import ProductGrid from "@/components/custom/ProductGrid";
-import { allProductsQuery, featuredCollectionQuery } from "@/lib/GroqQueries";
+import { allProductsQuery, featuredCollectionQuery } from "@/lib/groqQueries";
 import { client } from "@/sanity/lib/client";
 import { ProductShowcaseSchema } from "@/types/product";
 import React, { useEffect, useState } from "react";
@@ -35,6 +35,7 @@ const ShowInListForm = ({
 };
 
 const ShowProducts = ({ view }: { view: "list" | "grid" }) => {
+  
   const [products, setProducts] = useState<ProductShowcaseSchema[]>([]);
   const [page, setPage] = useState(0);
   const [initialLoading, setInitialLoading] = useState(true);

@@ -147,6 +147,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
             {products.map((product) => (
               <ImageCard
                 key={product.id}
+                variant="showcase"
                 id={product.id.toString()}
                 slug={product.slug}
                 title={product.title}

@@ -9,7 +9,7 @@ import {
   newInQuery,
   popularQuery,
   specialOffersQuery,
-} from "@/lib/GroqQueries";
+} from "@/lib/groqQueries";
 
 gsap.registerPlugin(ScrollTrigger);
 

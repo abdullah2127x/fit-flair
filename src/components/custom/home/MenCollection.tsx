@@ -66,17 +66,15 @@ const MenCollection = () => {
   return (
     <div className="flex flex-col gap-y-4 w-full justify-center items-center">
       <PrimaryHeading>Men&apos;s Collection</PrimaryHeading>
-    <SubTitle>Discover the latest trends in men&apos;s fashion.</SubTitle>
+      <SubTitle>Discover the latest trends in men&apos;s fashion.</SubTitle>
 
       {/* <ProductGrid rounded="square" slidesToShow={4} slides={products} /> */}
       <ContinuousCarousel
         slides={menCollection}
         slidesToShow={5}
         autoPlaySpeed={2}
-        stopOnHover 
+        stopOnHover
         rounded="circle"
-        // ripple
-        // rippleColor="gold"
         emblaOptions={{ loop: true, align: "start" }}
         className="my-8"
         centerIfFew
@@ -84,7 +82,6 @@ const MenCollection = () => {
         mouseWheelDirection="horizontal"
         mouseWheelSensitivity={1}
         direction="backward"
-        showAddToCart={false}
         buttonText="Show All"
       />
     </div>
