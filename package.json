@@ -1,5 +1,5 @@
 {
-  "name": "sapphire-clone",
+  "name": "fit-flair",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,9 @@
     "lint": "next lint",
     "delete-item": "node src/scripts/deleteItem.mjs",
     "clear-data": "node src/scripts/clearData.mjs",
-    "import-data": "node src/scripts/importData.mjs"
+    "import-data": "node src/scripts/importData.mjs",
+    "seed-db": "node src/scripts/seedDatabase.mjs seed",
+    "clear-db": "node src/scripts/seedDatabase.mjs clear"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.32.2",
@@ -52,6 +54,7 @@
     "sanity": "^4.5.0",
     "stripe": "^18.5.0",
     "styled-components": "^6.1.19",
+    "svix": "^1.76.1",
     "swiper": "^11.2.10",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7"
