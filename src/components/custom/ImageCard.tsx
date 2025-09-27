@@ -95,6 +95,7 @@ const ImageCard: React.FC<ImageCardProps> = (props) => {
           {/* add to cart button desktop*/}
           {props.variant == "showcase" && showAddToCart && (
             <AddToCartWrapper
+              quantity={1}
               productId={id}
               slug={slug}
               title={props.variant === "showcase" ? props.title : ""}
@@ -143,6 +144,7 @@ const ImageCard: React.FC<ImageCardProps> = (props) => {
         <div className="flex gap-1 mt-2 md:hidden w-full">
           {showAddToCart && (
             <AddToCartWrapper
+              quantity={1}
               productId={id}
               slug={slug}
               title={props.variant === "showcase" ? props.title : ""}

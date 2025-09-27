@@ -4,19 +4,26 @@ import {
   SignedIn,
   SignedOut,
   SignInButton,
-  SignUpButton,
   UserButton,
-} from "@clerk/nextjs"; // assuming Clerk auth
+  useUser,
+} from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AuthButton() {
+  const { isLoaded } = useUser(); // track loading state
+
+  if (!isLoaded) {
+    // show skeleton while Clerk is loading auth state
+    return (
+      <Skeleton className="h-9 w-9 rounded-full flex justify-center items-center">
+                    <User className="h-5 w-5" />
+
+      </Skeleton>
+    );
+  }
+
   return (
     <>
       <SignedOut>
@@ -31,7 +38,7 @@ export default function AuthButton() {
           <Button
             variant="ghost"
             size="icon"
-            className="inline-flex h-6 w-6 sm:w-9 sm:h-9 "
+            className="inline-flex h-6 w-6 sm:w-9 sm:h-9"
           >
             <User className="h-5 w-5" />
           </Button>

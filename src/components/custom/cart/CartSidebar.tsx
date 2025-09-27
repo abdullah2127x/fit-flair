@@ -3,7 +3,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { closeSidebar } from "@/redux/slices/cartSidebarSlice";
-import { CartItem } from "@/types/cart";
+import { ICartItem } from "@/types/cart";
 import {
   Sheet,
   SheetContent,
@@ -47,7 +47,7 @@ const CartSidebar = () => {
                     <Link href="/shopping-cart">View Cart</Link>
                   </Button>
 
-                  {items.map((item: CartItem) => (
+                  {items.map((item: ICartItem) => (
                     <div
                       key={item.productId}
                       onClick={() => {

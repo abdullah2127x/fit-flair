@@ -8,11 +8,11 @@ import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useAppSelector } from "@/redux/hooks";
 import { selectCartCount } from "@/redux/slices/cartSlice";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import FullPageLoader from "@/components/custom/FullPageLoader";
 
-export default function CalculateShipping() {
+function CalculateShippingContent() {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -29,7 +29,6 @@ export default function CalculateShipping() {
   if (!isMounted) {
     return <FullPageLoader />;
   }
-  
 
   return (
     <>
@@ -53,8 +52,8 @@ export default function CalculateShipping() {
 
           <SecondaryHeading>Your cart is empty</SecondaryHeading>
           <p className="text-secondary-foreground mb-6 max-w-sm">
-            Looks like you haven&apos;t added anything to your cart yet. Explore our
-            products and find something you&apos;ll love!
+            Looks like you haven&apos;t added anything to your cart yet. Explore
+            our products and find something you&apos;ll love!
           </p>
           <Button variant="secondary" size="lg" asChild>
             <Link href={"/shop"}>Start Shopping</Link>
@@ -62,5 +61,13 @@ export default function CalculateShipping() {
         </div>
       )}
     </>
+  );
+}
+
+export default function CalculateShipping() {
+  return (
+    <Suspense fallback={<FullPageLoader />}>
+      <CalculateShippingContent />
+    </Suspense>
   );
 }

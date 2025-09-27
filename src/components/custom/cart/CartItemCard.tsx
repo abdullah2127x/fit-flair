@@ -1,8 +1,8 @@
-import { CartItem } from "@/types/cart";
+import { ICartItem } from "@/types/cart";
 import Image from "next/image";
 import React from "react";
 
-const CartItemCard = ({ item }: { item: CartItem }) => {
+const CartItemCard = ({ item }: { item: ICartItem }) => {
   return (
     <div className="w-full flex justify-start items-center p-2">
       <div className="h-20 md:h-24 w-20 md:w-24 overflow-hidden bg-secondary rounded-md aspect-square flex justify-center items-center">

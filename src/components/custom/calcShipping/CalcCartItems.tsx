@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import CartItemCard from "../cart/CartItemCard";
+import { ICartItem } from "@/types/cart";
 
 export default function CalcCartItems() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function CalcCartItems() {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      {items.map((item) => (
+      {items.map((item: ICartItem) => (
         <div
           key={item.productId}
           onClick={() => {

@@ -84,13 +84,6 @@ const StripePayment = () => {
   // Format the total price for display and calculations
   const amount = parseFloat((totalPrice as number).toFixed(2));
 
-  console.log(
-    "The total price is ",
-    totalPrice,
-    "and the type of total price is ",
-    typeof totalPrice
-  );
-
   return (
     <div>
       <h1 className="text-6xl font-bold text-center">

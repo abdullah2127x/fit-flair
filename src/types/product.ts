@@ -35,10 +35,10 @@ export interface ProductDetailSchema {
   subTitle: string;
   price: number;
   discount: number;
-  category: string;
-  subCategory: string;
+  category: "unStitched" | "stitched" | "readyToWear";
+  subCategory: "top" | "bottom" | "2piece" | "3piece";
   fabric: string;
-  audience: string;
+  audience: "men" | "women";
   designs: string[];
   occasions: string[];
   season: string[]; // optional season

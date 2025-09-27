@@ -1,26 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 export async function POST(request: NextRequest) {
-    try {
-        const { amount } = await request.json();
+  try {
+    const { amount } = await request.json();
 
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: amount,
-            currency: 'usd',
-            automatic_payment_methods: { enabled: true },
-            // automatic_payment_methods: ['card_present'], 
-        })
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: "usd",
+      automatic_payment_methods: { enabled: true },
+    });
 
-        return NextResponse.json({ clientSecret: paymentIntent.client_secret })
-
+    return NextResponse.json({ clientSecret: paymentIntent.client_secret });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return NextResponse.json(
+        { error: err.message },
+        { status: 500 } // ✅ status goes here, not inside body
+      );
     }
-    catch (err: unknown) {
-        if (err instanceof Error) {
-            return NextResponse.json({
-                status: 500,
-                body: { error: err.message }
-            })
-        }
-    }
+
+    // ✅ fallback response (in case err is not an Error instance)
+    return NextResponse.json(
+      { error: "Unknown error occurred" },
+      { status: 500 }
+    );
+  }
 }

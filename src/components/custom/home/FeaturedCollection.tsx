@@ -71,7 +71,8 @@ const FeaturedCollection = () => {
         stepAutoPlay
         stepAutoPlayDelay={2}
         showNavigation={true}
-        showPagination={true}
+        // showPagination={true}
+        buttonText="View Detail"
         navigationPosition="middle"
         rounded="square"
         mouseWheelDirection="horizontal"

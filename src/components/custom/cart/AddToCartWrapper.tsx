@@ -3,9 +3,9 @@ import { ReactNode } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { openSidebar } from "@/redux/slices/cartSidebarSlice";
-import type { CartItem } from "@/types/cart";
+import type { ICartItem } from "@/types/cart";
 
-interface AddToCartWrapperProps extends CartItem {
+interface AddToCartWrapperProps extends ICartItem {
   children: ReactNode;
 }
 

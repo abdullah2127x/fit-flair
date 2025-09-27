@@ -5,12 +5,8 @@ import ShopHeader from "@/components/custom/shop/FilterHeader";
 import ShopProducts from "@/components/custom/shop/ShowProducts";
 import FilterSidebar from "@/components/custom/shop/FilterSidebar";
 import { useAppSelector } from "@/redux/hooks";
-import { useSearchParams } from "next/navigation";
 
 const Shop = () => {
-  const searchParams = useSearchParams();
-  // const initialColor = searchParams.get("color");
-
   const { isFilterOpen } = useAppSelector((state) => state.filterSidebar);
 
   return (

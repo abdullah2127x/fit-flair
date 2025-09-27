@@ -1,6 +1,6 @@
 // redux/slices/cartSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { CartItem } from "@/types/cart";
+import type { ICartItem } from "@/types/cart";
 import { RootState } from "@/redux/store";
 
 const selectCartCount = (state: RootState) =>
@@ -15,7 +15,7 @@ const selectCartSubtotal = (state: RootState) =>
   );
 
 // Load from localStorage
-const loadCart = (): CartItem[] => {
+const loadCart = (): ICartItem[] => {
   if (typeof window !== "undefined") {
     const data = localStorage.getItem("cart");
     return data ? JSON.parse(data) : [];
@@ -24,14 +24,14 @@ const loadCart = (): CartItem[] => {
 };
 
 // Save to localStorage
-const saveCart = (items: CartItem[]) => {
+const saveCart = (items: ICartItem[]) => {
   if (typeof window !== "undefined") {
     localStorage.setItem("cart", JSON.stringify(items));
   }
 };
 
 interface CartState {
-  items: CartItem[];
+  items: ICartItem[];
 }
 
 const initialState: CartState = {
@@ -42,7 +42,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<CartItem>) => {
+    addToCart: (state, action: PayloadAction<ICartItem>) => {
       const newItem = {
         ...action.payload,
         quantity: action.payload.quantity ?? 1,

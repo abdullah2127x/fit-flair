@@ -1,17 +1,19 @@
-interface IParams {
-  searchParams: {
-    amount: number;
-  };
-}
-
+"use client";
 import SecondaryHeading from "@/components/custom/SecondaryHeading";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { MdOutlineWatchLater } from "react-icons/md";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default function OrderCompleted({ searchParams }: IParams) {
+import { MdOutlineWatchLater } from "react-icons/md";
+import FullPageLoader from "@/components/custom/FullPageLoader";
+
+function OrderCompletedContent() {
+  const searchParams = useSearchParams();
+  const amount = searchParams.get("amount"); // ✅ get query param
+
   return (
     <div
       id="orderCompleted"
@@ -23,9 +25,9 @@ export default function OrderCompleted({ searchParams }: IParams) {
         <Check className="bg-[#F6F7FA] size-20 p-1 rounded-full text-pPink" />
         <SecondaryHeading>Your Order Is Completed!</SecondaryHeading>
         <p className=" text-subText max-w-[625px]  text-center">
-          Thank you for your order of ${searchParams.amount}! Your order is
-          being processed and will be completed within 3-6 hours. You will
-          receive an email confirmation when your order is completed.
+          Thank you for your order of ${amount ?? "0"}! Your order is being
+          processed and will be completed within 3-6 hours. You will receive an
+          email confirmation when your order is completed.
         </p>
         <Link href="/products">
           <Button>Continue Shopping</Button>
@@ -39,5 +41,13 @@ export default function OrderCompleted({ searchParams }: IParams) {
         alt="CheckList Icon"
       />
     </div>
+  );
+}
+
+export default function OrderCompleted() {
+  return (
+    <Suspense fallback={<FullPageLoader />}>
+      <OrderCompletedContent />
+    </Suspense>
   );
 }

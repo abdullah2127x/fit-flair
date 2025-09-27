@@ -252,6 +252,7 @@ export default function ProductDetailContent({
           {/* Buttons */}
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <AddToCartWrapper
+              quantity={1}
               productId={product.id}
               slug={product.slug}
               title={product.title}
