@@ -5,7 +5,7 @@
 // All the method in ApiClient uses its own private method "request" with one parameter required i.e "endpoint" where send the req and the second parameter is the options of the req like POST req body and more.
 
 // API client for making requests to our Mongoose-based API routes
-import { ResponseType } from "@/types/response";
+import { ResponseType } from "@/types/apiResponse";
 
 class ApiClient {
   private baseUrl: string;
@@ -22,7 +22,7 @@ class ApiClient {
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
-  ): Promise<T> {
+  ): Promise<ResponseType<T>> {
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         headers: {
@@ -33,57 +33,55 @@ class ApiClient {
       });
 
       const result: ResponseType<T> = await response.json();
+      console.log("In the request the result is : ", result);
 
-      // Always check unified success flag
-      if (!result.success) {
-        throw result; // throw the ResponseType itself
-      }
-
-      return result.data as T;
+      // ✅ Don’t throw — always return the structured response
+      return result;
     } catch (err: any) {
-      // If server didn't respond with JSON (network failure, timeout, etc.)
       if (err instanceof SyntaxError) {
-        throw {
+        return {
           status: 0,
           success: false,
           message: "Invalid server response",
           code: "INVALID_JSON",
-        } satisfies ResponseType;
+        };
       }
 
-      if (err?.success === false) {
-        throw err as ResponseType; // already structured
-      }
-
-      throw {
+      return {
         status: 0,
         success: false,
         message: `Network error: ${err?.message || "Unknown"}`,
         code: "NETWORK_ERROR",
-      } satisfies ResponseType;
+      };
     }
   }
+
   // ========= Helper method to send the fetch from the request method
-  private get<T>(endpoint: string) {
-    return this.request<T>(endpoint, { method: "GET" });
+  async get<T>(endpoint: string) {
+    console.log("req come to get of api client");
+    const a = await this.request<T>(endpoint, { method: "GET" });
+    console.log("the respond of the get api client is: ", a);
+    return a;
   }
 
-  private post<T>(endpoint: string, body: unknown) {
-    return this.request<T>(endpoint, {
+  async post<T>(endpoint: string, body: unknown) {
+    console.log("req come to post of api client");
+    return await this.request<T>(endpoint, {
       method: "POST",
       body: JSON.stringify(body),
     });
   }
 
-  private put<T>(endpoint: string, body: unknown) {
-    return this.request<T>(endpoint, {
+  async put<T>(endpoint: string, body: unknown) {
+    console.log("req come to put of api client");
+    return await this.request<T>(endpoint, {
       method: "PUT",
       body: JSON.stringify(body),
     });
   }
 
-  private delete<T>(endpoint: string) {
-    return this.request<T>(endpoint, { method: "DELETE" });
+  async delete<T>(endpoint: string) {
+    return await this.request<T>(endpoint, { method: "DELETE" });
   }
 
   // =========Methods that can be access form the client side code
@@ -192,7 +190,17 @@ class ApiClient {
   // ===== User API methods =====
 
   async getUser() {
-    return this.get("/users");
+    const res = await this.get("/users");
+
+    if (!res.success && res.code === "NOT_FOUND") {
+      return null; // user doesn’t exist
+    }
+
+    if (!res.success) {
+      throw res; // rethrow real errors
+    }
+
+    return res.data; // only return the user object
   }
 
   async createUser(userData: {
@@ -201,7 +209,10 @@ class ApiClient {
     lastName: string;
     phone?: string;
   }) {
-    return this.post("/users", userData);
+    const res = await this.post("/users", userData);
+
+    if (!res.success) throw res; // bubble up errors
+    return res.data; // only return the user
   }
 
   async updateUser(userData: {
@@ -210,7 +221,10 @@ class ApiClient {
     phone?: string;
     addresses?: any[];
   }) {
-    return this.put("/users", userData);
+    const res = await this.put("/users", userData);
+
+    if (!res.success) throw res;
+    return res.data; // updated user object
   }
 }
 

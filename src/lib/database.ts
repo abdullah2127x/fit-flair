@@ -5,7 +5,7 @@ import Order from "@/models/Order";
 import Cart from "@/models/Cart";
 import { ICart, ICartItem } from "@/types/cart";
 import { formatDBError } from "@/utilityFunctions/formatDBError";
-import { DBResponse, Pagination } from "@/types/database";
+import { DbErrorCode, DBResponse, Pagination } from "@/types/database";
 import { IUser } from "@/types/user";
 import { IOrder, IOrderItem } from "@/types/order";
 
@@ -108,12 +108,27 @@ export class DatabaseService {
   // }
 
   // User operations
-  static async getUserByClerkId(
-    clerkId: string
-  ): Promise<DBResponse<IUser | null>> {
+  static async getUserByClerkId(clerkId: string): Promise<DBResponse<IUser>> {
     try {
       await connectDB();
+      console.log(
+        "The getUserByClerkId is called! and the clerk id is : ",
+        clerkId
+      );
+
       const user = await User.findOne({ clerkId });
+      console.log("The user from db in the get user by clerk id is : ", user);
+
+      if (!user) {
+        return {
+          success: false,
+          error: {
+            code: DbErrorCode.NOT_FOUND,
+            message: "User not found",
+          },
+        };
+      }
+
       return { success: true, data: user };
     } catch (err: any) {
       return formatDBError(err);
@@ -137,9 +152,23 @@ export class DatabaseService {
   ): Promise<DBResponse<IUser | null>> {
     try {
       await connectDB();
-      const updated = await User.findOneAndUpdate({ clerkId }, updateData, {
-        new: true,
-      });
+
+      const updated = await User.findOneAndUpdate(
+        { clerkId },
+        updateData,
+        { new: true } // return the updated document
+      );
+
+      if (!updated) {
+        return {
+          success: false,
+          error: {
+            code: DbErrorCode.NOT_FOUND,
+            message: `No user found with clerkId: ${clerkId}`,
+          },
+        };
+      }
+
       return { success: true, data: updated };
     } catch (err: any) {
       return formatDBError(err);

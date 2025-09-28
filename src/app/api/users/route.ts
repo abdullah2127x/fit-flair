@@ -1,19 +1,24 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import DatabaseService from "@/lib/database";
 import { success, failure } from "@/lib/response";
 import { mapDbCodeToStatus } from "@/utilityFunctions/mapDbCodeToStatus";
+import { DbErrorCode } from "@/types/database";
 
 export async function GET() {
   try {
+    console.log("get req come to users route");
     const { userId } = await auth();
 
     if (!userId) {
+      console.log("IN the get user endpoint user is not logged in! ");
       return failure("Unauthorized", 401);
     }
 
     // getUserByClerkId returns DBResponse<User | null>
+    console.log("IN the get user endpoint user has logged in! ");
     const userRes = await DatabaseService.getUserByClerkId(userId);
+    console.log("The user res from the data base that already exist.", userRes);
 
     if (!userRes.success) {
       const err = userRes.error;
@@ -26,10 +31,6 @@ export async function GET() {
       );
     }
 
-    if (!userRes.data) {
-      return failure("User not found", 404, "NOT_FOUND");
-    }
-
     return success(userRes.data, "User fetched", 200);
   } catch (err: any) {
     console.error("Unhandled error fetching user:", err);
@@ -37,14 +38,76 @@ export async function GET() {
   }
 }
 
+// have two logic first find and then create if not exist
+// export async function POST(request: NextRequest) {
+//   try {
+//     const { userId } = await auth();
+//     if (!userId) return failure("Unauthorized", 401);
+
+//     const body = await request.json();
+//     const { email, firstName, lastName, phone } = body;
+
+//     const userData = {
+//       clerkId: userId,
+//       email,
+//       firstName,
+//       lastName,
+//       phone,
+//       addresses: [],
+//       orders: [],
+//     };
+
+//     // --- Check existing user ---
+//     const existingRes = await DatabaseService.getUserByClerkId(userId);
+
+//     // If there was a DB error that is NOT "NOT_FOUND", return it
+//     if (
+//       !existingRes.success &&
+//       existingRes.error?.code !== DbErrorCode.NOT_FOUND
+//     ) {
+//       const err = existingRes.error!;
+//       return failure(
+//         err.message || "Database error",
+//         mapDbCodeToStatus(err.code),
+//         err.code,
+//         err.details
+//       );
+//     }
+
+//     // If user exists (success + data) -> return it
+//     if (existingRes.success && existingRes.data) {
+//       return success(existingRes.data, "User already exists", 200);
+//     }
+
+//     // At this point: user not found -> create a new one
+//     const createRes = await DatabaseService.createUser(userData);
+//     if (!createRes.success) {
+//       const err = createRes.error!;
+//       return failure(
+//         err.message || "Database error",
+//         mapDbCodeToStatus(err.code),
+//         err.code,
+//         err.details
+//       );
+//     }
+
+//     return success(createRes.data, "User created", 201);
+//   } catch (err: any) {
+//     console.error("Unhandled error creating user:", err);
+//     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
+//   }
+// }
+
+// just create and if there is already the user so database return the error dublicate key
 export async function POST(request: NextRequest) {
   try {
+    console.log("Req come to POST /users");
+
     // authorize first
     const { userId } = await auth();
     if (!userId) {
       return failure("Unauthorized", 401);
     }
-
     const body = await request.json();
     const { email, firstName, lastName, phone } = body;
 
@@ -58,25 +121,8 @@ export async function POST(request: NextRequest) {
       orders: [],
     };
 
-    // check if user already exists for this clerkId
-    const savedUserRes = await DatabaseService.getUserByClerkId(userId);
-
-    if (!savedUserRes.success) {
-      // DB-level error — map and forward
-      const err = savedUserRes.error;
-      const status = mapDbCodeToStatus(err?.code);
-      return failure(
-        err?.message || "Database error",
-        status,
-        err?.code,
-        err?.details
-      );
-    }
-    const savedUser = savedUserRes.data;
-    if (savedUser) return success(savedUser, "User already exists", 200);
-
-    // createUser returns DBResponse<User>
     const createRes = await DatabaseService.createUser(userData);
+
     if (!createRes.success) {
       const err = createRes.error;
       const status = mapDbCodeToStatus(err?.code);
@@ -90,7 +136,7 @@ export async function POST(request: NextRequest) {
 
     return success(createRes.data, "User created", 201);
   } catch (err: any) {
-    console.error("Unhandled error creating user:", err);
+    console.error("Unhandled error creating/upserting user:", err);
     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
   }
 }

@@ -1,11 +1,11 @@
-import { DBResponse } from "@/types/database";
+import { DBResponse, DbErrorCode } from "@/types/database";
 
 export function formatDBError<T = null>(err: any): DBResponse<T> {
   if (err.name === "ValidationError") {
     return {
       success: false,
       error: {
-        code: "VALIDATION_ERROR",
+        code: DbErrorCode.VALIDATION_ERROR,
         message: "Validation failed",
         details: err.errors,
       },
@@ -16,7 +16,7 @@ export function formatDBError<T = null>(err: any): DBResponse<T> {
     return {
       success: false,
       error: {
-        code: "DUPLICATE_KEY",
+        code: DbErrorCode.DUPLICATE_KEY,
         message: "Duplicate key error",
         details: err.keyValue,
       },
@@ -26,7 +26,7 @@ export function formatDBError<T = null>(err: any): DBResponse<T> {
   return {
     success: false,
     error: {
-      code: "DB_ERROR",
+      code: DbErrorCode.DB_ERROR,
       message: err.message || "Unknown database error",
     },
   };

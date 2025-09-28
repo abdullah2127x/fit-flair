@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/custom/Navbar";
 import Header from "@/components/custom/Header";
@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Footer } from "@/components/custom/Footer";
 import ReduxStoreProvider from "@/components/providers/ReduxStoreProvider";
 import CartSidebar from "@/components/custom/cart/CartSidebar";
-// import SyncUser from "@/components/custom/SyncUser";
+import SyncUser from "@/components/custom/SyncUser";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,17 +32,17 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {/* <SyncUser /> */}
+            <SyncUser />
             {/* <Navbar /> */}
             <ReduxStoreProvider>
               <div className="min-h-screen bg-background text-foreground flex flex-col">
                 <Header />
                 <main>{children}</main>
-                <div className=" bg-secondary text-secondary-foreground">
+                {/* <div className=" bg-secondary text-secondary-foreground">
                   <div className="container mx-auto">
                     <Footer />
                   </div>
-                </div>
+                </div> */}
               </div>
               <CartSidebar />
             </ReduxStoreProvider>

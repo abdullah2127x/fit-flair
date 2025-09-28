@@ -1,6 +1,6 @@
 // this import the Response type and create two functions success and failure
 
-import { ResponseType } from "@/types/response";
+import { ResponseType } from "@/types/apiResponse";
 import { NextResponse } from "next/server";
 
 export function success<T>(data: T, message = "OK", status = 200) {
