@@ -81,33 +81,29 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import DatabaseService from "@/lib/database"; // your DB methods
+import DatabaseService from "@/lib/database";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
   if (!WEBHOOK_SECRET) {
-    console.error("❌ [Stage 0] Missing CLERK_WEBHOOK_SECRET");
+    console.error("❌ Missing CLERK_WEBHOOK_SECRET");
     throw new Error("Missing CLERK_WEBHOOK_SECRET");
   }
 
-  console.log("📩 [Stage 1] Clerk webhook received");
+  console.log("📩 Clerk webhook received");
 
-  // 1. Extract headers
+  // 1️⃣ Extract headers
   const headerPayload = headers();
   const svix_id = (await headerPayload).get("svix-id");
   const svix_timestamp = (await headerPayload).get("svix-timestamp");
   const svix_signature = (await headerPayload).get("svix-signature");
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    console.error("❌ [Stage 1.1] Missing Svix headers");
+    console.error("❌ Missing Svix headers");
     return NextResponse.json({ error: "Missing Svix headers" }, { status: 400 });
   }
-  console.log("✅ [Stage 1.2] Svix headers found:", {
-    svix_id,
-    svix_timestamp,
-  });
 
-  // 2. Verify payload
+  // 2️⃣ Verify payload
   const payload = await req.json();
   const body = JSON.stringify(payload);
 
@@ -120,58 +116,52 @@ export async function POST(req: Request) {
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
     });
-    console.log("✅ [Stage 2] Webhook verified");
+    console.log("✅ Webhook verified");
   } catch (err) {
-    console.error("❌ [Stage 2] Webhook verification failed:", err);
+    console.error("❌ Webhook verification failed:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  // 3. Handle events
-  const eventType = evt.type;
-  const data = evt.data;
-  console.log(`📢 [Stage 3] Event received: ${eventType}`);
+  // 3️⃣ Helper function to handle DB operations
+  const handleUserEvent = async (type: string, data: any) => {
+    const userData = {
+      clerkId: data.id,
+      email: data.email_addresses?.[0]?.email_address,
+      firstName: data.first_name,
+      lastName: data.last_name,
+      phone: data.phone_numbers?.[0]?.phone_number,
+      addresses: [],
+      orders: [],
+    };
 
+    switch (type) {
+      case "user.created":
+        console.log("👤 Creating user in DB:", userData);
+        await DatabaseService.createUser(userData);
+        break;
+
+      case "user.updated":
+        console.log("🔄 Updating user in DB:", userData);
+        await DatabaseService.updateUser(data.id, userData);
+        break;
+
+      case "user.deleted":
+        console.log("🗑️ User deleted in Clerk:", data.id);
+        // Optional: mark inactive in DB
+        break;
+
+      default:
+        console.warn("⚠️ Unhandled event type:", type);
+    }
+  };
+
+  // 4️⃣ Process event
   try {
-    if (eventType === "user.created") {
-      console.log("👤 [Stage 3.1] Creating user in DB with:", {
-        clerkId: data.id,
-        email: data.email_addresses[0]?.email_address,
-      });
-      await DatabaseService.createUser({
-        clerkId: data.id,
-        email: data.email_addresses[0]?.email_address,
-        firstName: data.first_name,
-        lastName: data.last_name,
-        phone: data.phone_numbers[0]?.phone_number,
-        addresses: [],
-        orders: [],
-      });
-      console.log("✅ [Stage 3.1] User created successfully in DB");
-    }
-
-    if (eventType === "user.updated") {
-      console.log(`🔄 [Stage 3.2] Updating user in DB with ID: ${data.id}`);
-      await DatabaseService.updateUser(data.id, {
-        email: data.email_addresses[0]?.email_address,
-        firstName: data.first_name,
-        lastName: data.last_name,
-        phone: data.phone_numbers[0]?.phone_number,
-      });
-      console.log("✅ [Stage 3.2] User updated successfully in DB");
-    }
-
-    if (eventType === "user.deleted") {
-      console.log(`🗑️ [Stage 3.3] User deleted in Clerk: ${data.id}`);
-      // optional: mark inactive in DB
-    }
-
-    console.log("🎉 [Stage 4] Webhook processed successfully");
+    await handleUserEvent(evt.type, evt.data);
+    console.log("🎉 Webhook processed successfully");
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error("❌ [Stage 4] Error processing Clerk webhook:", error);
-    return NextResponse.json(
-      { error: "Webhook handling failed" },
-      { status: 500 }
-    );
+    console.error("❌ Error processing webhook:", error);
+    return NextResponse.json({ error: "Webhook handling failed" }, { status: 500 });
   }
 }
