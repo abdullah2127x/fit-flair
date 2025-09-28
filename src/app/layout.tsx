@@ -32,17 +32,17 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <SyncUser />
+            {/* <SyncUser /> */}
             {/* <Navbar /> */}
             <ReduxStoreProvider>
               <div className="min-h-screen bg-background text-foreground flex flex-col">
                 <Header />
                 <main>{children}</main>
-                {/* <div className=" bg-secondary text-secondary-foreground">
+                <div className=" bg-secondary text-secondary-foreground">
                   <div className="container mx-auto">
                     <Footer />
                   </div>
-                </div> */}
+                </div>
               </div>
               <CartSidebar />
             </ReduxStoreProvider>
