@@ -76,8 +76,6 @@
 //   }
 // }
 
-
-
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -100,7 +98,10 @@ export async function POST(req: Request) {
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
     console.error("❌ Missing Svix headers");
-    return NextResponse.json({ error: "Missing Svix headers" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing Svix headers" },
+      { status: 400 }
+    );
   }
 
   // 2️⃣ Verify payload
@@ -147,7 +148,7 @@ export async function POST(req: Request) {
 
       case "user.deleted":
         console.log("🗑️ User deleted in Clerk:", data.id);
-        // Optional: mark inactive in DB
+        await DatabaseService.deleteUser(data.id);
         break;
 
       default:
@@ -162,6 +163,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("❌ Error processing webhook:", error);
-    return NextResponse.json({ error: "Webhook handling failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Webhook handling failed" },
+      { status: 500 }
+    );
   }
 }

@@ -226,6 +226,18 @@ class ApiClient {
     if (!res.success) throw res;
     return res.data; // updated user object
   }
+  
+  async deleteUser() {
+    const res = await this.delete("/users");
+
+    if (!res.success && res.code === "NOT_FOUND") {
+      return null; // user doesn’t exist
+    }
+
+    if (!res.success) throw res; // bubble up errors
+
+    return res.data; // return deleted user object (or success response)
+  }
 }
 
 export const apiClient = new ApiClient();

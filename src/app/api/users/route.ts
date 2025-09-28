@@ -38,65 +38,6 @@ export async function GET() {
   }
 }
 
-// have two logic first find and then create if not exist
-// export async function POST(request: NextRequest) {
-//   try {
-//     const { userId } = await auth();
-//     if (!userId) return failure("Unauthorized", 401);
-
-//     const body = await request.json();
-//     const { email, firstName, lastName, phone } = body;
-
-//     const userData = {
-//       clerkId: userId,
-//       email,
-//       firstName,
-//       lastName,
-//       phone,
-//       addresses: [],
-//       orders: [],
-//     };
-
-//     // --- Check existing user ---
-//     const existingRes = await DatabaseService.getUserByClerkId(userId);
-
-//     // If there was a DB error that is NOT "NOT_FOUND", return it
-//     if (
-//       !existingRes.success &&
-//       existingRes.error?.code !== DbErrorCode.NOT_FOUND
-//     ) {
-//       const err = existingRes.error!;
-//       return failure(
-//         err.message || "Database error",
-//         mapDbCodeToStatus(err.code),
-//         err.code,
-//         err.details
-//       );
-//     }
-
-//     // If user exists (success + data) -> return it
-//     if (existingRes.success && existingRes.data) {
-//       return success(existingRes.data, "User already exists", 200);
-//     }
-
-//     // At this point: user not found -> create a new one
-//     const createRes = await DatabaseService.createUser(userData);
-//     if (!createRes.success) {
-//       const err = createRes.error!;
-//       return failure(
-//         err.message || "Database error",
-//         mapDbCodeToStatus(err.code),
-//         err.code,
-//         err.details
-//       );
-//     }
-
-//     return success(createRes.data, "User created", 201);
-//   } catch (err: any) {
-//     console.error("Unhandled error creating user:", err);
-//     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
-//   }
-// }
 
 // just create and if there is already the user so database return the error dublicate key
 export async function POST(request: NextRequest) {
@@ -182,6 +123,41 @@ export async function PUT(request: NextRequest) {
     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
   }
 }
+
+export async function DELETE() {
+  try {
+    console.log("Req come to DELETE /users");
+
+    const { userId } = await auth();
+    if (!userId) {
+      return failure("Unauthorized", 401);
+    }
+
+    // call service layer to delete by clerkId
+    const deleteRes = await DatabaseService.deleteUser(userId);
+
+    if (!deleteRes.success) {
+      const err = deleteRes.error;
+      const status = mapDbCodeToStatus(err?.code);
+      return failure(
+        err?.message || "Database error",
+        status,
+        err?.code,
+        err?.details
+      );
+    }
+
+    if (!deleteRes.data) {
+      return failure("User not found", 404, "NOT_FOUND");
+    }
+
+    return success(deleteRes.data, "User deleted", 200);
+  } catch (err: any) {
+    console.error("Unhandled error deleting user:", err);
+    return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
+  }
+}
+
 // export async function PUT(request: NextRequest) {
 //   try {
 //     const { userId } = await auth();
