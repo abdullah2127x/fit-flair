@@ -157,7 +157,11 @@ export class DatabaseService {
     try {
       await connectDB();
       console.log("Mongo db connected successfully when updating");
-
+      console.log(
+        "The id and updated data got in the update is :",
+        clerkId,
+        updateData
+      );
       const updated = await User.findOneAndUpdate(
         { clerkId },
         updateData,
@@ -165,7 +169,10 @@ export class DatabaseService {
       );
 
       if (!updated) {
-        console.log("When updating so the user with the id is not found");
+        console.log(
+          "When updating so the user with the id is not found and the id  is :",
+          clerkId
+        );
         return {
           success: false,
           error: {
