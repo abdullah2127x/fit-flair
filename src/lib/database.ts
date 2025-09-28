@@ -138,10 +138,14 @@ export class DatabaseService {
   static async createUser(userData: any): Promise<DBResponse<IUser>> {
     try {
       await connectDB();
+      console.log("Mongo db connected successfully when creating")
       const user = new User(userData);
+      console.log("The user that is created is :", user)
       const saved = await user.save();
+      console.log("After saving the user, the saved is :", saved)
       return { success: true, data: saved };
     } catch (err: any) {
+      console.log("The error from catch under createUser in databse :", err)
       return formatDBError(err);
     }
   }
@@ -152,6 +156,8 @@ export class DatabaseService {
   ): Promise<DBResponse<IUser | null>> {
     try {
       await connectDB();
+            console.log("Mongo db connected successfully when updating")
+
 
       const updated = await User.findOneAndUpdate(
         { clerkId },
@@ -159,7 +165,9 @@ export class DatabaseService {
         { new: true } // return the updated document
       );
 
+
       if (!updated) {
+        console.log("When updating so the user with the id is not found")
         return {
           success: false,
           error: {
@@ -169,6 +177,7 @@ export class DatabaseService {
         };
       }
 
+      console.log("The updated user is :",updated)
       return { success: true, data: updated };
     } catch (err: any) {
       return formatDBError(err);
