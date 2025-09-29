@@ -215,126 +215,148 @@ export class DatabaseService {
     }
   }
 
-  // // Cart operations
-  // static async getCart(userId: string): Promise<DBResponse<ICart | null>> {
-  //   try {
-  //     await connectDB();
-  //     let cart = await Cart.findOne({ userId });
+  // Cart operations
+  static async getCart(userId: string): Promise<DBResponse<ICart | null>> {
+    try {
+      await connectDB();
+      let cart = await Cart.findOne({ userId });
 
-  //     if (!cart) {
-  //       cart = new Cart({ userId, items: [] });
-  //       await cart.save();
-  //     }
+      if (!cart) {
+        cart = new Cart({ userId, items: [] });
+        await cart.save();
+      }
 
-  //     return { success: true, data: cart };
-  //   } catch (err: any) {
-  //     return formatDBError(err);
-  //   }
-  // }
+      return { success: true, data: cart };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
 
-  // static async addToCart(
-  //   userId: string,
-  //   item: any
-  // ): Promise<DBResponse<ICart>> {
-  //   try {
-  //     await connectDB();
-  //     let cart = await Cart.findOne({ userId });
+  static async addToCart(
+    userId: string,
+    item: any
+  ): Promise<DBResponse<ICart>> {
+    try {
+      await connectDB();
+      let cart = await Cart.findOne({ userId });
 
-  //     if (!cart) {
-  //       cart = new Cart({ userId, items: [] });
-  //     }
+      if (!cart) {
+        cart = new Cart({ userId, items: [] });
+      }
 
-  //     const existingItemIndex = cart.items.findIndex(
-  //       (cartItem: ICartItem) =>
-  //         cartItem.productId === item.productId &&
-  //         cartItem.colorName === item.colorName
-  //     );
+      const existingItemIndex = cart.items.findIndex(
+        (cartItem: ICartItem) =>
+          cartItem.productId === item.productId &&
+          cartItem.colorName === item.colorName
+      );
 
-  //     if (existingItemIndex > -1) {
-  //       cart.items[existingItemIndex].quantity += item.quantity;
-  //     } else {
-  //       cart.items.push(item);
-  //     }
+      if (existingItemIndex > -1) {
+        cart.items[existingItemIndex].quantity += item.quantity;
+      } else {
+        cart.items.push(item);
+      }
 
-  //     const saved = await cart.save();
-  //     return { success: true, data: saved };
-  //   } catch (err: any) {
-  //     return formatDBError(err);
-  //   }
-  // }
+      const saved = await cart.save();
+      return { success: true, data: saved };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
 
-  // static async updateCartItem(
-  //   userId: string,
-  //   productId: string,
-  //   colorName: string,
-  //   quantity: number
-  // ): Promise<DBResponse<ICart | null>> {
-  //   try {
-  //     await connectDB();
-  //     const cart = await Cart.findOne({ userId });
+  static async addManyToCart(
+    userId: string,
+    items: ICartItem[]
+  ): Promise<DBResponse<ICart>> {
+    try {
+      await connectDB();
+      let cart = await Cart.findOne({ userId });
 
-  //     if (!cart) {
-  //       return { success: true, data: null }; // no cart found but not an error
-  //     }
+      if (!cart) {
+        cart = new Cart({ userId, items });
+      } else {
+        // Clear existing items and replace with new items
+        cart.items = items;
+      }
 
-  //     const itemIndex = cart.items.findIndex(
-  //       (item: ICartItem) =>
-  //         item.productId === productId && item.colorName === colorName
-  //     );
+      await cart.save();
+      return { success: true, data: cart };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
 
-  //     if (itemIndex > -1) {
-  //       if (quantity <= 0) {
-  //         cart.items.splice(itemIndex, 1);
-  //       } else {
-  //         cart.items[itemIndex].quantity = quantity;
-  //       }
-  //     }
+  static async updateCartItem(
+    userId: string,
+    productId: string,
+    colorName: string,
+    quantity: number
+  ): Promise<DBResponse<ICart | null>> {
+    try {
+      await connectDB();
+      const cart = await Cart.findOne({ userId });
 
-  //     const saved = await cart.save();
-  //     return { success: true, data: saved };
-  //   } catch (err: any) {
-  //     return formatDBError(err);
-  //   }
-  // }
+      if (!cart) {
+        return { success: true, data: null }; // no cart found but not an error
+      }
 
-  // static async removeFromCart(
-  //   userId: string,
-  //   productId: string,
-  //   colorName: string
-  // ): Promise<DBResponse<ICart | null>> {
-  //   try {
-  //     await connectDB();
-  //     const cart = await Cart.findOne({ userId });
+      const itemIndex = cart.items.findIndex(
+        (item: ICartItem) =>
+          item.productId === productId && item.colorName === colorName
+      );
 
-  //     if (!cart) {
-  //       return { success: true, data: null }; // empty cart
-  //     }
+      if (itemIndex > -1) {
+        if (quantity <= 0) {
+          cart.items.splice(itemIndex, 1);
+        } else {
+          cart.items[itemIndex].quantity = quantity;
+        }
+      }
 
-  //     cart.items = cart.items.filter(
-  //       (item: ICartItem) =>
-  //         !(item.productId === productId && item.colorName === colorName)
-  //     );
+      const saved = await cart.save();
+      return { success: true, data: saved };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
 
-  //     const saved = await cart.save();
-  //     return { success: true, data: saved };
-  //   } catch (err: any) {
-  //     return formatDBError(err);
-  //   }
-  // }
+  static async removeFromCart(
+    userId: string,
+    productId: string,
+    colorName: string
+  ): Promise<DBResponse<ICart | null>> {
+    try {
+      await connectDB();
+      const cart = await Cart.findOne({ userId });
 
-  // static async clearCart(userId: string): Promise<DBResponse<ICart | null>> {
-  //   try {
-  //     await connectDB();
-  //     const cleared = await Cart.findOneAndUpdate(
-  //       { userId },
-  //       { items: [] },
-  //       { new: true }
-  //     );
-  //     return { success: true, data: cleared };
-  //   } catch (err: any) {
-  //     return formatDBError(err);
-  //   }
-  // }
+      if (!cart) {
+        return { success: true, data: null }; // empty cart
+      }
+
+      cart.items = cart.items.filter(
+        (item: ICartItem) =>
+          !(item.productId === productId && item.colorName === colorName)
+      );
+
+      const saved = await cart.save();
+      return { success: true, data: saved };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
+
+  static async clearCart(userId: string): Promise<DBResponse<ICart | null>> {
+    try {
+      await connectDB();
+      const cleared = await Cart.findOneAndUpdate(
+        { userId },
+        { items: [] },
+        { new: true }
+      );
+      return { success: true, data: cleared };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
 
   // // Order operations
   // static async createOrder(orderData: any): Promise<DBResponse<IOrder>> {

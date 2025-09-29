@@ -6,6 +6,7 @@
 
 // API client for making requests to our Mongoose-based API routes
 import { ResponseType } from "@/types/apiResponse";
+import { ICartItem } from "@/types/cart";
 
 class ApiClient {
   private baseUrl: string;
@@ -124,36 +125,29 @@ class ApiClient {
   //   return this.get(`/products/slug/${slug}`);
   // }
 
-  // // ===== Cart API methods =====
-  // async getCart() {
-  //   return this.get("/cart");
-  // }
+  // ===== Cart API methods =====
+  async getCart() {
+    return this.get("/cart");
+  }
 
-  // async addToCart(item: {
-  //   productId: string;
-  //   productTitle: string;
-  //   productSlug: string;
-  //   subTitle: string;
-  //   price: number;
-  //   discount: number;
-  //   imageSrc: string;
-  //   colorName: string;
-  //   quantity: number;
-  // }) {
-  //   return this.post("/cart", item);
-  // }
+  async addManyToCart(items: ICartItem[]) {
+    return this.post("/cart", items);
+  }
+  async addToCart(item: ICartItem) {
+    return this.post("/cart", item);
+  }
 
-  // async updateCartItem(productId: string, colorName: string, quantity: number) {
-  //   return this.put("/cart", { productId, colorName, quantity });
-  // }
+  async updateCartItem(productId: string, colorName: string, quantity: number) {
+    return this.put("/cart", { productId, colorName, quantity });
+  }
 
-  // async removeFromCart(productId: string, colorName: string) {
-  //   return this.delete(`/cart?productId=${productId}&colorName=${colorName}`);
-  // }
+  async removeFromCart(productId: string, colorName: string) {
+    return this.delete(`/cart?productId=${productId}&colorName=${colorName}`);
+  }
 
-  // async clearCart() {
-  //   return this.delete("/cart");
-  // }
+  async clearCart() {
+    return this.delete("/cart");
+  }
 
   // // ===== Order API methods =====
   // async getOrders(
@@ -226,7 +220,7 @@ class ApiClient {
     if (!res.success) throw res;
     return res.data; // updated user object
   }
-  
+
   async deleteUser() {
     const res = await this.delete("/users");
 

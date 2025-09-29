@@ -1,12 +1,57 @@
 // redux/slices/cartSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import type { ICartItem } from "@/types/cart";
 import { RootState } from "@/redux/store";
 
-const selectCartCount = (state: RootState) =>
+import {
+  loadCartFromLocalStorage,
+  saveCartToLocalStorage,
+  loadCartFromDB,
+  saveCartToDB,
+} from "@/utilityFunctions/cartFunctions";
+
+// =======================================
+// THUNKS
+// =======================================
+
+// Thunk: load cart from DB
+export const fetchCartFromDB = createAsyncThunk(
+  "cart/fetchCartFromDB",
+  async (_, { rejectWithValue }) => {
+    try {
+      console.log("In the slice fetching items from db");
+      const dbItems = await loadCartFromDB();
+      console.log(
+        "In the slice after fetching the items from db are : ",
+        dbItems
+      );
+      return dbItems || [];
+    } catch (err) {
+      return rejectWithValue("Failed to load cart from DB");
+    }
+  }
+);
+
+// Thunk: save cart to DB
+export const persistCartToDB = createAsyncThunk(
+  "cart/persistCartToDB",
+  async (items: ICartItem[], { rejectWithValue }) => {
+    try {
+      await saveCartToDB(items); // ✅ FIX: pass items
+      return items;
+    } catch (err) {
+      return rejectWithValue("Failed to save cart to DB");
+    }
+  }
+);
+
+// =======================================
+// SELECTORS
+// =======================================
+export const selectCartCount = (state: RootState) =>
   state.cart.items.reduce((total, item) => total + (item.quantity ?? 1), 0);
 
-const selectCartSubtotal = (state: RootState) =>
+export const selectCartSubtotal = (state: RootState) =>
   state.cart.items.reduce(
     (total, item) =>
       total +
@@ -14,41 +59,35 @@ const selectCartSubtotal = (state: RootState) =>
     0
   );
 
-// Load from localStorage
-const loadCart = (): ICartItem[] => {
-  if (typeof window !== "undefined") {
-    const data = localStorage.getItem("cart");
-    return data ? JSON.parse(data) : [];
-  }
-  return [];
-};
-
-// Save to localStorage
-const saveCart = (items: ICartItem[]) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("cart", JSON.stringify(items));
-  }
-};
-
+// =======================================
+// STATE
+// =======================================
 interface CartState {
   items: ICartItem[];
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: CartState = {
-  items: loadCart(),
+  items: loadCartFromLocalStorage(), // fallback for guests
+  loading: false,
+  error: null,
 };
+
+// =======================================
+// SLICE
+// =======================================
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<ICartItem>) => {
+    addToCart(state, action: PayloadAction<ICartItem>) {
       const newItem = {
         ...action.payload,
         quantity: action.payload.quantity ?? 1,
       };
 
-      // Check if same product + same color already exists
       const existing = state.items.find(
         (i) =>
           i.productId === newItem.productId && i.colorName === newItem.colorName
@@ -60,7 +99,7 @@ const cartSlice = createSlice({
         state.items.push(newItem);
       }
 
-      saveCart(state.items);
+      saveCartToLocalStorage(state.items);
     },
 
     removeFromCart: (
@@ -74,9 +113,19 @@ const cartSlice = createSlice({
             i.colorName === action.payload.colorName
           )
       );
-      saveCart(state.items);
+      saveCartToLocalStorage(state.items);
     },
 
+    clearCart: (state) => {
+      state.items = [];
+      saveCartToLocalStorage(state.items);
+    },
+
+    setCart: (state, action: PayloadAction<ICartItem[]>) => {
+      state.items = action.payload;
+      // keep localStorage updated for guests
+      localStorage.setItem("cart", JSON.stringify(action.payload));
+    },
     decreaseQuantity: (
       state,
       action: PayloadAction<{ productId: string; colorName: string }>
@@ -101,8 +150,9 @@ const cartSlice = createSlice({
         }
       }
 
-      saveCart(state.items);
+      saveCartToLocalStorage(state.items);
     },
+
     increaseQuantity: (
       state,
       action: PayloadAction<{ productId: string; colorName: string }>
@@ -114,20 +164,10 @@ const cartSlice = createSlice({
       );
 
       if (item) {
-        if ((item.quantity ?? 1) > 1) {
-          item.quantity = (item.quantity ?? 1) + 1;
-        } else {
-          state.items = state.items.filter(
-            (i) =>
-              !(
-                i.productId === action.payload.productId &&
-                i.colorName === action.payload.colorName
-              )
-          );
-        }
+        item.quantity = (item.quantity ?? 1) + 1;
       }
 
-      saveCart(state.items);
+      saveCartToLocalStorage(state.items);
     },
 
     setQuantity: (
@@ -148,18 +188,41 @@ const cartSlice = createSlice({
         item.quantity = action.payload.quantity;
       }
 
-      saveCart(state.items);
+      saveCartToLocalStorage(state.items);
     },
-
-    clearCart: (state) => {
+    resetCart(state) {
       state.items = [];
-      saveCart(state.items);
+      // Clear localStorage as well
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("cart");
+      }
     },
+  },
+
+  // =======================================
+  // EXTRA REDUCERS (for async thunks)
+  // =======================================
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCartFromDB.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCartFromDB.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload; // ✅ Replace local cart with DB cart
+      })
+      .addCase(fetchCartFromDB.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(persistCartToDB.fulfilled, (state, action) => {
+        state.items = action.payload; // ✅ Ensure Redux matches DB
+      });
   },
 });
 
-export { selectCartCount, selectCartSubtotal };
-
+// =======================================
 export const {
   addToCart,
   removeFromCart,
@@ -167,5 +230,7 @@ export const {
   decreaseQuantity,
   clearCart,
   setQuantity,
+  setCart,
+  resetCart,
 } = cartSlice.actions;
 export default cartSlice.reducer;

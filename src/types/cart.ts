@@ -12,6 +12,7 @@ import { ProductDetailSchema, ProductVariantSchema } from "@/types/product";
 //   quantity: number;
 // }
 
+
 export interface ICartItem {
   productId: string;
   title: string;

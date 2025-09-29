@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
-import { Search, ShoppingBag, Menu, User } from "lucide-react";
+import { Search, ShoppingBag, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -13,21 +13,6 @@ import { navLinks } from "@/data/navLinks";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { openSidebar } from "@/redux/slices/cartSidebarSlice";
 import { selectCartCount } from "@/redux/slices/cartSlice";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
 import AuthButton from "./AuthButton";
 
 // ✅ Logo Component

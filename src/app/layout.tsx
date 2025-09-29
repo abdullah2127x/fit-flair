@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Footer } from "@/components/custom/Footer";
 import ReduxStoreProvider from "@/components/providers/ReduxStoreProvider";
 import CartSidebar from "@/components/custom/cart/CartSidebar";
-import SyncUser from "@/components/custom/SyncUser";
+import SyncCartOnLogin from "@/components/custom/SyncUser";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,9 +32,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {/* <SyncUser /> */}
             {/* <Navbar /> */}
             <ReduxStoreProvider>
+            <SyncCartOnLogin />
               <div className="min-h-screen bg-background text-foreground flex flex-col">
                 <Header />
                 <main>{children}</main>
@@ -44,7 +44,7 @@ export default function RootLayout({
                   </div>
                 </div>
               </div>
-              <CartSidebar />
+              {/* <CartSidebar /> */}
             </ReduxStoreProvider>
           </ThemeProvider>
         </body>
