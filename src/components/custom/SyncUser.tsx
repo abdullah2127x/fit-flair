@@ -3,7 +3,7 @@ import { useUser } from "@clerk/nextjs";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/redux/hooks";
 
-import { fetchCartFromDB } from "@/redux/slices/cartSlice";
+import { fetchCartFromDB, setCart } from "@/redux/slices/cartSlice";
 import {
   clearCartFromLocalStorage,
   saveCartToLocalStorage,
@@ -18,13 +18,18 @@ export default function SyncCartOnLogin() {
     if (!user) return;
     const runSync = async () => {
       // console.log("🔄 User logged in, syncing cart...");
-      await syncCart(); // merge local + db and save on both places
+      // await syncCart(); // merge local + db and save on both places
+
       // clearCartFromLocalStorage();
-      dispatch(fetchCartFromDB()); // refresh Redux state from DB x
+      // dispatch(fetchCartFromDB()); // refresh Redux state from DB x
+
+      const mergedCart = await syncCart();
+      console.log("The merged carts in the sunc user are : ", mergedCart);
+      dispatch(setCart(mergedCart));
     };
 
     runSync();
-  }, [user]);
+  }, [user, dispatch]);
 
   return null; // no UI, just background logic
 }

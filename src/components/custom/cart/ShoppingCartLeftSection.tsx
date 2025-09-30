@@ -14,33 +14,45 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { RootState } from "@/redux/store";
-import { useUser } from "@clerk/nextjs";
-import { ICartItem } from "@/types/cart";
 import { syncCart } from "@/utilityFunctions/cartFunctions";
 
 const ShoppingCartLeftSection = () => {
   const dispatch = useAppDispatch();
-
   const items = useAppSelector((state: RootState) => state.cart.items);
-  const { user } = useUser();
   const cartCount = useAppSelector(selectCartCount);
 
-  // 🔹 Sync cart after login
-  useEffect(() => {
-    const doSync = async () => {
-      if (!user) return;
-      const merged = await syncCart();
-      dispatch(setCart(merged));
-    };
-    doSync();
-  }, [user, dispatch]);
-
-  const handleRemoveAllItems = () => {
-    dispatch(clearCart());
+  const handleRemoveItem = async (productId: string, colorName: string) => {
+    dispatch(removeFromCart({ productId, colorName }));
+    const merged = await syncCart();
+    dispatch(setCart(merged));
   };
 
-  const handleRemoveItem = (productId: string, colorName: string) => {
-    dispatch(removeFromCart({ productId, colorName }));
+  const handleRemoveAllItems = async () => {
+    dispatch(clearCart());
+    const merged = await syncCart();
+    dispatch(setCart(merged));
+  };
+
+  // Single function to handle quantity change + sync
+  const handleQuantityChange = async (
+    productId: string,
+    colorName: string,
+    quantity: number
+  ) => {
+    // 1. Update Redux immediately
+    dispatch(
+      setQuantity({
+        productId,
+        colorName,
+        quantity,
+      })
+    );
+
+    // 2. Sync with DB (merged result)
+    const merged = await syncCart();
+
+    // 3. Update Redux with merged cart
+    dispatch(setCart(merged));
   };
 
   return (
@@ -105,14 +117,21 @@ const ShoppingCartLeftSection = () => {
                     type="number"
                     value={item.quantity}
                     min={1}
-                    onChange={(e) =>
-                      dispatch(
-                        setQuantity({
-                          productId: item.productId,
-                          colorName: item.colorName,
-                          quantity: Number(e.target.value),
-                        })
-                      )
+                    onChange={
+                      (e) =>
+                        handleQuantityChange(
+                          item.productId,
+                          item.colorName,
+                          Number(e.target.value)
+                        )
+
+                      // dispatch(
+                      //   setQuantity({
+                      //     productId: item.productId,
+                      //     colorName: item.colorName,
+                      //     quantity: Number(e.target.value),
+                      //   })
+                      // )
                     }
                     className="border border-secondary-foreground text-secondary-foreground rounded w-16 text-center"
                   />

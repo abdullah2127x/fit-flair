@@ -82,6 +82,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    // from local
     addToCart(state, action: PayloadAction<ICartItem>) {
       const newItem = {
         ...action.payload,
@@ -102,6 +103,7 @@ const cartSlice = createSlice({
       saveCartToLocalStorage(state.items);
     },
 
+    // from local
     removeFromCart: (
       state,
       action: PayloadAction<{ productId: string; colorName: string }>

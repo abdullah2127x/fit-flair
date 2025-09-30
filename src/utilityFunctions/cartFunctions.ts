@@ -76,8 +76,10 @@ const mergeCarts = (localCart: ICartItem[], dbCart: ICartItem[]) => {
         item.colorName == localItem.colorName
     );
     if (existing) {
+      // console.log("The item is already exist so we are not updating the quantity", existing)
       // sum the quntity of both
       // existing.quantity += localItem.quantity; // Add quantities
+      existing.quantity = localItem.quantity; // set local quantities
     } else {
       merged.push(localItem);
     }

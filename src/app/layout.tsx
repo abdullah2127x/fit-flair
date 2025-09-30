@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css"
+import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import Navbar from "@/components/custom/Navbar";
 import Header from "@/components/custom/Header";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Footer } from "@/components/custom/Footer";
 import ReduxStoreProvider from "@/components/providers/ReduxStoreProvider";
 import CartSidebar from "@/components/custom/cart/CartSidebar";
-import SyncCartOnLogin from "@/components/custom/SyncUser";
+import SyncCartOnLogin from "@/components/custom/SyncCartOnLogin";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,7 +33,7 @@ export default function RootLayout({
           >
             {/* <Navbar /> */}
             <ReduxStoreProvider>
-            <SyncCartOnLogin />
+              <SyncCartOnLogin />
               <div className="min-h-screen bg-background text-foreground flex flex-col">
                 <Header />
                 <main>{children}</main>
@@ -44,7 +43,7 @@ export default function RootLayout({
                   </div>
                 </div>
               </div>
-              {/* <CartSidebar /> */}
+              <CartSidebar />
             </ReduxStoreProvider>
           </ThemeProvider>
         </body>

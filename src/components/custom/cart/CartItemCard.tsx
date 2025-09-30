@@ -37,7 +37,8 @@ const CartItemCard = ({ item }: { item: ICartItem }) => {
         <div className="flex gap-3 items-center">
           {/* ✅ Price after discount */}
           <p className="text-sm font-bold text-secondary-foreground">
-            ${item.price - (item.price * item.discount) / 100}
+            $
+            {Number(item.price - (item.price * item.discount) / 100).toFixed(2)}
           </p>
 
           {/* ❌ Original Price */}
