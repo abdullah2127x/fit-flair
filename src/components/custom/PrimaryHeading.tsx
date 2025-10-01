@@ -11,11 +11,11 @@ const PrimaryHeading: React.FC<PrimaryHeadingProps> = ({
   className,
 }) => {
   return (
-    <h1
+    <span
       className={`text-2xl md:text-3xl lg:text-4xl font-bold leading-tight ${className || ""}`}
     >
       {children}
-    </h1>
+    </span>
   );
 };
 

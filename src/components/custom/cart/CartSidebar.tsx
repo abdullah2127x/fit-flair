@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 import { closeSidebar } from "@/redux/slices/cartSidebarSlice";
 import { ICartItem } from "@/types/cart";
-import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,11 +23,11 @@ const CartSidebar = () => {
       <Sheet open={isOpen} onOpenChange={() => dispatch(closeSidebar())}>
         <SheetContent className="w-[90vw] sm:max-w-md text-darkTextBlue overflow-y-auto">
           <SheetHeader className="flex flex-col gap-3">
-            {/* <SheetTitle className="text-primary-foreground"> */}
+            <SheetTitle className="text-primary-foreground">
             <PrimaryHeading className="text-primary-foreground">
               Shopping Cart
             </PrimaryHeading>
-            {/* </SheetTitle> */}
+            </SheetTitle>
 
             <div className="flex flex-col gap-y-5 mt-8">
               {items.length === 0 ? (

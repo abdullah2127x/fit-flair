@@ -23,14 +23,16 @@ const ShoppingCartLeftSection = () => {
 
   const handleRemoveItem = async (productId: string, colorName: string) => {
     dispatch(removeFromCart({ productId, colorName }));
-    const merged = await syncCart();
-    dispatch(setCart(merged));
+    setTimeout(async () => {
+      await syncCart();
+    }, 2000);
   };
 
   const handleRemoveAllItems = async () => {
     dispatch(clearCart());
-    const merged = await syncCart();
-    dispatch(setCart(merged));
+    setTimeout(async () => {
+      await syncCart();
+    }, 2000);
   };
 
   // Single function to handle quantity change + sync
@@ -49,10 +51,12 @@ const ShoppingCartLeftSection = () => {
     );
 
     // 2. Sync with DB (merged result)
-    const merged = await syncCart();
+    setTimeout(async () => {
+      await syncCart();
+    }, 2000);
 
     // 3. Update Redux with merged cart
-    dispatch(setCart(merged));
+    // dispatch(setCart(merged));
   };
 
   return (
