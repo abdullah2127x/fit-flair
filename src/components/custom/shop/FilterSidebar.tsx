@@ -19,11 +19,9 @@ const FilterSidebar = () => {
 
   const handleApply = () => {
     dispatch(closeSidebar());
-    console.log("Filter is applied with Sidebar and then closed! ");
   };
   const handleClose = () => {
     dispatch(closeSidebar());
-    console.log("Sidebar is closed! ");
   };
 
   return (

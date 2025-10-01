@@ -14,7 +14,6 @@ export default function SyncCartOnLogin() {
     if (!user) return;
     const runSync = async () => {
       const mergedCart = await syncCart();
-      console.log("The merged carts in the sunc user are : ", mergedCart);
       dispatch(setCart(mergedCart));
     };
 

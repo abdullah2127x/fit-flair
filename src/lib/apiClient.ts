@@ -34,7 +34,6 @@ class ApiClient {
       });
 
       const result: ResponseType<T> = await response.json();
-      console.log("In the request the result is : ", result);
 
       // ✅ Don’t throw — always return the structured response
       return result;
@@ -59,14 +58,11 @@ class ApiClient {
 
   // ========= Helper method to send the fetch from the request method
   async get<T>(endpoint: string) {
-    console.log("req come to get of api client");
     const a = await this.request<T>(endpoint, { method: "GET" });
-    console.log("the respond of the get api client is: ", a);
     return a;
   }
 
   async post<T>(endpoint: string, body: unknown) {
-    console.log("req come to post of api client");
     return await this.request<T>(endpoint, {
       method: "POST",
       body: JSON.stringify(body),
@@ -74,7 +70,6 @@ class ApiClient {
   }
 
   async put<T>(endpoint: string, body: unknown) {
-    console.log("req come to put of api client");
     return await this.request<T>(endpoint, {
       method: "PUT",
       body: JSON.stringify(body),
@@ -130,24 +125,25 @@ class ApiClient {
     return this.get("/cart");
   }
 
+  // manage with the redux and update the whole carts everytime so no need to manually update delete and like these
   async addManyToCart(items: ICartItem[]) {
     return this.post("/cart", items);
   }
-  async addToCart(item: ICartItem) {
-    return this.post("/cart", item);
-  }
+  // async addToCart(item: ICartItem) {
+  //   return this.post("/cart", item);
+  // }
 
-  async updateCartItem(productId: string, colorName: string, quantity: number) {
-    return this.put("/cart", { productId, colorName, quantity });
-  }
+  // async updateCartItem(productId: string, colorName: string, quantity: number) {
+  //   return this.put("/cart", { productId, colorName, quantity });
+  // }
 
-  async removeFromCart(productId: string, colorName: string) {
-    return this.delete(`/cart?productId=${productId}&colorName=${colorName}`);
-  }
+  // async removeFromCart(productId: string, colorName: string) {
+  //   return this.delete(`/cart?productId=${productId}&colorName=${colorName}`);
+  // }
 
-  async clearCart() {
-    return this.delete("/cart");
-  }
+  // async clearCart() {
+  //   return this.delete("/cart");
+  // }
 
   // // ===== Order API methods =====
   // async getOrders(

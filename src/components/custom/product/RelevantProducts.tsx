@@ -24,7 +24,6 @@ export default function RelevantProducts({ product }: RelevantProductsProps) {
   >([]);
 
   useEffect(() => {
-    console.log("the product is :", product);
     async function getRelevantProducts() {
       try {
         const data: ProductShowcaseSchema[] = await client.fetch(

@@ -111,14 +111,7 @@ export class DatabaseService {
   static async getUserByClerkId(clerkId: string): Promise<DBResponse<IUser>> {
     try {
       await connectDB();
-      console.log(
-        "The getUserByClerkId is called! and the clerk id is : ",
-        clerkId
-      );
-
       const user = await User.findOne({ clerkId });
-      console.log("The user from db in the get user by clerk id is : ", user);
-
       if (!user) {
         return {
           success: false,
@@ -138,11 +131,8 @@ export class DatabaseService {
   static async createUser(userData: any): Promise<DBResponse<IUser>> {
     try {
       await connectDB();
-      console.log("Mongo db connected successfully when creating");
       const user = new User(userData);
-      console.log("The user that is created is :", user);
       const saved = await user.save();
-      console.log("After saving the user, the saved is :", saved);
       return { success: true, data: saved };
     } catch (err: any) {
       console.log("The error from catch under createUser in databse :", err);
@@ -156,12 +146,7 @@ export class DatabaseService {
   ): Promise<DBResponse<IUser | null>> {
     try {
       await connectDB();
-      console.log("Mongo db connected successfully when updating");
-      console.log(
-        "The id and updated data got in the update is :",
-        clerkId,
-        updateData
-      );
+
       const updated = await User.findOneAndUpdate(
         { clerkId },
         updateData,
@@ -169,10 +154,6 @@ export class DatabaseService {
       );
 
       if (!updated) {
-        console.log(
-          "When updating so the user with the id is not found and the id  is :",
-          clerkId
-        );
         return {
           success: false,
           error: {
@@ -182,7 +163,6 @@ export class DatabaseService {
         };
       }
 
-      console.log("The updated user is :", updated);
       return { success: true, data: updated };
     } catch (err: any) {
       return formatDBError(err);
@@ -192,12 +172,9 @@ export class DatabaseService {
   static async deleteUser(clerkId: string): Promise<DBResponse<IUser | null>> {
     try {
       await connectDB();
-      console.log("Mongo db connected successfully when deleting");
-
       const deleted = await User.findOneAndDelete({ clerkId });
 
       if (!deleted) {
-        console.log("When deleting so the user with the id is not found");
         return {
           success: false,
           error: {
@@ -207,7 +184,6 @@ export class DatabaseService {
         };
       }
 
-      console.log("The deleted user is :", deleted);
       return { success: true, data: deleted };
     } catch (err: any) {
       console.log("The error from catch under deleteUser in database :", err);
@@ -232,36 +208,36 @@ export class DatabaseService {
     }
   }
 
-  static async addToCart(
-    userId: string,
-    item: any
-  ): Promise<DBResponse<ICart>> {
-    try {
-      await connectDB();
-      let cart = await Cart.findOne({ userId });
+  // static async addToCart(
+  //   userId: string,
+  //   item: any
+  // ): Promise<DBResponse<ICart>> {
+  //   try {
+  //     await connectDB();
+  //     let cart = await Cart.findOne({ userId });
 
-      if (!cart) {
-        cart = new Cart({ userId, items: [] });
-      }
+  //     if (!cart) {
+  //       cart = new Cart({ userId, items: [] });
+  //     }
 
-      const existingItemIndex = cart.items.findIndex(
-        (cartItem: ICartItem) =>
-          cartItem.productId === item.productId &&
-          cartItem.colorName === item.colorName
-      );
+  //     const existingItemIndex = cart.items.findIndex(
+  //       (cartItem: ICartItem) =>
+  //         cartItem.productId === item.productId &&
+  //         cartItem.colorName === item.colorName
+  //     );
 
-      if (existingItemIndex > -1) {
-        cart.items[existingItemIndex].quantity += item.quantity;
-      } else {
-        cart.items.push(item);
-      }
+  //     if (existingItemIndex > -1) {
+  //       cart.items[existingItemIndex].quantity += item.quantity;
+  //     } else {
+  //       cart.items.push(item);
+  //     }
 
-      const saved = await cart.save();
-      return { success: true, data: saved };
-    } catch (err: any) {
-      return formatDBError(err);
-    }
-  }
+  //     const saved = await cart.save();
+  //     return { success: true, data: saved };
+  //   } catch (err: any) {
+  //     return formatDBError(err);
+  //   }
+  // }
 
   static async addManyToCart(
     userId: string,
@@ -285,78 +261,78 @@ export class DatabaseService {
     }
   }
 
-  static async updateCartItem(
-    userId: string,
-    productId: string,
-    colorName: string,
-    quantity: number
-  ): Promise<DBResponse<ICart | null>> {
-    try {
-      await connectDB();
-      const cart = await Cart.findOne({ userId });
+  // static async updateCartItem(
+  //   userId: string,
+  //   productId: string,
+  //   colorName: string,
+  //   quantity: number
+  // ): Promise<DBResponse<ICart | null>> {
+  //   try {
+  //     await connectDB();
+  //     const cart = await Cart.findOne({ userId });
 
-      if (!cart) {
-        return { success: true, data: null }; // no cart found but not an error
-      }
+  //     if (!cart) {
+  //       return { success: true, data: null }; // no cart found but not an error
+  //     }
 
-      const itemIndex = cart.items.findIndex(
-        (item: ICartItem) =>
-          item.productId === productId && item.colorName === colorName
-      );
+  //     const itemIndex = cart.items.findIndex(
+  //       (item: ICartItem) =>
+  //         item.productId === productId && item.colorName === colorName
+  //     );
 
-      if (itemIndex > -1) {
-        if (quantity <= 0) {
-          cart.items.splice(itemIndex, 1);
-        } else {
-          cart.items[itemIndex].quantity = quantity;
-        }
-      }
+  //     if (itemIndex > -1) {
+  //       if (quantity <= 0) {
+  //         cart.items.splice(itemIndex, 1);
+  //       } else {
+  //         cart.items[itemIndex].quantity = quantity;
+  //       }
+  //     }
 
-      const saved = await cart.save();
-      return { success: true, data: saved };
-    } catch (err: any) {
-      return formatDBError(err);
-    }
-  }
+  //     const saved = await cart.save();
+  //     return { success: true, data: saved };
+  //   } catch (err: any) {
+  //     return formatDBError(err);
+  //   }
+  // }
 
-  static async removeFromCart(
-    userId: string,
-    productId: string,
-    colorName: string
-  ): Promise<DBResponse<ICart | null>> {
-    try {
-      await connectDB();
-      const cart = await Cart.findOne({ userId });
+  // static async removeFromCart(
+  //   userId: string,
+  //   productId: string,
+  //   colorName: string
+  // ): Promise<DBResponse<ICart | null>> {
+  //   try {
+  //     await connectDB();
+  //     const cart = await Cart.findOne({ userId });
 
-      if (!cart) {
-        return { success: true, data: null }; // empty cart
-      }
+  //     if (!cart) {
+  //       return { success: true, data: null }; // empty cart
+  //     }
 
-      cart.items = cart.items.filter(
-        (item: ICartItem) =>
-          !(item.productId === productId && item.colorName === colorName)
-      );
+  //     cart.items = cart.items.filter(
+  //       (item: ICartItem) =>
+  //         !(item.productId === productId && item.colorName === colorName)
+  //     );
 
-      const saved = await cart.save();
-      return { success: true, data: saved };
-    } catch (err: any) {
-      return formatDBError(err);
-    }
-  }
+  //     const saved = await cart.save();
+  //     return { success: true, data: saved };
+  //   } catch (err: any) {
+  //     return formatDBError(err);
+  //   }
+  // }
 
-  static async clearCart(userId: string): Promise<DBResponse<ICart | null>> {
-    try {
-      await connectDB();
-      const cleared = await Cart.findOneAndUpdate(
-        { userId },
-        { items: [] },
-        { new: true }
-      );
-      return { success: true, data: cleared };
-    } catch (err: any) {
-      return formatDBError(err);
-    }
-  }
+  // static async clearCart(userId: string): Promise<DBResponse<ICart | null>> {
+  //   try {
+  //     await connectDB();
+  //     const cleared = await Cart.findOneAndUpdate(
+  //       { userId },
+  //       { items: [] },
+  //       { new: true }
+  //     );
+  //     return { success: true, data: cleared };
+  //   } catch (err: any) {
+  //     return formatDBError(err);
+  //   }
+  // }
 
   // // Order operations
   // static async createOrder(orderData: any): Promise<DBResponse<IOrder>> {

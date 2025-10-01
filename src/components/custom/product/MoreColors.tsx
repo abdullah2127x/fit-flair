@@ -18,11 +18,9 @@ const MoreColors = ({
 }) => {
   // Variant change handler
   const handleVariantChange = (variant: ProductVariantSchema) => {
-    const url = new URL(window.location.href);
-    console.log("the window url is ", url);
+    const url = new URL(window.location.href);    
     url.searchParams.set("color", variant.colorName);
     window.history.pushState({}, "", url.toString());
-    console.log("the window url is ", url);
   };
 
   return (

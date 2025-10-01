@@ -19,12 +19,7 @@ export const fetchCartFromDB = createAsyncThunk(
   "cart/fetchCartFromDB",
   async (_, { rejectWithValue }) => {
     try {
-      console.log("In the slice fetching items from db");
       const dbItems = await loadCartFromDB();
-      console.log(
-        "In the slice after fetching the items from db are : ",
-        dbItems
-      );
       return dbItems || [];
     } catch (err) {
       return rejectWithValue("Failed to load cart from DB");
