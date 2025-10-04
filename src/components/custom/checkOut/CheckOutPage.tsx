@@ -6,11 +6,14 @@ import {
   PaymentElement,
 } from "@stripe/react-stripe-js";
 import convertToSubCurrency from "@/lib/convertToSubCurrency";
+import { useAppSelector } from "@/redux/hooks";
+import { Button } from "@/components/ui/button";
 
 const CheckoutPage = ({ amount }: { amount: number }) => {
   const [URL, setURL] = useState("");
   const stripe = useStripe();
   const elements = useElements();
+  const cartItems = useAppSelector((state) => state.cart.items);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -18,16 +21,22 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
 
   // Determine the base URL on the client side
   useEffect(() => {
-    const myhost = window.location.host;
+    const deployment = process.env.NODE_ENV;
+    // const myhost = window.location.host;
     setURL(
-      myhost === "localhost:3000"
+      deployment === "development"
         ? "http://localhost:3000"
-        : "https://hekto-marketplace-builder.vercel.app"
+        : "https://fitflair.vercel.app"
     );
   }, []);
 
   // Generate a new client secret when the component mounts or the amount changes
   useEffect(() => {
+    if (amount <= 0 || cartItems.length === 0) {
+      setErrorMessage("Your cart is empty");
+      return;
+    }
+
     setLoading(true); // Indicate loading during API call
     fetch("/api/payment-intent", {
       method: "POST",
@@ -47,7 +56,7 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
       })
       .catch(() => setErrorMessage("Failed to create payment intent."))
       .finally(() => setLoading(false)); // Remove loading state after completion
-  }, [amount]);
+  }, [amount, cartItems]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,7 +82,7 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
       elements,
       clientSecret: clientSecret!,
       confirmParams: {
-        return_url: `${URL}/paymentSuccess?amount=${amount}`,
+      return_url: `${URL}/create-order?amount=${amount}`,
       },
     });
 
@@ -86,22 +95,25 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-8">
-      {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
+    <form
+      onSubmit={handleSubmit}
+      className="p-8 max-w-3xl w-full mx-auto bg-secondary rounded-lg shadow-md"
+    >
+      {errorMessage && <p className="text-destructive mb-4">{errorMessage}</p>}
       {clientSecret ? (
         <>
-          <PaymentElement />
-          <button
-            className={`w-full bg-black text-white py-2 mt-5 ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+          <PaymentElement className="bg-secondary" />
+          <Button
             disabled={loading || !stripe || !elements}
+            className={` ${loading ? "opacity-50 cursor-not-allowed" : ""} w-full mt-4`}
+            size="lg"
+            variant={"secondary"}
           >
             {loading ? "Processing..." : "Pay Now"}
-          </button>
+          </Button>
         </>
       ) : (
-        <p>Loading payment details...</p>
+        <p className="text-center py-4">Loading payment details...</p>
       )}
     </form>
   );

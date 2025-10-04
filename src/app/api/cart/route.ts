@@ -136,49 +136,34 @@ export async function POST(request: NextRequest) {
 //   }
 // }
 
-// export async function DELETE(request: NextRequest) {
-//   try {
-//     const { userId } = await auth();
+export async function DELETE(request: NextRequest) {
+  try {
+    const { userId } = await auth();
 
-//     if (!userId) {
-//       return failure("Unauthorized", 401);
-//     }
+    if (!userId) {
+      return failure("Unauthorized", 401);
+    }
 
-//     const { searchParams } = new URL(request.url);
-//     const productId = searchParams.get("productId");
-//     const colorName = searchParams.get("colorName");
+    const deleteRes = await DatabaseService.clearCart(userId);
 
-//     let deleteRes;
-//     if (productId && colorName) {
-//       // remove specific item
-//       deleteRes = await DatabaseService.removeFromCart(
-//         userId,
-//         productId,
-//         colorName
-//       );
-//     } else {
-//       // clear entire cart
-//       deleteRes = await DatabaseService.clearCart(userId);
-//     }
+    if (!deleteRes.success) {
+      const err = deleteRes.error;
+      const status = mapDbCodeToStatus(err?.code);
+      return failure(
+        err?.message || "Database error",
+        status,
+        err?.code,
+        err?.details
+      );
+    }
 
-//     if (!deleteRes.success) {
-//       const err = deleteRes.error;
-//       const status = mapDbCodeToStatus(err?.code);
-//       return failure(
-//         err?.message || "Database error",
-//         status,
-//         err?.code,
-//         err?.details
-//       );
-//     }
+    if (!deleteRes.data) {
+      return failure("Cart not found", 404, "NOT_FOUND");
+    }
 
-//     if (!deleteRes.data) {
-//       return failure("Cart not found", 404, "NOT_FOUND");
-//     }
-
-//     return success(deleteRes.data, "Cart updated", 200);
-//   } catch (err: any) {
-//     console.error("Unhandled error clearing/removing cart:", err);
-//     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
-//   }
-// }
+    return success(deleteRes.data, "Cart updated", 200);
+  } catch (err: any) {
+    console.error("Unhandled error clearing/removing cart:", err);
+    return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
+  }
+}

@@ -1,94 +1,129 @@
-// import { NextRequest, NextResponse } from 'next/server';
-// import { auth } from '@clerk/nextjs/server';
-// import connectDB from '@/lib/mongodb';
-// import Order from '@/models/Order';
+// import { auth } from "@clerk/nextjs/server";
+// import { NextRequest } from "next/server";
+// import DatabaseService from "@/lib/database";
+// import { success, failure } from "@/lib/response";
+// import { mapDbCodeToStatus } from "@/utilityFunctions/mapDbCodeToStatus";
 
+// // GET single order
 // export async function GET(
 //   request: NextRequest,
 //   { params }: { params: { id: string } }
 // ) {
 //   try {
 //     const { userId } = await auth();
-    
-//     if (!userId) {
-//       return NextResponse.json(
-//         { error: 'Unauthorized' },
-//         { status: 401 }
+//     if (!userId) return failure("Unauthorized", 401);
+
+//     const orderRes = await DatabaseService.getOrderById(params.id, userId);
+
+//     if (!orderRes.success) {
+//       const err = orderRes.error;
+//       const httpStatus = mapDbCodeToStatus(err?.code);
+//       return failure(
+//         err?.message || "Database error",
+//         httpStatus,
+//         err?.code,
+//         err?.details
 //       );
 //     }
 
-//     await connectDB();
-    
-//     const order = await Order.findOne({ 
-//       _id: params.id, 
-//       userId 
-//     });
-    
-//     if (!order) {
-//       return NextResponse.json(
-//         { error: 'Order not found' },
-//         { status: 404 }
-//       );
+//     if (!orderRes.data) {
+//       return failure("Order not found", 404, "NOT_FOUND");
 //     }
 
-//     return NextResponse.json(order);
-
-//   } catch (error) {
-//     console.error('Error fetching order:', error);
-//     return NextResponse.json(
-//       { error: 'Failed to fetch order' },
-//       { status: 500 }
-//     );
+//     return success(orderRes.data, "Order fetched", 200);
+//   } catch (err: any) {
+//     console.error("Unhandled error fetching order:", err);
+//     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
 //   }
 // }
 
+// // PUT update order
 // export async function PUT(
 //   request: NextRequest,
 //   { params }: { params: { id: string } }
 // ) {
 //   try {
 //     const { userId } = await auth();
-    
-//     if (!userId) {
-//       return NextResponse.json(
-//         { error: 'Unauthorized' },
-//         { status: 401 }
-//       );
-//     }
+//     if (!userId) return failure("Unauthorized", 401);
 
-//     await connectDB();
-    
 //     const body = await request.json();
-//     const { status, paymentStatus, trackingNumber, notes } = body;
+//     const updateData: any = {};
+//     if (body.status) updateData.status = body.status;
+//     if (body.paymentStatus) updateData.paymentStatus = body.paymentStatus;
+//     if (body.trackingNumber) updateData.trackingNumber = body.trackingNumber;
+//     if (body.notes) updateData.notes = body.notes;
 
-//     const order = await Order.findOneAndUpdate(
-//       { _id: params.id, userId },
-//       { 
-//         ...(status && { status }),
-//         ...(paymentStatus && { paymentStatus }),
-//         ...(trackingNumber && { trackingNumber }),
-//         ...(notes && { notes })
-//       },
-//       { new: true, runValidators: true }
+//     const updateRes = await DatabaseService.updateOrder(
+//       params.id,
+//       userId,
+//       updateData
 //     );
-    
-//     if (!order) {
-//       return NextResponse.json(
-//         { error: 'Order not found' },
-//         { status: 404 }
+
+//     if (!updateRes.success) {
+//       const err = updateRes.error;
+//       const httpStatus = mapDbCodeToStatus(err?.code);
+//       return failure(
+//         err?.message || "Database error",
+//         httpStatus,
+//         err?.code,
+//         err?.details
 //       );
 //     }
 
-//     return NextResponse.json(order);
+//     if (!updateRes.data) {
+//       return failure("Order not found", 404, "NOT_FOUND");
+//     }
 
-//   } catch (error) {
-//     console.error('Error updating order:', error);
-//     return NextResponse.json(
-//       { error: 'Failed to update order' },
-//       { status: 500 }
-//     );
+//     return success(updateRes.data, "Order updated", 200);
+//   } catch (err: any) {
+//     console.error("Unhandled error updating order:", err);
+//     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
 //   }
 // }
+
+// // DELETE order
+// export async function DELETE(
+//   request: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   try {
+//     const { userId } = await auth();
+//     if (!userId) return failure("Unauthorized", 401);
+
+//     const deleteRes = await DatabaseService.deleteOrder(params.id, userId);
+
+//     if (!deleteRes.success) {
+//       const err = deleteRes.error;
+//       const httpStatus = mapDbCodeToStatus(err?.code);
+//       return failure(
+//         err?.message || "Database error",
+//         httpStatus,
+//         err?.code,
+//         err?.details
+//       );
+//     }
+
+//     if (!deleteRes.data) {
+//       return failure("Order not found", 404, "NOT_FOUND");
+//     }
+
+//     return success(deleteRes.data, "Order deleted", 200);
+//   } catch (err: any) {
+//     console.error("Unhandled error deleting order:", err);
+//     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
 
 import { NextResponse } from "next/server";
 

@@ -1,5 +1,5 @@
 import apiClient from "@/lib/apiClient";
-import { ICart, ICartItem } from "@/types/cart";
+import { ICartItem } from "@/types/cart";
 
 // Load from localStorage
 export const loadCartFromLocalStorage = (): ICartItem[] => {
@@ -43,13 +43,18 @@ export const loadCartFromDB = async () => {
 export const saveCartToDB = async (items: ICartItem[]) => {
   try {
     if (items.length > 0) {
-      const addManyToCartRes = await apiClient.addManyToCart(items);
-
-      if (!addManyToCartRes) {
-      }
+      await apiClient.addManyToCart(items);
     }
   } catch (error) {
     console.error("❌ Error syncing cart:", error);
+  }
+};
+
+export const clearCartFromDB = async () => {
+  try {
+    await apiClient.clearCart();
+  } catch (error) {
+    console.error("❌ Error clearing cart:", error);
   }
 };
 
@@ -64,7 +69,6 @@ const mergeCarts = (localCart: ICartItem[], dbCart: ICartItem[]) => {
         item.colorName == localItem.colorName
     );
     if (existing) {
-      // console.log("The item is already exist so we are not updating the quantity", existing)
       // sum the quntity of both
       // existing.quantity += localItem.quantity; // Add quantities
       existing.quantity = localItem.quantity; // set local quantities
@@ -76,6 +80,7 @@ const mergeCarts = (localCart: ICartItem[], dbCart: ICartItem[]) => {
   return merged;
 };
 
+// this is to merge the cart and if there is same so priorities to the quantity of local cart and then save merged to db and local
 export const syncCart = async () => {
   try {
     // 1. Get local cart
@@ -103,9 +108,28 @@ export const syncCart = async () => {
     } else {
       mergedCart = dbCartItems || [];
     }
-    saveCartToLocalStorage(mergedCart);
+
+    // Only save to localStorage if we have items to save
+    if (mergedCart.length > 0) {
+      saveCartToLocalStorage(mergedCart);
+    } else {
+      // If merged cart is empty, clear localStorage
+      clearCartFromLocalStorage();
+    }
 
     return mergedCart;
+  } catch (err) {
+    console.error("❌ Error syncing cart:", err);
+    return [];
+  }
+};
+
+// this is to merge the cart and if there is same so priorities to the quantity of local cart and then save merged to db and local
+export const syncCartForDelete = async () => {
+  try {
+    // 1. Get local cart
+    const localCart = loadCartFromLocalStorage();
+    await saveCartToDB(localCart);
   } catch (err) {
     console.error("❌ Error syncing cart:", err);
     return [];

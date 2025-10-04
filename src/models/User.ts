@@ -1,12 +1,7 @@
 import { IAddress, IUser } from "@/types/user";
 import mongoose, { Schema } from "mongoose";
 
-const AddressSchema = new Schema<IAddress>({
-  type: {
-    type: String,
-    required: true,
-    enum: ["billing", "shipping"],
-  },
+export const AddressSchema = new Schema<IAddress>({
   firstName: {
     type: String,
     required: true,
@@ -17,25 +12,16 @@ const AddressSchema = new Schema<IAddress>({
     required: true,
     trim: true,
   },
-  company: {
-    type: String,
-    trim: true,
-  },
-  address1: {
+  address: {
     type: String,
     required: true,
     trim: true,
   },
-  address2: {
+  apartment: {
     type: String,
     trim: true,
   },
   city: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  state: {
     type: String,
     required: true,
     trim: true,
@@ -53,10 +39,6 @@ const AddressSchema = new Schema<IAddress>({
   phone: {
     type: String,
     trim: true,
-  },
-  isDefault: {
-    type: Boolean,
-    default: false,
   },
 });
 

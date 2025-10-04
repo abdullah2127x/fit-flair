@@ -14,25 +14,25 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { RootState } from "@/redux/store";
-import { syncCart } from "@/utilityFunctions/cartFunctions";
+import { clearCartFromDB, syncCart, syncCartForDelete } from "@/utilityFunctions/cartFunctions";
 
 const ShoppingCartLeftSection = () => {
   const dispatch = useAppDispatch();
-  const items = useAppSelector((state: RootState) => state.cart.items);
+  const items = useAppSelector((state: RootState) => state?.cart.items);
   const cartCount = useAppSelector(selectCartCount);
 
   const handleRemoveItem = async (productId: string, colorName: string) => {
     dispatch(removeFromCart({ productId, colorName }));
     setTimeout(async () => {
-      await syncCart();
+      await syncCartForDelete();
     }, 2000);
   };
 
   const handleRemoveAllItems = async () => {
     dispatch(clearCart());
-    setTimeout(async () => {
-      await syncCart();
-    }, 2000);
+    // setTimeout(async () => {
+      await clearCartFromDB();
+    // }, 2000);
   };
 
   // Single function to handle quantity change + sync

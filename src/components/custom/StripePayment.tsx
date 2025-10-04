@@ -1,60 +1,15 @@
-// "use client";
-
-// import convertToSubCurrency from "@/lib/convertToSubCurrency";
-// import CheckoutPage from "./CheckoutPage";
-// import { Elements } from "@stripe/react-stripe-js";
-// import { loadStripe } from "@stripe/stripe-js";
-// import { useShoppingCart } from "use-shopping-cart";
-
-// if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
-//   throw new Error("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined");
-// }
-
-// const stripePromise = loadStripe(
-//   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-// );
-
-// const StripePayment = () => {
-//   const { totalPrice } = useShoppingCart();
-//   console.log(
-//     "the total price is ",
-//     totalPrice,
-//     "and the type of total price is ",
-//     typeof totalPrice
-//   );
-//   const amount = 54;
-//   //   const amount = totalPrice?.toFixed(2);
-//   return (
-//     <div>
-//       <h1 className="text-6xl font-bold text-center">
-//         Ali Jawwad has requested $ {amount}
-//       </h1>
-
-//       <Elements
-//         stripe={stripePromise}
-//         options={{
-//           mode: "payment",
-//           amount: convertToSubCurrency(amount),
-//           currency: "usd",
-//         }}
-//       >
-//         <CheckoutPage amount={amount} />
-//       </Elements>
-//     </div>
-//   );
-// };
-
-// export default StripePayment;
-
 "use client";
 
 import convertToSubCurrency from "@/lib/convertToSubCurrency";
-
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import CheckoutPage from "./checkOut/CheckOutPage";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCartSubtotal } from "@/redux/slices/cartSlice";
+import PrimaryHeading from "./PrimaryHeading";
+import { selectShippingCost } from "@/redux/slices/shippingSlice";
+import FullPageLoader from "./FullPageLoader";
+import { useEffect, useState } from "react";
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
   throw new Error("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined");
@@ -65,43 +20,58 @@ const stripePromise = loadStripe(
 );
 
 const StripePayment = () => {
-  //   const { totalPrice } = useShoppingCart();
+  // Get cart total from Redux
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true)  
+  }, [])
+  
+  const cartSubtotal = useAppSelector(selectCartSubtotal);
+  const shippingCost = useAppSelector(selectShippingCost);
 
-    const totalPrice = 4000;
+  const orderTotal = cartSubtotal + shippingCost;
 
-  // If totalPrice is 0, display a loading message or placeholder
-//   if (totalPrice === 0) {
-//     return (
-//       <div>
-//         <h1 className="text-3xl font-medium text-center flex justify-center items-center gap-5">
-//           <AiOutlineLoading3Quarters />
-//           Loading...
-//         </h1>
-//       </div>
-//     );
-//   }
+  if (!isClient) {
+    return <FullPageLoader 
+    // message="loading..." 
+    />;
+  }
+  // If cart is empty, show appropriate message
+  if (orderTotal === 0 && isClient) {
+    return (
+      <div className="container mx-auto p-8 text-center">
+        <h1 className="text-3xl font-medium flex justify-center items-center gap-5">
+          {/* <AiOutlineLoading3Quarters className="animate-spin" /> */}
+          Your cart is empty
+        </h1>
+      </div>
+    );
+  }
 
   // Format the total price for display and calculations
-  const amount = parseFloat((totalPrice as number).toFixed(2));
+  const amount = parseFloat(orderTotal.toFixed(2));
+  if (isClient) {
+    return (
+      <div className="container mx-auto p-4 flex flex-col gap-8 min-h-[70vh]">
+        {/* <h1 className="text-4xl font-bold text-center mb-8"> */}
+        <PrimaryHeading className="text-center">
+          Complete your order - ${amount}
+        </PrimaryHeading>
+        {/* </h1> */}
 
-  return (
-    <div>
-      <h1 className="text-6xl font-bold text-center">
-        Hecto requested you to pay ${amount} to place your order
-      </h1>
-
-      <Elements
-        stripe={stripePromise}
-        options={{
-          mode: "payment",
-          amount: convertToSubCurrency(amount),
-          currency: "usd",
-        }}
-      >
-        <CheckoutPage amount={amount} />
-      </Elements>
-    </div>
-  );
+        <Elements
+          stripe={stripePromise}
+          options={{
+            mode: "payment",
+            amount: convertToSubCurrency(amount),
+            currency: "usd",
+          }}
+        >
+          <CheckoutPage amount={amount} />
+        </Elements>
+      </div>
+    );
+  }
 };
 
 export default StripePayment;

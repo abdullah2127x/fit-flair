@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import filterSidebarReducer from "@/redux/slices/filterSidebarSlice";
 import cartSidebarReducer from "@/redux/slices/cartSidebarSlice";
 import cartReducer from "@/redux/slices/cartSlice";
+import shippingReducer from "@/redux/slices/shippingSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -9,6 +10,7 @@ export const makeStore = () => {
       cart: cartReducer,
       cartSidebar: cartSidebarReducer,
       filterSidebar: filterSidebarReducer,
+      shipping: shippingReducer,
     },
   });
 };

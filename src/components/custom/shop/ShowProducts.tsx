@@ -35,7 +35,6 @@ const ShowInListForm = ({
 };
 
 const ShowProducts = ({ view }: { view: "list" | "grid" }) => {
-  
   const [products, setProducts] = useState<ProductShowcaseSchema[]>([]);
   const [page, setPage] = useState(0);
   const [initialLoading, setInitialLoading] = useState(true);

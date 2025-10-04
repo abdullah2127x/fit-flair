@@ -6,39 +6,8 @@ import { RootState } from "@/redux/store";
 import {
   loadCartFromLocalStorage,
   saveCartToLocalStorage,
-  loadCartFromDB,
-  saveCartToDB,
+  clearCartFromLocalStorage,
 } from "@/utilityFunctions/cartFunctions";
-
-// =======================================
-// THUNKS
-// =======================================
-
-// Thunk: load cart from DB
-export const fetchCartFromDB = createAsyncThunk(
-  "cart/fetchCartFromDB",
-  async (_, { rejectWithValue }) => {
-    try {
-      const dbItems = await loadCartFromDB();
-      return dbItems || [];
-    } catch (err) {
-      return rejectWithValue("Failed to load cart from DB");
-    }
-  }
-);
-
-// Thunk: save cart to DB
-export const persistCartToDB = createAsyncThunk(
-  "cart/persistCartToDB",
-  async (items: ICartItem[], { rejectWithValue }) => {
-    try {
-      await saveCartToDB(items); // ✅ FIX: pass items
-      return items;
-    } catch (err) {
-      return rejectWithValue("Failed to save cart to DB");
-    }
-  }
-);
 
 // =======================================
 // SELECTORS
@@ -115,7 +84,10 @@ const cartSlice = createSlice({
 
     clearCart: (state) => {
       state.items = [];
-      saveCartToLocalStorage(state.items);
+      // saveCartToLocalStorage(state.items);
+
+      clearCartFromLocalStorage();
+      // Reset flag after a short delay
     },
 
     setCart: (state, action: PayloadAction<ICartItem[]>) => {
@@ -187,47 +159,18 @@ const cartSlice = createSlice({
 
       saveCartToLocalStorage(state.items);
     },
-    resetCart(state) {
-      state.items = [];
-      // Clear localStorage as well
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("cart");
-      }
-    },
-  },
-
-  // =======================================
-  // EXTRA REDUCERS (for async thunks)
-  // =======================================
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchCartFromDB.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchCartFromDB.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload; // ✅ Replace local cart with DB cart
-      })
-      .addCase(fetchCartFromDB.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-      .addCase(persistCartToDB.fulfilled, (state, action) => {
-        state.items = action.payload; // ✅ Ensure Redux matches DB
-      });
   },
 });
 
 // =======================================
+// Add this to the exports section at the bottom of the file
 export const {
   addToCart,
   removeFromCart,
-  increaseQuantity,
-  decreaseQuantity,
   clearCart,
-  setQuantity,
   setCart,
-  resetCart,
+  decreaseQuantity,
+  increaseQuantity,
+  setQuantity,
 } = cartSlice.actions;
 export default cartSlice.reducer;

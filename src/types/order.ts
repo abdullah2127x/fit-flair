@@ -1,56 +1,18 @@
-
-export interface IOrderItem {
-  productId: string;
-  productTitle: string;
-  productSlug: string;
-  variant: {
-    color: string;
-    colorCode: string;
-    featuredImage: string;
-  };
-  quantity: number;
-  price: number;
-  discount: number;
-  totalPrice: number;
-}
+import { ICartItem } from "./cart";
+import { IAddress } from "./user";
 
 export interface IOrder extends Document {
-  _id: string;
-  orderNumber: string;
-  userId: string;
-  items: IOrderItem[];
-  subtotal: number;
-  shippingCost: number;
-  tax: number;
-  total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
-  paymentMethod: 'stripe' | 'cod';
-  paymentIntentId?: string;
-  shippingAddress: {
-    firstName: string;
-    lastName: string;
-    company?: string;
-    address1: string;
-    address2?: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-    phone?: string;
-  };
-  billingAddress: {
-    firstName: string;
-    lastName: string;
-    company?: string;
-    address1: string;
-    address2?: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-    phone?: string;
-  };
+  _id: string; //from the backend
+  orderNumber: string; //from the backend if not so create at the model creation
+  userId: string; //from the route
+  items: ICartItem[]; //from the apiClient
+  subTotal: number; //from the apiClient // sum of product discounted prices with quantity
+  shippingCost: number; //from the apiClient
+  total: number; //from the apiClient //sum of subtototal and shipping cost
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled"; //from the route
+  paymentIntentId?: string; //from the apiClient
+  shippingAddress: IAddress; //from the apiClient
+  billingAddress: IAddress; //from the apiClient
   trackingNumber?: string;
   notes?: string;
   createdAt: Date;

@@ -6,10 +6,12 @@ import CalcCartItems from "./CalcCartItems";
 const CalculateShippingRightSection = () => {
   return (
     <div className="flex flex-col  gap-10">
-      <CartTotal linkUrl="/get-payment" />
+      <CartTotal usedFor= "calc-ship"/>
       <CalcCartItems />
     </div>
   );
 };
+
+// Then add it to your component's JSX
 
 export default CalculateShippingRightSection;

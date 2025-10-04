@@ -7,7 +7,7 @@ import { ICart, ICartItem } from "@/types/cart";
 import { formatDBError } from "@/utilityFunctions/formatDBError";
 import { DbErrorCode, DBResponse, Pagination } from "@/types/database";
 import { IUser } from "@/types/user";
-import { IOrder, IOrderItem } from "@/types/order";
+import { IOrder } from "@/types/order";
 
 // Database utility functions
 export class DatabaseService {
@@ -261,6 +261,20 @@ export class DatabaseService {
     }
   }
 
+  static async clearCart(userId: string): Promise<DBResponse<ICart | null>> {
+    try {
+      await connectDB();
+      const cleared = await Cart.findOneAndUpdate(
+        { userId },
+        { items: [] },
+        { new: true }
+      );
+      return { success: true, data: cleared };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
+
   // static async updateCartItem(
   //   userId: string,
   //   productId: string,
@@ -320,31 +334,17 @@ export class DatabaseService {
   //   }
   // }
 
-  // static async clearCart(userId: string): Promise<DBResponse<ICart | null>> {
-  //   try {
-  //     await connectDB();
-  //     const cleared = await Cart.findOneAndUpdate(
-  //       { userId },
-  //       { items: [] },
-  //       { new: true }
-  //     );
-  //     return { success: true, data: cleared };
-  //   } catch (err: any) {
-  //     return formatDBError(err);
-  //   }
-  // }
-
   // // Order operations
-  // static async createOrder(orderData: any): Promise<DBResponse<IOrder>> {
-  //   try {
-  //     await connectDB();
-  //     const order = new Order(orderData);
-  //     const saved = await order.save();
-  //     return { success: true, data: saved };
-  //   } catch (err: any) {
-  //     return formatDBError(err);
-  //   }
-  // }
+  static async createOrder(orderData: any): Promise<DBResponse<IOrder>> {
+    try {
+      await connectDB();
+      const order = new Order(orderData);
+      const saved = await order.save();
+      return { success: true, data: saved };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
 
   // static async getOrders(
   //   userId: string,
@@ -353,7 +353,7 @@ export class DatabaseService {
   //   status?: string
   // ): Promise<
   //   DBResponse<{
-  //     orders: IOrderItem[] | null;
+  //     orders: IOrder[] | null;
   //     pagination: {
   //       page: number;
   //       limit: number;
@@ -399,36 +399,60 @@ export class DatabaseService {
   //   }
   // }
 
-  // static async getOrderById(
-  //   orderId: string,
-  //   userId: string
-  // ): Promise<DBResponse<IOrder | null>> {
-  //   try {
-  //     await connectDB();
-  //     const order = await Order.findOne({ _id: orderId, userId });
-  //     return { success: true, data: order };
-  //   } catch (err: any) {
-  //     return formatDBError(err);
-  //   }
-  // }
+  static async getOrderById(
+    orderId: string,
+    userId: string
+  ): Promise<DBResponse<IOrder | null>> {
+    try {
+      await connectDB();
+      const order = await Order.findOne({ _id: orderId, userId });
+      return { success: true, data: order };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
 
-  // static async updateOrder(
-  //   orderId: string,
-  //   userId: string,
-  //   updateData: any
-  // ): Promise<DBResponse<IOrder | null>> {
-  //   try {
-  //     await connectDB();
-  //     const updated = await Order.findOneAndUpdate(
-  //       { _id: orderId, userId },
-  //       updateData,
-  //       { new: true }
-  //     );
-  //     return { success: true, data: updated };
-  //   } catch (err: any) {
-  //     return formatDBError(err);
-  //   }
-  // }
+  static async updateOrder(
+    orderId: string,
+    userId: string,
+    updateData: any
+  ): Promise<DBResponse<IOrder | null>> {
+    try {
+      await connectDB();
+      const updated = await Order.findOneAndUpdate(
+        { _id: orderId, userId },
+        updateData,
+        { new: true }
+      );
+      return { success: true, data: updated };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
+
+  static async deleteOrder(
+    orderId: string,
+    userId: string
+  ): Promise<DBResponse<IOrder | null>> {
+    try {
+      await connectDB();
+      const deleted = await Order.findOneAndDelete({ _id: orderId, userId });
+
+      if (!deleted) {
+        return {
+          success: false,
+          error: {
+            code: DbErrorCode.NOT_FOUND,
+            message: `No order found with id: ${orderId}`,
+          },
+        };
+      }
+
+      return { success: true, data: deleted };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
 
   // // Search and filter operations
   // static async searchProducts(
@@ -494,7 +518,7 @@ export class DatabaseService {
   //   }
   // }
 
-  // // Analytics and reporting
+  // Analytics and reporting
   // static async getProductStats(): Promise<
   //   DBResponse<{
   //     totalProducts: number;
@@ -536,43 +560,43 @@ export class DatabaseService {
   //   }
   // }
 
-  // static async getOrderStats(userId?: string): Promise<
-  //   DBResponse<{
-  //     totalOrders: number;
-  //     pendingOrders: number;
-  //     completedOrders: number;
-  //     totalRevenue: number;
-  //   }>
-  // > {
-  //   try {
-  //     await connectDB();
+  static async getOrderStats(userId?: string): Promise<
+    DBResponse<{
+      totalOrders: number;
+      pendingOrders: number;
+      completedOrders: number;
+      totalRevenue: number;
+    }>
+  > {
+    try {
+      await connectDB();
 
-  //     const filter = userId ? { userId } : {};
+      const filter = userId ? { userId } : {};
 
-  //     const [totalOrders, pendingOrders, completedOrders, totalRevenue] =
-  //       await Promise.all([
-  //         Order.countDocuments(filter),
-  //         Order.countDocuments({ ...filter, status: "pending" }),
-  //         Order.countDocuments({ ...filter, status: "delivered" }),
-  //         Order.aggregate([
-  //           { $match: filter },
-  //           { $group: { _id: null, total: { $sum: "$total" } } },
-  //         ]),
-  //       ]);
+      const [totalOrders, pendingOrders, completedOrders, totalRevenue] =
+        await Promise.all([
+          Order.countDocuments(filter),
+          Order.countDocuments({ ...filter, status: "pending" }),
+          Order.countDocuments({ ...filter, status: "delivered" }),
+          Order.aggregate([
+            { $match: filter },
+            { $group: { _id: null, total: { $sum: "$total" } } },
+          ]),
+        ]);
 
-  //     return {
-  //       success: true,
-  //       data: {
-  //         totalOrders,
-  //         pendingOrders,
-  //         completedOrders,
-  //         totalRevenue: totalRevenue[0]?.total || 0,
-  //       },
-  //     };
-  //   } catch (err: any) {
-  //     return formatDBError(err);
-  //   }
-  // }
+      return {
+        success: true,
+        data: {
+          totalOrders,
+          pendingOrders,
+          completedOrders,
+          totalRevenue: totalRevenue[0]?.total || 0,
+        },
+      };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
 }
 
 export default DatabaseService;

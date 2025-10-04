@@ -15,7 +15,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 
 
-const CartItemSchema = new Schema<ICartItem>({
+export const CartItemSchema = new Schema<ICartItem>({
   productId: {
     type: String,
     required: true,

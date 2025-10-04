@@ -8,6 +8,7 @@ import { Footer } from "@/components/custom/Footer";
 import ReduxStoreProvider from "@/components/providers/ReduxStoreProvider";
 import CartSidebar from "@/components/custom/cart/CartSidebar";
 import SyncCartOnLogin from "@/components/custom/SyncCartOnLogin";
+import SyncUser from "@/components/custom/SyncUser";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,6 +35,7 @@ export default function RootLayout({
             {/* <Navbar /> */}
             <ReduxStoreProvider>
               <SyncCartOnLogin />
+              <SyncUser />
               <div className="min-h-screen bg-background text-foreground flex flex-col">
                 <Header />
                 <main>{children}</main>

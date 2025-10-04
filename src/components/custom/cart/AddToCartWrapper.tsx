@@ -26,7 +26,7 @@ const AddToCartWrapper = ({
   quantity = 1,
 }: AddToCartWrapperProps) => {
   const dispatch = useAppDispatch();
-  const { user } = useUser();  
+  const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,10 +55,9 @@ const AddToCartWrapper = ({
 
       // 3️⃣ If logged in → sync merged cart with backend
       if (user) {
-        setTimeout(async () => {
-          console.log("🛒 Syncing cart with backend...");
-          await syncCart(); // handles merge + persist
-        }, 2000);
+        // setTimeout(async () => {
+        await syncCart(); // handles merge + persist
+        // }, 2000);
       }
     } catch (err) {
       console.error("❌ Error adding to cart:", err);

@@ -7,6 +7,7 @@
 // API client for making requests to our Mongoose-based API routes
 import { ResponseType } from "@/types/apiResponse";
 import { ICartItem } from "@/types/cart";
+import { IAddress } from "@/types/user";
 
 class ApiClient {
   private baseUrl: string;
@@ -129,6 +130,10 @@ class ApiClient {
   async addManyToCart(items: ICartItem[]) {
     return this.post("/cart", items);
   }
+
+  async clearCart() {
+    return this.delete("/cart");
+  }
   // async addToCart(item: ICartItem) {
   //   return this.post("/cart", item);
   // }
@@ -141,41 +146,35 @@ class ApiClient {
   //   return this.delete(`/cart?productId=${productId}&colorName=${colorName}`);
   // }
 
-  // async clearCart() {
-  //   return this.delete("/cart");
-  // }
-
   // // ===== Order API methods =====
-  // async getOrders(
-  //   params: { page?: number; limit?: number; status?: string } = {}
-  // ) {
-  //   const searchParams = new URLSearchParams();
-  //   Object.entries(params).forEach(([key, value]) => {
-  //     if (value !== undefined && value !== null) {
-  //       searchParams.append(key, value.toString());
-  //     }
-  //   });
-  //   const queryString = searchParams.toString();
-  //   return this.get(`/orders${queryString ? `?${queryString}` : ""}`);
-  // }
+  async getOrders(
+    params: { page?: number; limit?: number; status?: string } = {}
+  ) {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        searchParams.append(key, value.toString());
+      }
+    });
+    const queryString = searchParams.toString();
+    return this.get(`/orders${queryString ? `?${queryString}` : ""}`);
+  }
 
-  // async getOrder(id: string) {
-  //   return this.get(`/orders/${id}`);
-  // }
+  async getOrder(id: string) {
+    return this.get(`/orders/${id}`);
+  }
 
-  // async createOrder(orderData: {
-  //   items: any[];
-  //   subtotal: number;
-  //   shippingCost: number;
-  //   tax: number;
-  //   total: number;
-  //   paymentMethod: string;
-  //   paymentIntentId?: string;
-  //   shippingAddress: any;
-  //   billingAddress: any;
-  // }) {
-  //   return this.post("/orders", orderData);
-  // }
+  async createOrder(orderData: {
+    items: ICartItem[];
+    subTotal: number;
+    shippingCost: number;
+    total: number;
+    paymentIntentId?: string;
+    shippingAddress: IAddress;
+    billingAddress: IAddress;
+  }) {
+    return this.post("/orders", orderData);
+  }
 
   // ===== User API methods =====
 

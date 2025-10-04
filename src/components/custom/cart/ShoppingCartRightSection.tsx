@@ -6,7 +6,7 @@ import CartTotal from "@/components/custom/checkOut/CartTotal";
 const ShoppingCartRightSection = () => {
   return (
     <div className="flex flex-col w-full md:w-[371px] gap-12">
-      <CartTotal linkUrl="/calculate-shipping" />
+      <CartTotal usedFor= "shop-cart"/>
       <CalculateShippingCard />
     </div>
   );

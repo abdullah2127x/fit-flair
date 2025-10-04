@@ -2,18 +2,14 @@ import { Document } from "mongoose";
 
 export interface IAddress {
   _id?: string;
-  type: "billing" | "shipping";
   firstName: string;
   lastName: string;
-  company?: string;
-  address1: string;
-  address2?: string;
+  address: string;
+  apartment?: string;
   city: string;
-  state: string;
   postalCode: string;
   country: string;
-  phone?: string;
-  isDefault: boolean;
+  phone?: number;
 }
 
 export interface IUser extends Document {
@@ -28,4 +24,3 @@ export interface IUser extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
-

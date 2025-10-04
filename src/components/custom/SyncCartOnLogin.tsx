@@ -12,9 +12,11 @@ export default function SyncCartOnLogin() {
 
   useEffect(() => {
     if (!user) return;
-    const runSync = async () => {
-      const mergedCart = await syncCart();
-      dispatch(setCart(mergedCart));
+    const runSync = async() => {
+      // setTimeout(async() => {
+        const mergedCart = await syncCart();
+        dispatch(setCart(mergedCart));
+      // }, 15000);
     };
 
     runSync();

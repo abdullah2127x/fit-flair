@@ -1,117 +1,63 @@
-// import { NextRequest, NextResponse } from 'next/server';
-// import { auth } from '@clerk/nextjs/server';
-// import connectDB from '@/lib/mongodb';
-// import Order from '@/models/Order';
-// import Cart from '@/models/Cart';
+import { NextRequest } from "next/server";
+import DatabaseService from "@/lib/database";
+import { success, failure } from "@/lib/response";
+import { mapDbCodeToStatus } from "@/utilityFunctions/mapDbCodeToStatus";
+import { auth } from "@clerk/nextjs/server";
 
+// GET all orders (with pagination + filter)
 // export async function GET(request: NextRequest) {
 //   try {
 //     const { userId } = await auth();
-    
-//     if (!userId) {
-//       return NextResponse.json(
-//         { error: 'Unauthorized' },
-//         { status: 401 }
-//       );
-//     }
+//     if (!userId) return failure("Unauthorized", 401);
 
-//     await connectDB();
-    
 //     const { searchParams } = new URL(request.url);
-//     const page = parseInt(searchParams.get('page') || '1');
-//     const limit = parseInt(searchParams.get('limit') || '10');
-//     const status = searchParams.get('status');
+//     const page = parseInt(searchParams.get("page") || "1");
+//     const limit = parseInt(searchParams.get("limit") || "10");
+//     const status = searchParams.get("status") || undefined;
 
-//     const filter: any = { userId };
-//     if (status) filter.status = status;
+//     const orderRes = await DatabaseService.getOrders(userId, page, limit, status);
 
-//     const skip = (page - 1) * limit;
-    
-//     const [orders, total] = await Promise.all([
-//       Order.find(filter)
-//         .sort({ createdAt: -1 })
-//         .skip(skip)
-//         .limit(limit)
-//         .lean(),
-//       Order.countDocuments(filter)
-//     ]);
-
-//     const totalPages = Math.ceil(total / limit);
-
-//     return NextResponse.json({
-//       orders,
-//       pagination: {
-//         page,
-//         limit,
-//         total,
-//         totalPages,
-//         hasNext: page < totalPages,
-//         hasPrev: page > 1
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error('Error fetching orders:', error);
-//     return NextResponse.json(
-//       { error: 'Failed to fetch orders' },
-//       { status: 500 }
-//     );
-//   }
-// }
-
-// export async function POST(request: NextRequest) {
-//   try {
-//     const { userId } = await auth();
-    
-//     if (!userId) {
-//       return NextResponse.json(
-//         { error: 'Unauthorized' },
-//         { status: 401 }
-//       );
+//     if (!orderRes.success) {
+//       const err = orderRes.error;
+//       const httpStatus = mapDbCodeToStatus(err?.code);
+//       return failure(err?.message || "Database error", httpStatus, err?.code, err?.details);
 //     }
 
-//     await connectDB();
-    
-//     const body = await request.json();
-//     const { items, subtotal, shippingCost, tax, total, paymentMethod, paymentIntentId, shippingAddress, billingAddress } = body;
-
-//     // Create order
-//     const order = new Order({
-//       userId,
-//       items,
-//       subtotal,
-//       shippingCost,
-//       tax,
-//       total,
-//       paymentMethod,
-//       paymentIntentId,
-//       shippingAddress,
-//       billingAddress,
-//       status: 'pending',
-//       paymentStatus: paymentMethod === 'cod' ? 'pending' : 'paid'
-//     });
-
-//     await order.save();
-
-//     // Clear user's cart after successful order
-//     await Cart.findOneAndUpdate(
-//       { userId },
-//       { items: [] }
-//     );
-
-//     return NextResponse.json(order, { status: 201 });
-
-//   } catch (error) {
-//     console.error('Error creating order:', error);
-//     return NextResponse.json(
-//       { error: 'Failed to create order' },
-//       { status: 500 }
-//     );
+//     return success(orderRes.data, "Orders fetched", 200);
+//   } catch (err: any) {
+//     console.error("Unhandled error fetching orders:", err);
+//     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
 //   }
 // }
 
-import { NextResponse } from "next/server";
+// POST new order
+export async function POST(request: NextRequest) {
+  try {
+    const { userId } = await auth();
+    if (!userId) return failure("Unauthorized", 401);
 
-export async function GET() {
-  return NextResponse.json({ message: "Cart API works!" });
+    const body = await request.json();
+    const orderData = {
+      ...body,
+      userId,
+      status: "pending",
+    };
+
+    const createRes = await DatabaseService.createOrder(orderData);
+    if (!createRes.success) {
+      const err = createRes.error;
+      const httpStatus = mapDbCodeToStatus(err?.code);
+      return failure(
+        err?.message || "Database error",
+        httpStatus,
+        err?.code,
+        err?.details
+      );
+    }
+
+    return success(createRes.data, "Order created", 201);
+  } catch (err: any) {
+    console.error("Unhandled error creating order:", err);
+    return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
+  }
 }
