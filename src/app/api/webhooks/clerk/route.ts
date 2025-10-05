@@ -2,6 +2,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import DatabaseService from "@/lib/database";
+import { syncCart } from "@/utilityFunctions/cartFunctions";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -63,6 +64,12 @@ export async function POST(req: Request) {
 
       case "user.deleted":
         await DatabaseService.deleteUser(data.id);
+        break;
+
+      // to sycnc every time the user login
+      case "session.created":
+        // to set the same carts on local and db
+        const mergedCart = await syncCart();
         break;
 
       default:
