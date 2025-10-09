@@ -9,10 +9,9 @@ import { useEffect, useState } from "react";
 
 export default function SyncUser() {
   const { user } = useUser();
-  const [prevUserData, setPrevUserData] = useState<any>(null);
 
   useEffect(() => {
-    console.log("request come to sync user");
+    console.log("in the sync user, the user is ", user)
     if (!user) return;
 
     const syncUser = async () => {
