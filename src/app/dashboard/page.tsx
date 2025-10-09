@@ -20,13 +20,14 @@ export default function DashboardPage() {
       setOrdersLoading(true);
       const res = await apiClient.getOrders({ limit: 10 });
       if (isMounted && res.success) {
-        setOrders(res.data?.orders || []);
+        setOrders((res.data as { orders?: IOrder[] })?.orders || []);
       }
       setOrdersLoading(false);
+      isMounted = false;
     })();
     return () => {
       isMounted = false;
-    };
+    }
   }, []);
 
   useEffect(() => {
@@ -35,13 +36,14 @@ export default function DashboardPage() {
       setCartLoading(true);
       const res = await apiClient.getCart();
       if (isMounted && res.success) {
-        setCart(res.data || null);
+        setCart(res.data as ICart || null);
       }
       setCartLoading(false);
+      isMounted = false;
     })();
     return () => {
       isMounted = false;
-    };
+    }
   }, []);
 
   return (

@@ -217,7 +217,7 @@ export class DatabaseService {
       return {
         success: true,
         data: {
-          orders,
+          orders: orders.map(order => order as unknown as IOrder),
           pagination: {
             page,
             limit,
