@@ -4,7 +4,7 @@
 import { groq } from "next-sanity";
 
 // Common projection (fields to fetch for any product)
-const productFields = `{
+export const productFields = `{
   "id": _id,
   title,
   subTitle,
@@ -28,6 +28,7 @@ const productFields = `{
   "uploadedAt": _createdAt,
   isFeatured,
   isNewArrival,
+  isPopular,
   relevantTags,
   "outFitType": select(
     audience == "men" => menOutfitType,

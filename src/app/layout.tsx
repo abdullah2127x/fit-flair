@@ -34,7 +34,7 @@ export default function RootLayout({
           >
             {/* <Navbar /> */}
             <ReduxStoreProvider>
-              {/* <SyncCartOnLogin /> */}
+              <SyncCartOnLogin />
             {/* <SyncUser /> */}
               <div className="min-h-screen bg-background text-foreground flex flex-col">
                 <Header />
