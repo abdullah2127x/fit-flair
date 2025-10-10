@@ -98,9 +98,12 @@ export class DatabaseService {
   static async listUsers(): Promise<DBResponse<IUser[]>> {
     try {
       await connectDB();
+      console.log("before getting the users in the data base")
       const users = await User.find().sort({ createdAt: -1 }).lean();
+      console.log("the users are in the data base ", users)
       return { success: true, data: users as unknown as IUser[] };
     } catch (err: any) {
+      console.log("Getting error in the users in the data base", err)
       return formatDBError(err);
     }
   }

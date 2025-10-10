@@ -8,7 +8,7 @@ import { productFields } from "@/lib/groqQueries";
 
 // Create a product in Sanity (basic fields; images should be uploaded separately via Sanity asset API or studio)
 export async function POST(request: NextRequest) {
-  try {
+try {
     console.log("req come  to post of admin products");
     const { userId } = await auth();
     if (!userId || !isAdminClerkId(userId)) return failure("Forbidden", 403);
@@ -82,7 +82,6 @@ export async function POST(request: NextRequest) {
 // List products from Sanity (basic fields)
 export async function GET(request: NextRequest) {
   try {
-    console.log("req come to Get of admin product");
     const { userId } = await auth();
     if (!userId || !isAdminClerkId(userId)) return failure("Forbidden", 403);
 
@@ -95,13 +94,9 @@ export async function GET(request: NextRequest) {
     // {
     //   _id, title, subTitle, price, audience, category, subCategory, isFeatured, isNewArrival, isPopular
     // }
-
-    console.log("groq in the POST of admin product is :", groq);
     const products = await readClient.fetch(groq, { q: `${query}*`, limit });
-    console.log("product res in the POST of admin product is :", products);
     return success(products, "Products fetched", 200);
   } catch (err: any) {
-    console.error("Admin list products error:", err);
     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
   }
 }
