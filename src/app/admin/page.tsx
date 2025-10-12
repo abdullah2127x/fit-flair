@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import apiClient from "@/lib/apiClient";
 import Link from "next/link";
+// import AdminDiagnostic from "@/components/AdminDiagnostic";
+// import MongoDBTest from "@/components/MongoDBTest";
 
 type ProductForm = {
   title: string;
@@ -80,16 +82,47 @@ export default function AdminPage() {
     let mounted = true;
     (async () => {
       setLoadingLists(true);
-      const [usersRes, ordersRes, productsRes] = await Promise.all([
-        apiClient.get("/admin/users"),
-        apiClient.get("/admin/orders"),
-        apiClient.get<AdminProduct[]>("/admin/products"),
-      ]);
-      if (mounted) {
-        if (usersRes.success) setUsers((usersRes.data as any[]) || []);
-        if (ordersRes.success) setOrders((ordersRes.data as any[]) || []);
-        if (productsRes.success)
-          setProducts((productsRes.data as AdminProduct[]) || []);
+      console.log("Admin page: Starting to fetch data...");
+      
+      try {
+        const [usersRes, ordersRes, productsRes] = await Promise.all([
+          apiClient.get("/admin/users"),
+          apiClient.get("/admin/orders"),
+          apiClient.get<AdminProduct[]>("/admin/products"),
+        ]);
+        
+        console.log("Admin page: API responses received:", {
+          users: { success: usersRes.success, status: usersRes.status, message: usersRes.message },
+          orders: { success: ordersRes.success, status: ordersRes.status, message: ordersRes.message },
+          products: { success: productsRes.success, status: productsRes.status, message: productsRes.message }
+        });
+        
+        if (mounted) {
+          if (usersRes.success) {
+            setUsers((usersRes.data as any[]) || []);
+            console.log("Users loaded:", (usersRes.data as any[])?.length || 0);
+          } else {
+            console.error("Failed to load users:", usersRes.message);
+          }
+          
+          if (ordersRes.success) {
+            setOrders((ordersRes.data as any[]) || []);
+            console.log("Orders loaded:", (ordersRes.data as any[])?.length || 0);
+          } else {
+            console.error("Failed to load orders:", ordersRes.message);
+          }
+          
+          if (productsRes.success) {
+            setProducts((productsRes.data as AdminProduct[]) || []);
+            console.log("Products loaded:", (productsRes.data as AdminProduct[])?.length || 0);
+          } else {
+            console.error("Failed to load products:", productsRes.message);
+          }
+          
+          setLoadingLists(false);
+        }
+      } catch (error) {
+        console.error("Admin page: Error fetching data:", error);
         setLoadingLists(false);
       }
     })();
@@ -155,6 +188,11 @@ export default function AdminPage() {
       <h1 className="text-2xl md:text-3xl font-semibold mb-6">
         Admin Dashboard
       </h1>
+      
+      {/* {/* <div className="mb-6 space-y-4"> */}
+        <AdminDiagnostic />
+        <MongoDBTest />
+      </div> */}
       <Tabs defaultValue="products">
         <TabsList className="grid grid-cols-3 w-full md:w-auto">
           <TabsTrigger value="products">Products</TabsTrigger>

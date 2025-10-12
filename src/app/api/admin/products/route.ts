@@ -82,21 +82,25 @@ try {
 // List products from Sanity (basic fields)
 export async function GET(request: NextRequest) {
   try {
+    console.log("Admin products endpoint: Request received");
     const { userId } = await auth();
-    if (!userId || !isAdminClerkId(userId)) return failure("Forbidden", 403);
+    console.log("Admin products endpoint: User ID:", userId);
+    if (!userId || !isAdminClerkId(userId)) {
+      console.log("Admin products endpoint: Access denied - not admin");
+      return failure("Forbidden", 403);
+    }
 
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("q") || "";
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const limit = parseInt(searchParams.get("limit") || "20");   
     const groq = `*[_type == "product" && (${query ? `title match $q || subTitle match $q` : "true"})] | order(_createdAt desc)[0...${limit}]
     ${productFields}
     `;
-    // {
-    //   _id, title, subTitle, price, audience, category, subCategory, isFeatured, isNewArrival, isPopular
-    // }
+    console.log("Admin products endpoint: GROQ query:", groq);
     const products = await readClient.fetch(groq, { q: `${query}*`, limit });
     return success(products, "Products fetched", 200);
   } catch (err: any) {
+    console.error("Admin products endpoint: Error:", err);
     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
   }
 }

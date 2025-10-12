@@ -97,23 +97,38 @@ export class DatabaseService {
   // // ======================================Admin utilities
   static async listUsers(): Promise<DBResponse<IUser[]>> {
     try {
+      console.log("DatabaseService: Connecting to MongoDB...");
       await connectDB();
-      console.log("before getting the users in the data base")
+      console.log("DatabaseService: MongoDB connected, fetching users...");
+      
+      // Ensure connection is ready
+      const connection = await connectDB();
+      if (connection.connection.readyState !== 1) {
+        throw new Error("MongoDB connection not ready");
+      }
+      
       const users = await User.find().sort({ createdAt: -1 }).lean();
-      console.log("the users are in the data base ", users)
+      console.log("DatabaseService: Users fetched successfully:", users.length);
       return { success: true, data: users as unknown as IUser[] };
     } catch (err: any) {
-      console.log("Getting error in the users in the data base", err)
+      console.error("DatabaseService: Error fetching users:", err);
       return formatDBError(err);
     }
   }
 
   static async listOrders(): Promise<DBResponse<IOrder[]>> {
     try {
-      await connectDB();
+      await connectDB();      
+      // Ensure connection is ready
+      const connection = await connectDB();
+      if (connection.connection.readyState !== 1) {
+        throw new Error("MongoDB connection not ready");
+      }
+      
       const orders = await Order.find().sort({ createdAt: -1 }).lean();
       return { success: true, data: orders as unknown as IOrder[] };
     } catch (err: any) {
+      console.error("DatabaseService: Error fetching orders:", err);
       return formatDBError(err);
     }
   }
