@@ -1,38 +1,73 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, Controller, useForm } from "react-hook-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import apiClient from "@/lib/apiClient";
 import Link from "next/link";
-// import AdminDiagnostic from "@/components/AdminDiagnostic";
-// import MongoDBTest from "@/components/MongoDBTest";
+import EditProductDialog from "@/components/custom/EditProductDialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { X } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import DescriptionEditor from "@/components/custom/admin/DescriptionEditor";
 
 type ProductForm = {
   title: string;
+  variants: {
+    color: string;
+    featuredImage: File | null;
+    additionalImages: File[];
+    stock: number;
+  }[];
+  description: string;
+  // description: any[]; // portable text blocks
+
   subTitle: string;
   audience: "men" | "women";
-  category?: string;
+  category: string;
   subCategory: string;
+  outfitType: string;
   price: number;
   fabric: string; // ref id
   season: string[];
   designs: string[];
   occasions: string[];
-  description: any[]; // portable text blocks
 };
 
 export default function AdminPage() {
   const {
+    control,
+    watch,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<ProductForm>({
-    defaultValues: { audience: "men", season: [], designs: [], occasions: [] },
+    defaultValues: {
+      audience: "men",
+      description: "",
+      season: [],
+      designs: [],
+      occasions: [],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "variants",
   });
 
   type AdminProduct = {
@@ -78,47 +113,64 @@ export default function AdminPage() {
   const [onlyNew, setOnlyNew] = useState(false);
   const [onlyPopular, setOnlyPopular] = useState(false);
 
+  const [fabrics, setFabrics] = useState<{ _id: string; title: string }[]>([]);
+  const [colors, setColors] = useState<{ _id: string; title: string }[]>([]);
+
+  // load colors from backend
+  useEffect(() => {
+    (async () => {
+      const res = await apiClient.get("/admin/colors");
+      console.log("the colors res is :", res);
+      if (res.success) setColors(res.data as { _id: string; title: string }[]);
+    })();
+  }, []);
+
+  // loading fabrics
+  useEffect(() => {
+    (async () => {
+      const res = await apiClient.get("/admin/fabrics");
+      console.log("the fabrics at the admin are : ", res);
+
+      if (res.success) {
+        console.log("setting the fabrics");
+        setFabrics(res.data as { _id: string; title: string }[]);
+      }
+    })();
+  }, []);
+
   useEffect(() => {
     let mounted = true;
     (async () => {
       setLoadingLists(true);
       console.log("Admin page: Starting to fetch data...");
-      
+
       try {
         const [usersRes, ordersRes, productsRes] = await Promise.all([
           apiClient.get("/admin/users"),
           apiClient.get("/admin/orders"),
           apiClient.get<AdminProduct[]>("/admin/products"),
         ]);
-        
-        console.log("Admin page: API responses received:", {
-          users: { success: usersRes.success, status: usersRes.status, message: usersRes.message },
-          orders: { success: ordersRes.success, status: ordersRes.status, message: ordersRes.message },
-          products: { success: productsRes.success, status: productsRes.status, message: productsRes.message }
-        });
-        
+
         if (mounted) {
           if (usersRes.success) {
             setUsers((usersRes.data as any[]) || []);
-            console.log("Users loaded:", (usersRes.data as any[])?.length || 0);
           } else {
             console.error("Failed to load users:", usersRes.message);
           }
-          
+
           if (ordersRes.success) {
             setOrders((ordersRes.data as any[]) || []);
-            console.log("Orders loaded:", (ordersRes.data as any[])?.length || 0);
           } else {
             console.error("Failed to load orders:", ordersRes.message);
           }
-          
+
           if (productsRes.success) {
             setProducts((productsRes.data as AdminProduct[]) || []);
-            console.log("Products loaded:", (productsRes.data as AdminProduct[])?.length || 0);
+            console.log("Products loaded:", productsRes.data as AdminProduct[]);
           } else {
             console.error("Failed to load products:", productsRes.message);
           }
-          
+
           setLoadingLists(false);
         }
       } catch (error) {
@@ -153,6 +205,7 @@ export default function AdminPage() {
 
   const updateProduct = async (id: string, data: Partial<AdminProduct>) => {
     const res = await apiClient.put(`/admin/products/${id}`, data);
+    console.log("In the update product the res is :", res);
     if (res.success) await reloadProducts();
     return res.success;
   };
@@ -163,7 +216,12 @@ export default function AdminPage() {
     // Minimal required payload aligned to Sanity schema
     const payload = {
       ...data,
+      fabric: {
+        _type: "reference",
+        _ref: data.fabric, // fabric id selected from dropdown
+      },
       variants: [],
+      slug:data.title.split.join("-"),
       description: data.description?.length
         ? data.description
         : [
@@ -172,7 +230,8 @@ export default function AdminPage() {
               children: [{ _type: "span", text: data.subTitle }],
             },
           ],
-    } as any;
+    };
+
     const res = await apiClient.post("/admin/products", payload);
     if (!res.success) {
       setSubmitError(res.message || "Failed to create product");
@@ -188,11 +247,7 @@ export default function AdminPage() {
       <h1 className="text-2xl md:text-3xl font-semibold mb-6">
         Admin Dashboard
       </h1>
-      
-      {/* {/* <div className="mb-6 space-y-4"> */}
-        <AdminDiagnostic />
-        <MongoDBTest />
-      </div> */}
+
       <Tabs defaultValue="products">
         <TabsList className="grid grid-cols-3 w-full md:w-auto">
           <TabsTrigger value="products">Products</TabsTrigger>
@@ -243,37 +298,30 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <Label>Audience</Label>
-                  <select
-                    className="w-full border rounded h-10 px-3 bg-background"
-                    {...register("audience", {
-                      required: "Audience is required",
-                    })}
-                  >
-                    <option value="men">Men</option>
-                    <option value="women">Women</option>
-                  </select>
+
+                  <Controller
+                    name="audience"
+                    control={control}
+                    rules={{ required: "Audience is required" }}
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="w-full h-10 px-3 bg-background">
+                          <SelectValue placeholder="Select Audience" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="men">Men</SelectItem>
+                          <SelectItem value="women">Women</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+
                   {errors.audience && (
                     <p className="text-xs text-destructive mt-1">
                       {errors.audience.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label>Sub Category</Label>
-                  <select
-                    className="w-full border rounded h-10 px-3 bg-background"
-                    {...register("subCategory", {
-                      required: "Sub category is required",
-                    })}
-                  >
-                    <option value="top">Top</option>
-                    <option value="bottom">Bottom</option>
-                    <option value="2piece">2 Piece</option>
-                    <option value="3piece">3 Piece</option>
-                  </select>
-                  {errors.subCategory && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.subCategory.message}
                     </p>
                   )}
                 </div>
@@ -297,11 +345,158 @@ export default function AdminPage() {
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="fabric">Fabric (Sanity ref id)</Label>
-                  <Input
-                    id="fabric"
-                    placeholder="fabric _id"
-                    {...register("fabric", { required: "Fabric is required" })}
+                  <Label>Category</Label>
+                  <Controller
+                    name="category"
+                    control={control}
+                    rules={{ required: "Category is required" }}
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="w-full h-10 px-3 bg-background">
+                          <SelectValue placeholder="Select Category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="unStitched">
+                            Un Stitched
+                          </SelectItem>
+                          <SelectItem value="stitched">Stitched</SelectItem>
+                          <SelectItem value="readyToWear">
+                            Ready To Wear
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.subCategory && (
+                    <p className="text-xs text-destructive mt-1">
+                      {errors.subCategory.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Label>Sub Category</Label>
+                  <Controller
+                    name="subCategory"
+                    control={control}
+                    rules={{ required: "Sub category is required" }}
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="w-full h-10 px-3 bg-background">
+                          <SelectValue placeholder="Select Sub Category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="top">Top</SelectItem>
+                          <SelectItem value="bottom">Bottom</SelectItem>
+                          <SelectItem value="2piece">2 Piece</SelectItem>
+                          <SelectItem value="3piece">3 Piece</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.subCategory && (
+                    <p className="text-xs text-destructive mt-1">
+                      {errors.subCategory.message}
+                    </p>
+                  )}
+                </div>
+                {/* Outfit Type */}
+                <Controller
+                  name="outfitType"
+                  control={control}
+                  rules={{ required: "Outfit Type is required" }}
+                  render={({ field }) => {
+                    const outfitOptions =
+                      watch("audience") === "men"
+                        ? [
+                            "Polo Shirt",
+                            "T-Shirt",
+                            "Formal Shirt",
+                            "Kurta",
+                            "Waistcoat",
+                            "Formal Suit (2 Piece)",
+                            "Formal Suit (3 Piece)",
+                            "Sherwani",
+                            "Jeans",
+                            "Trousers / Chinos",
+                            "Shorts",
+                            "Tracksuit / Gym Wear",
+                          ]
+                        : [
+                            "Kurti / Shirt",
+                            "Polo Shirt",
+                            "T-Shirt",
+                            "Blouse / Tunic",
+                            "Dress / Maxi",
+                            "Gown",
+                            "Saree",
+                            "Lehenga Choli",
+                            "Anarkali Suit",
+                            "2 Piece (Kurti + Trouser)",
+                            "3 Piece (Kurti + Trouser + Dupatta)",
+                            "Jeans / Trousers",
+                            "Skirt",
+                            "Leggings / Jeggings",
+                            "Tracksuit / Gym Wear",
+                          ];
+
+                    return (
+                      <div>
+                        <Label>Outfit Type</Label>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger className="w-full h-10 px-3 bg-background">
+                            <SelectValue placeholder="Select Outfit Type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {outfitOptions.map((item) => (
+                              <SelectItem key={item} value={item}>
+                                {item}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {errors.outfitType && (
+                          <p className="text-xs text-destructive mt-1">
+                            {errors.outfitType.message}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  }}
+                />
+
+                {/* Fabaric */}
+                <div>
+                  <Label>Fabric</Label>
+                  <Controller
+                    name="fabric"
+                    control={control}
+                    rules={{ required: "Fabric is required" }}
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="w-full h-10 px-3 bg-background">
+                          <SelectValue placeholder="Select Fabric" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {fabrics.map((fabric) => (
+                            <SelectItem key={fabric._id} value={fabric._id}>
+                              {fabric.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   />
                   {errors.fabric && (
                     <p className="text-xs text-destructive mt-1">
@@ -309,7 +504,151 @@ export default function AdminPage() {
                     </p>
                   )}
                 </div>
-                <div className="md:col-span-2">
+
+                {/* desscription */}
+
+                <div className="md:col-span-2 space-y-4">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Enter product description..."
+                    {...register("description", {
+                      required: "Description is required",
+                    })}
+                  />
+                  {errors.description && (
+                    <p className="text-red-500 text-sm">
+                      {errors.description.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* <Controller
+                  name="description"
+                  control={control}
+                  rules={{ required: "Description is required" }}
+                  render={({ field }) => (
+                    <DescriptionEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                /> */}
+
+                {/* variants */}
+                <div className="md:col-span-2 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label>Variants</Label>
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        append({
+                          color: "",
+                          featuredImage: null,
+                          additionalImages: [],
+                          stock: 0,
+                        })
+                      }
+                    >
+                      + Add Variant
+                    </Button>
+                  </div>
+
+                  {fields.map((variant, index) => (
+                    <Card key={variant.id} className="p-4 relative">
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className="absolute top-2 right-2 text-gray-500 hover:text-red-600"
+                      >
+                        <X size={18} />
+                      </button>
+
+                      {/* Color Select */}
+                      <Controller
+                        name={`variants.${index}.color`}
+                        control={control}
+                        rules={{ required: "Color is required" }}
+                        render={({ field }) => (
+                          <div className="mb-3">
+                            <Label>Color</Label>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <SelectTrigger className="w-full h-10 px-3 bg-background">
+                                <SelectValue placeholder="Select Color" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {colors.map((color) => (
+                                  <SelectItem key={color._id} value={color._id}>
+                                    {color.title}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.variants?.[index]?.color && (
+                              <p className="text-xs text-destructive mt-1">
+                                {errors.variants[index].color.message}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      />
+
+                      {/* Featured Image */}
+                      <div className="mb-3">
+                        <Label>Featured Image</Label>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          {...register(`variants.${index}.featuredImage`, {
+                            required: "Featured image is required",
+                          })}
+                        />
+                        {errors.variants?.[index]?.featuredImage && (
+                          <p className="text-xs text-destructive mt-1">
+                            {errors.variants[index].featuredImage.message}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Additional Images */}
+                      <div className="mb-3">
+                        <Label>Additional Images</Label>
+                        <Input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          {...register(`variants.${index}.additionalImages`)}
+                        />
+                      </div>
+
+                      {/* Stock */}
+                      <div>
+                        <Label>Stock</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          {...register(`variants.${index}.stock`, {
+                            required: "Stock is required",
+                            valueAsNumber: true,
+                            min: {
+                              value: 0,
+                              message: "Stock cannot be negative",
+                            },
+                          })}
+                        />
+                        {errors.variants?.[index]?.stock && (
+                          <p className="text-xs text-destructive mt-1">
+                            {errors.variants[index].stock.message}
+                          </p>
+                        )}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+                {/* <div className="md:col-span-2">
                   <Label htmlFor="season">Season (comma separated)</Label>
                   <Input
                     id="season"
@@ -328,8 +667,52 @@ export default function AdminPage() {
                       {errors.season.message}
                     </p>
                   )}
-                </div>
-                <div className="md:col-span-2">
+                </div> */}
+                <Controller
+                  name="season"
+                  control={control}
+                  rules={{ required: "Please select at least one season" }}
+                  render={({ field }) => {
+                    const handleChange = (value: string) => {
+                      const newValue = field.value?.includes(value)
+                        ? field.value.filter((v: string) => v !== value)
+                        : [...(field.value || []), value];
+                      field.onChange(newValue);
+                    };
+
+                    const seasonOptions = ["Summer", "Winter"];
+
+                    return (
+                      <div className="md:col-span-2">
+                        <Label>Season</Label>
+                        <div className="flex flex-wrap gap-4 mt-2">
+                          {seasonOptions.map((season) => (
+                            <div
+                              key={season}
+                              className="flex items-center space-x-2"
+                            >
+                              <Checkbox
+                                id={season}
+                                checked={field.value?.includes(season)}
+                                onCheckedChange={() => handleChange(season)}
+                              />
+                              <label htmlFor={season} className="text-sm">
+                                {season}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                        {errors.season && (
+                          <p className="text-xs text-destructive mt-1">
+                            {errors.season.message}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  }}
+                />
+
+                {/* <div className="md:col-span-2">
                   <Label htmlFor="designs">Designs (comma separated)</Label>
                   <Input
                     id="designs"
@@ -348,8 +731,62 @@ export default function AdminPage() {
                       {errors.designs.message}
                     </p>
                   )}
-                </div>
-                <div className="md:col-span-2">
+                </div> */}
+                <Controller
+                  name="designs"
+                  control={control}
+                  rules={{ required: "Please select at least one design" }}
+                  render={({ field }) => {
+                    const handleChange = (value: string) => {
+                      const newValue = field.value?.includes(value)
+                        ? field.value.filter((v: string) => v !== value)
+                        : [...(field.value || []), value];
+                      field.onChange(newValue);
+                    };
+
+                    const designOptions = [
+                      "Plain",
+                      "Printed",
+                      "Embroidered",
+                      "Block Print",
+                      "Digital Print",
+                      "Geometric",
+                      "Floral",
+                      "Abstract",
+                      "Minimalist",
+                    ];
+
+                    return (
+                      <div className="md:col-span-2">
+                        <Label>Designs</Label>
+                        <div className="flex flex-wrap gap-4 mt-2">
+                          {designOptions.map((design) => (
+                            <div
+                              key={design}
+                              className="flex items-center space-x-2"
+                            >
+                              <Checkbox
+                                id={design}
+                                checked={field.value?.includes(design)}
+                                onCheckedChange={() => handleChange(design)}
+                              />
+                              <label htmlFor={design} className="text-sm">
+                                {design}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                        {errors.designs && (
+                          <p className="text-xs text-destructive mt-1">
+                            {errors.designs.message}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  }}
+                />
+
+                {/* <div className="md:col-span-2">
                   <Label htmlFor="occasions">Occasions (comma separated)</Label>
                   <Input
                     id="occasions"
@@ -368,7 +805,57 @@ export default function AdminPage() {
                       {errors.occasions.message}
                     </p>
                   )}
-                </div>
+                </div> */}
+                <Controller
+                  name="occasions"
+                  control={control}
+                  rules={{ required: "Please select at least one occasion" }}
+                  render={({ field }) => {
+                    const handleChange = (value: string) => {
+                      const newValue = field.value?.includes(value)
+                        ? field.value.filter((v: string) => v !== value)
+                        : [...(field.value || []), value];
+                      field.onChange(newValue);
+                    };
+
+                    const occasionOptions = [
+                      "Casual",
+                      "Formal",
+                      "Party / Festive",
+                      "Wedding",
+                      "Office / Workwear",
+                      "Eid / Religious",
+                    ];
+
+                    return (
+                      <div className="md:col-span-2">
+                        <Label>Occasions</Label>
+                        <div className="flex flex-wrap gap-4 mt-2">
+                          {occasionOptions.map((occasion) => (
+                            <div
+                              key={occasion}
+                              className="flex items-center space-x-2"
+                            >
+                              <Checkbox
+                                id={occasion}
+                                checked={field.value?.includes(occasion)}
+                                onCheckedChange={() => handleChange(occasion)}
+                              />
+                              <label htmlFor={occasion} className="text-sm">
+                                {occasion}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                        {errors.occasions && (
+                          <p className="text-xs text-destructive mt-1">
+                            {errors.occasions.message}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  }}
+                />
                 {submitError && (
                   <p className="text-sm text-destructive md:col-span-2">
                     {submitError}
@@ -412,29 +899,37 @@ export default function AdminPage() {
                   </Button>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <select
-                    className="border rounded h-10 px-3 bg-background"
+                  <Select
                     value={audience}
-                    onChange={(e) => setAudience(e.target.value as any)}
+                    onValueChange={(value) => setAudience(value as any)}
                   >
-                    <option value="all">All</option>
-                    <option value="men">Men</option>
-                    <option value="women">Women</option>
-                  </select>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select Audience" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Audience</SelectLabel>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="men">Men</SelectItem>
+                        <SelectItem value="women">Women</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
                   <Button
-                    variant={onlyFeatured ? "default" : "outline"}
+                    variant={onlyFeatured ? "secondary" : "outline"}
                     onClick={() => setOnlyFeatured((v) => !v)}
                   >
                     Featured
                   </Button>
                   <Button
-                    variant={onlyNew ? "default" : "outline"}
+                    variant={onlyNew ? "secondary" : "outline"}
                     onClick={() => setOnlyNew((v) => !v)}
                   >
                     New
                   </Button>
                   <Button
-                    variant={onlyPopular ? "default" : "outline"}
+                    variant={onlyPopular ? "secondary" : "outline"}
                     onClick={() => setOnlyPopular((v) => !v)}
                   >
                     Popular
@@ -499,7 +994,7 @@ export default function AdminPage() {
                         </div>
                         <div className="flex flex-col items-center gap-2 md:mt-0">
                           <div className="flex gap-2 flex-wrap items-center">
-                            <Button
+                            {/* <Button
                               variant="outline"
                               size="sm"
                               onClick={async () => {
@@ -511,8 +1006,15 @@ export default function AdminPage() {
                               }}
                             >
                               Edit Title
-                            </Button>
-                            <Button
+                            </Button> */}
+                            <EditProductDialog
+                              product={p}
+                              onUpdate={async (id, data) => {
+                                await updateProduct(id, data);
+                              }}
+                            />
+
+                            {/* <Button
                               variant="outline"
                               size="sm"
                               onClick={async () => {
@@ -530,7 +1032,8 @@ export default function AdminPage() {
                               }}
                             >
                               Edit Price
-                            </Button>
+                            </Button> */}
+
                             <Button
                               variant={p.isFeatured ? "secondary" : "outline"}
                               size="sm"

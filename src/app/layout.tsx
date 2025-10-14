@@ -53,4 +53,31 @@ export default function RootLayout({
     </ClerkProvider>
   );
 }
-//  testing   
+// Hello LinkedIn Trust & Safety team,
+
+// I believe my account was restricted in error and respectfully request that you re-open and re-investigate my case. I am the legitimate owner of the account and I cannot complete the passport / NFC ID verification because I currently do not have a government-issued passport or photo ID. I am asking for alternative verification methods so I can regain access.
+
+// Why this should be re-opened
+
+// I am the real account owner. My name on the account is Abdullah Qureshi and the profile is: https://www.linkedin.com/in/abdullah2127x.
+
+// I have recent activity and unique profile details that only the owner would know and can confirm (recent post about my GIAIC result with 98 percentile, experience entry: 2 months at “The Coding Buzz”, and education: D.J Sindh Gov Science College).
+
+// I created a separate ticket earlier from another account because I could not access the restricted account; that ticket reference was #251012-009891. I used the other account only to contact support — I could not log in to my main account at all.
+
+// Evidence I can provide immediately:
+
+// Confirmation email from the registered email(s) on the account: mabdullahqureshi583@gmail.com, abdullahdotdevs@gmail.com (I can reply from this address) and abdullah2127x@gmail.com.
+
+// Links to my portfolio/websites that are listed on my profile: https://abdullah-qureshi.vercel.app/
+//  (or https://abdullah2127x.vercel.app/).
+
+// Screenshots of my profile pages, posts, or any emails from LinkedIn previously received at the registered email.
+
+// I do not currently possess a government passport or national ID, but I can prove myself with registered emails or phone number.
+
+// I appreciate your time and help. I want to restore my account as soon as possible and can cooperate fully with any alternative verification steps you recommend.
+
+// Best regards,
+// Abdullah Qureshi
+// Registered email: mabdullahqureshi583@gmail.com

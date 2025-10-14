@@ -8,14 +8,14 @@ import { productFields } from "@/lib/groqQueries";
 
 // Create a product in Sanity (basic fields; images should be uploaded separately via Sanity asset API or studio)
 export async function POST(request: NextRequest) {
-try {
-    console.log("req come  to post of admin products");
+  try {
     const { userId } = await auth();
-    if (!userId || !isAdminClerkId(userId)) return failure("Forbidden", 403);
+    if (!userId || !isAdminClerkId(userId)) {
+      console.log("forbidden");
+      return failure("Forbidden", 403);
+    }
 
     const body = await request.json();
-    console.log("Body in the post of admin product is : ", body);
-
     // Validate required fields based on Sanity schema
     const required = [
       "title",
@@ -54,14 +54,11 @@ try {
       season: body.season,
       designs: body.designs,
       occasions: body.occasions,
-      fabric: { _type: "reference", _ref: body.fabric },
+      // fabric: { _type: "reference", _ref: body.fabric },
+      fabric: body.fabric, // <- this will be {_type: "reference", _ref: "..."}
+      // other fields...
       price: body.price,
       discount: body.discount ?? 0,
-      relevantTags: body.relevantTags || [],
-      isFeatured: !!body.isFeatured,
-      isNewArrival: !!body.isNewArrival,
-      isPopular: !!body.isPopular,
-      description: body.description,
       variants: (body.variants || []).map((v: any) => ({
         _type: "object",
         color: v.color ? { _type: "reference", _ref: v.color } : undefined,
@@ -69,8 +66,12 @@ try {
         additionalImages: v.additionalImages || [],
         stock: v.stock,
       })),
+      relevantTags: body.relevantTags || [],
+      isFeatured: !!body.isFeatured,
+      isNewArrival: !!body.isNewArrival,
+      isPopular: !!body.isPopular,
+      description: body.description,
     };
-    console.log("In the product admin route the doc is :", doc);
     const created = await writeClient.create(doc);
     return success(created, "Product created", 201);
   } catch (err: any) {
@@ -82,22 +83,21 @@ try {
 // List products from Sanity (basic fields)
 export async function GET(request: NextRequest) {
   try {
-    console.log("Admin products endpoint: Request received");
     const { userId } = await auth();
-    console.log("Admin products endpoint: User ID:", userId);
     if (!userId || !isAdminClerkId(userId)) {
-      console.log("Admin products endpoint: Access denied - not admin");
       return failure("Forbidden", 403);
     }
 
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("q") || "";
-    const limit = parseInt(searchParams.get("limit") || "20");   
+    const limit = parseInt(searchParams.get("limit") || "20");
+    // here is the logic to apply the filter to search products
     const groq = `*[_type == "product" && (${query ? `title match $q || subTitle match $q` : "true"})] | order(_createdAt desc)[0...${limit}]
     ${productFields}
     `;
-    console.log("Admin products endpoint: GROQ query:", groq);
+
     const products = await readClient.fetch(groq, { q: `${query}*`, limit });
+    console.log("The new products are :", products);
     return success(products, "Products fetched", 200);
   } catch (err: any) {
     console.error("Admin products endpoint: Error:", err);
