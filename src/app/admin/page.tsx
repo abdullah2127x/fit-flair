@@ -23,6 +23,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import DescriptionEditor from "@/components/custom/admin/DescriptionEditor";
+import { IProductVariant } from "@/models/Product";
 
 type ProductForm = {
   title: string;
@@ -185,6 +186,7 @@ export default function AdminPage() {
 
   const reloadProducts = async () => {
     setLoadingProducts(true);
+    console.log("all products are :", products);
     const queryParam = search ? `?q=${encodeURIComponent(search)}` : "";
     const res = await apiClient.get<AdminProduct[]>(
       `/admin/products${queryParam}`
@@ -210,35 +212,102 @@ export default function AdminPage() {
     return res.success;
   };
 
+  // const onSubmit = async (data: ProductForm) => {
+  //   // 1️⃣ Upload each variant image to Sanity
+  //   setSubmitError(null);
+  //   setSubmitSuccess(null);
+  //   // Minimal required payload aligned to Sanity schema
+  //   const payload = {
+  //     ...data,
+  //     fabric: {
+  //       _type: "reference",
+  //       _ref: data.fabric, // fabric id selected from dropdown
+  //     },
+  //     slug: data.title.toLowerCase().split(" ").join("-"),
+  //     variants: data.variants,
+  //     description: data.description?.length
+  //       ? data.description
+  //       : [
+  //           {
+  //             _type: "block",
+  //             children: [{ _type: "span", text: data.subTitle }],
+  //           },
+  //         ],
+  //   };
+
+  //   const res = await apiClient.post("/admin/products", payload);
+  //   if (!res.success) {
+  //     setSubmitError(res.message || "Failed to create product");
+  //     return;
+  //   }
+  //   setSubmitSuccess("Product created");
+  //   // reset();
+  //   reloadProducts();
+  // };
+
   const onSubmit = async (data: ProductForm) => {
     setSubmitError(null);
     setSubmitSuccess(null);
-    // Minimal required payload aligned to Sanity schema
-    const payload = {
-      ...data,
-      fabric: {
-        _type: "reference",
-        _ref: data.fabric, // fabric id selected from dropdown
-      },
-      variants: [],
-      slug:data.title.split.join("-"),
-      description: data.description?.length
-        ? data.description
-        : [
-            {
-              _type: "block",
-              children: [{ _type: "span", text: data.subTitle }],
-            },
-          ],
-    };
 
-    const res = await apiClient.post("/admin/products", payload);
-    if (!res.success) {
-      setSubmitError(res.message || "Failed to create product");
+    const formData = new FormData();
+
+    // add simple fields
+    formData.append("title", data.title);
+    formData.append("subTitle", data.subTitle);
+    formData.append("audience", data.audience);
+    formData.append("category", data.category);
+    formData.append("subCategory", data.subCategory);
+    formData.append("price", data.price.toString());
+    formData.append("fabric", data.fabric);
+    formData.append("slug", data.title.toLowerCase().split(" ").join("-"));
+    formData.append("description", data.description || "");
+
+    // add variants
+    data.variants.forEach((variant, index) => {
+      formData.append(`variants[${index}][color]`, variant.color);
+      formData.append(`variants[${index}][stock]`, variant.stock.toString());
+
+      if (variant.featuredImage) {
+        formData.append(
+          `variants[${index}][featuredImage]`,
+          variant.featuredImage
+        );
+      }
+
+      if (variant.additionalImages) {
+        // convert FileList or single File into an array safely
+        const files = Array.isArray(variant.additionalImages)
+          ? variant.additionalImages
+          : Array.from(variant.additionalImages);
+
+        files.forEach((file, i) => {
+          formData.append(
+            `variants[${index}][additionalImages][${i}]`,
+            file as File
+          );
+        });
+      }
+      console.log("Form data at the Admin client is :", formData);
+      // if (variant.additionalImages?.length) {
+      // variant.additionalImages.forEach((file, i) => {
+      // formData.append(`variants[${index}][additionalImages][${i}]`, file);
+      // });
+      // }
+    });
+
+    const res = await fetch("/api/admin/products", {
+      method: "POST",
+      body: formData, // ✅ not JSON
+    });
+
+    const result = await res.json();
+    if (!result.success) {
+      setSubmitError(result.message || "Failed to create product");
       return;
     }
+
     setSubmitSuccess("Product created");
-    reset();
+    // reset()
     reloadProducts();
   };
 
