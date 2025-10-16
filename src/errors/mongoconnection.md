@@ -92,3 +92,11 @@ mongoose.connect('YOUR_MONGODB_URI_HERE')
 ## Result
 
 After enabling Teredo and allowing Node.js through the firewall, running the Mongoose script should successfully connect to MongoDB Atlas without the ETIMEO
+<!-- ================================== -->
+clerk with sanity error in the studio
+// export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
+
+use the second instead of the first to resolve the error i.e 
+
+Clerk: auth() was called but Clerk can't detect usage of clerkMiddleware(). Please ensure the following: - Your Middleware exists at ./src/middleware.(ts|js) - clerkMiddleware() is used in your Next.js Middleware. - Your Middleware matcher is configured to match this route or page. - If you are using the src directory, make sure the Middleware file is inside of it.

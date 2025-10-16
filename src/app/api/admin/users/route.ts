@@ -12,6 +12,7 @@ export async function GET() {
     }
     const res = await DatabaseService.listUsers();
     if (!res.success) return failure(res.error?.message || "DB error", 500);
+    console.log("the users in teh admin is", res)
     return success(res.data, "Users fetched", 200);
   } catch (err: any) {
     console.error("Admin users endpoint: Error:", err);

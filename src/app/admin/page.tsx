@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { useFieldArray, Controller, useForm } from "react-hook-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import {
   Select,
   SelectContent,
@@ -15,61 +13,61 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import apiClient from "@/lib/apiClient";
 import Link from "next/link";
 import EditProductDialog from "@/components/custom/EditProductDialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import { X } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
-import DescriptionEditor from "@/components/custom/admin/DescriptionEditor";
-import { IProductVariant } from "@/models/Product";
 
-type ProductForm = {
-  title: string;
-  variants: {
-    color: string;
-    featuredImage: File | null;
-    additionalImages: File[];
-    stock: number;
-  }[];
-  description: string;
-  // description: any[]; // portable text blocks
+// import { useFieldArray, Controller, useForm } from "react-hook-form";
+// import { Label } from "@/components/ui/label";
+// import { Checkbox } from "@/components/ui/checkbox";
+// import { X } from "lucide-react";
+// import { Textarea } from "@/components/ui/textarea";
 
-  subTitle: string;
-  audience: "men" | "women";
-  category: string;
-  subCategory: string;
-  outfitType: string;
-  price: number;
-  fabric: string; // ref id
-  season: string[];
-  designs: string[];
-  occasions: string[];
-};
+// type ProductForm = {
+//   title: string;
+//   variants: {
+//     color: string;
+//     featuredImage: File | null;
+//     additionalImages: File[];
+//     stock: number;
+//   }[];
+//   description: string;
+//   // description: any[]; // portable text blocks
+
+//   subTitle: string;
+//   audience: "men" | "women";
+//   category: string;
+//   subCategory: string;
+//   outfitType: string;
+//   price: number;
+//   fabric: string; // ref id
+//   season: string[];
+//   designs: string[];
+//   occasions: string[];
+// };
 
 export default function AdminPage() {
-  const {
-    control,
-    watch,
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<ProductForm>({
-    defaultValues: {
-      audience: "men",
-      description: "",
-      season: [],
-      designs: [],
-      occasions: [],
-    },
-  });
+  // const {
+  //   control,
+  //   watch,
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors, isSubmitting },
+  //   reset,
+  // } = useForm<ProductForm>({
+  //   defaultValues: {
+  //     audience: "men",
+  //     description: "",
+  //     season: [],
+  //     designs: [],
+  //     occasions: [],
+  //   },
+  // });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "variants",
-  });
+  // const { fields, append, remove } = useFieldArray({
+  //   control,
+  //   name: "variants",
+  // });
 
   type AdminProduct = {
     id: string;
@@ -106,39 +104,80 @@ export default function AdminPage() {
   const [loadingLists, setLoadingLists] = useState(true);
   const [products, setProducts] = useState<AdminProduct[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [audience, setAudience] = useState<"all" | "men" | "women">("all");
   const [onlyFeatured, setOnlyFeatured] = useState(false);
   const [onlyNew, setOnlyNew] = useState(false);
   const [onlyPopular, setOnlyPopular] = useState(false);
 
-  const [fabrics, setFabrics] = useState<{ _id: string; title: string }[]>([]);
-  const [colors, setColors] = useState<{ _id: string; title: string }[]>([]);
+  // const [submitError, setSubmitError] = useState<string | null>(null);
+  // const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+
+  // all the fabrics from sanity
+  // const [fabrics, setFabrics] = useState<{ _id: string; title: string }[]>([]);
+
+  // all the colors from sanity
+  // const [colors, setColors] = useState<{ _id: string; title: string }[]>([]);
 
   // load colors from backend
-  useEffect(() => {
-    (async () => {
-      const res = await apiClient.get("/admin/colors");
-      console.log("the colors res is :", res);
-      if (res.success) setColors(res.data as { _id: string; title: string }[]);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await apiClient.get("/admin/colors");
+  //     console.log("the colors res is :", res);
+  //     if (res.success) setColors(res.data as { _id: string; title: string }[]);
+  //   })();
+  // }, []);
 
   // loading fabrics
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await apiClient.get("/admin/fabrics");
+  //     console.log("the fabrics at the admin are : ", res);
+
+  //     if (res.success) {
+  //       console.log("setting the fabrics");
+  //       setFabrics(res.data as { _id: string; title: string }[]);
+  //     }
+  //   })();
+  // }, []);
+
+  // Step 1: Chunked state
+  const PAGE_SIZE = 24;
+  const [page, setPage] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  // to fetch products, users and orders
   useEffect(() => {
+    let mounted = true;
     (async () => {
-      const res = await apiClient.get("/admin/fabrics");
-      console.log("the fabrics at the admin are : ", res);
+      if (page === 0) setLoadingLists(true);
+      else setLoadingMore(true);
 
-      if (res.success) {
-        console.log("setting the fabrics");
-        setFabrics(res.data as { _id: string; title: string }[]);
+      let url = `/admin/products?page=${page}&limit=${PAGE_SIZE}`;
+      if (search) url += `&q=${encodeURIComponent(search)}`;
+      const productsRes = await apiClient.get(url);
+
+      if (!mounted) return;
+
+      if (productsRes.success) {
+        const incoming = productsRes.data as AdminProduct[];
+        if (page === 0) setProducts(incoming);
+        else setProducts((prev) => [...prev, ...incoming]);
+        setHasMore(incoming.length === PAGE_SIZE);
+      } else {
+        if (page === 0) setProducts([]);
+        setHasMore(false);
       }
+      setLoadingLists(false);
+      setLoadingMore(false);
     })();
-  }, []);
+    return () => {
+      mounted = false;
+    };
+  }, [page, search]);
 
+  // to load users and orders
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -146,10 +185,9 @@ export default function AdminPage() {
       console.log("Admin page: Starting to fetch data...");
 
       try {
-        const [usersRes, ordersRes, productsRes] = await Promise.all([
+        const [usersRes, ordersRes] = await Promise.all([
           apiClient.get("/admin/users"),
           apiClient.get("/admin/orders"),
-          apiClient.get<AdminProduct[]>("/admin/products"),
         ]);
 
         if (mounted) {
@@ -165,13 +203,6 @@ export default function AdminPage() {
             console.error("Failed to load orders:", ordersRes.message);
           }
 
-          if (productsRes.success) {
-            setProducts((productsRes.data as AdminProduct[]) || []);
-            console.log("Products loaded:", productsRes.data as AdminProduct[]);
-          } else {
-            console.error("Failed to load products:", productsRes.message);
-          }
-
           setLoadingLists(false);
         }
       } catch (error) {
@@ -184,15 +215,12 @@ export default function AdminPage() {
     };
   }, []);
 
+  // Instead of reloadProducts, reset pagination!
   const reloadProducts = async () => {
-    setLoadingProducts(true);
-    console.log("all products are :", products);
-    const queryParam = search ? `?q=${encodeURIComponent(search)}` : "";
-    const res = await apiClient.get<AdminProduct[]>(
-      `/admin/products${queryParam}`
-    );
-    if (res.success) setProducts((res.data as AdminProduct[]) || []);
-    setLoadingProducts(false);
+    setPage(0);
+    setHasMore(true);
+    setLoadingLists(true);
+    // "search" triggers effect above
   };
 
   const filteredProducts = useMemo(() => {
@@ -212,6 +240,7 @@ export default function AdminPage() {
     return res.success;
   };
 
+  // witout iamges
   // const onSubmit = async (data: ProductForm) => {
   //   // 1️⃣ Upload each variant image to Sanity
   //   setSubmitError(null);
@@ -245,71 +274,72 @@ export default function AdminPage() {
   //   reloadProducts();
   // };
 
-  const onSubmit = async (data: ProductForm) => {
-    setSubmitError(null);
-    setSubmitSuccess(null);
+  // with the images
+  // const onSubmit = async (data: ProductForm) => {
+  //   setSubmitError(null);
+  //   setSubmitSuccess(null);
 
-    const formData = new FormData();
+  //   const formData = new FormData();
 
-    // add simple fields
-    formData.append("title", data.title);
-    formData.append("subTitle", data.subTitle);
-    formData.append("audience", data.audience);
-    formData.append("category", data.category);
-    formData.append("subCategory", data.subCategory);
-    formData.append("price", data.price.toString());
-    formData.append("fabric", data.fabric);
-    formData.append("slug", data.title.toLowerCase().split(" ").join("-"));
-    formData.append("description", data.description || "");
+  //   // add simple fields
+  //   formData.append("title", data.title);
+  //   formData.append("subTitle", data.subTitle);
+  //   formData.append("audience", data.audience);
+  //   formData.append("category", data.category);
+  //   formData.append("subCategory", data.subCategory);
+  //   formData.append("price", data.price.toString());
+  //   formData.append("fabric", data.fabric);
+  //   formData.append("slug", data.title.toLowerCase().split(" ").join("-"));
+  //   formData.append("description", data.description || "");
 
-    // add variants
-    data.variants.forEach((variant, index) => {
-      formData.append(`variants[${index}][color]`, variant.color);
-      formData.append(`variants[${index}][stock]`, variant.stock.toString());
+  //   // add variants
+  //   data.variants.forEach((variant, index) => {
+  //     formData.append(`variants[${index}][color]`, variant.color);
+  //     formData.append(`variants[${index}][stock]`, variant.stock.toString());
 
-      if (variant.featuredImage) {
-        formData.append(
-          `variants[${index}][featuredImage]`,
-          variant.featuredImage
-        );
-      }
+  //     if (variant.featuredImage) {
+  //       formData.append(
+  //         `variants[${index}][featuredImage]`,
+  //         variant.featuredImage
+  //       );
+  //     }
 
-      if (variant.additionalImages) {
-        // convert FileList or single File into an array safely
-        const files = Array.isArray(variant.additionalImages)
-          ? variant.additionalImages
-          : Array.from(variant.additionalImages);
+  //     if (variant.additionalImages) {
+  //       // convert FileList or single File into an array safely
+  //       const files = Array.isArray(variant.additionalImages)
+  //         ? variant.additionalImages
+  //         : Array.from(variant.additionalImages);
 
-        files.forEach((file, i) => {
-          formData.append(
-            `variants[${index}][additionalImages][${i}]`,
-            file as File
-          );
-        });
-      }
-      console.log("Form data at the Admin client is :", formData);
-      // if (variant.additionalImages?.length) {
-      // variant.additionalImages.forEach((file, i) => {
-      // formData.append(`variants[${index}][additionalImages][${i}]`, file);
-      // });
-      // }
-    });
+  //       files.forEach((file, i) => {
+  //         formData.append(
+  //           `variants[${index}][additionalImages][${i}]`,
+  //           file as File
+  //         );
+  //       });
+  //     }
+  //     console.log("Form data at the Admin client is :", formData);
+  //     // if (variant.additionalImages?.length) {
+  //     // variant.additionalImages.forEach((file, i) => {
+  //     // formData.append(`variants[${index}][additionalImages][${i}]`, file);
+  //     // });
+  //     // }
+  //   });
 
-    const res = await fetch("/api/admin/products", {
-      method: "POST",
-      body: formData, // ✅ not JSON
-    });
+  //   const res = await fetch("/api/admin/products", {
+  //     method: "POST",
+  //     body: formData, // ✅ not JSON
+  //   });
 
-    const result = await res.json();
-    if (!result.success) {
-      setSubmitError(result.message || "Failed to create product");
-      return;
-    }
+  //   const result = await res.json();
+  //   if (!result.success) {
+  //     setSubmitError(result.message || "Failed to create product");
+  //     return;
+  //   }
 
-    setSubmitSuccess("Product created");
-    // reset()
-    reloadProducts();
-  };
+  //   setSubmitSuccess("Product created");
+  //   // reset()
+  //   reloadProducts();
+  // };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -326,630 +356,12 @@ export default function AdminPage() {
 
         <TabsContent value="products" className="mt-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Add Product</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form
-                className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                onSubmit={handleSubmit(onSubmit)}
-              >
-                <div>
-                  <Label htmlFor="title">Title</Label>
-                  <Input
-                    id="title"
-                    placeholder="Product title"
-                    {...register("title", {
-                      required: "Title is required",
-                      minLength: { value: 3, message: "At least 3 chars" },
-                    })}
-                  />
-                  {errors.title && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.title.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="subTitle">Subtitle</Label>
-                  <Input
-                    id="subTitle"
-                    placeholder="Short subtitle"
-                    {...register("subTitle", {
-                      required: "Subtitle is required",
-                    })}
-                  />
-                  {errors.subTitle && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.subTitle.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label>Audience</Label>
-
-                  <Controller
-                    name="audience"
-                    control={control}
-                    rules={{ required: "Audience is required" }}
-                    render={({ field }) => (
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full h-10 px-3 bg-background">
-                          <SelectValue placeholder="Select Audience" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="men">Men</SelectItem>
-                          <SelectItem value="women">Women</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-
-                  {errors.audience && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.audience.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="price">Price</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    placeholder="0.00"
-                    {...register("price", {
-                      required: "Price is required",
-                      valueAsNumber: true,
-                      min: { value: 0, message: "Price must be ≥ 0" },
-                    })}
-                  />
-                  {errors.price && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.price.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label>Category</Label>
-                  <Controller
-                    name="category"
-                    control={control}
-                    rules={{ required: "Category is required" }}
-                    render={({ field }) => (
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full h-10 px-3 bg-background">
-                          <SelectValue placeholder="Select Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="unStitched">
-                            Un Stitched
-                          </SelectItem>
-                          <SelectItem value="stitched">Stitched</SelectItem>
-                          <SelectItem value="readyToWear">
-                            Ready To Wear
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                  {errors.subCategory && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.subCategory.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label>Sub Category</Label>
-                  <Controller
-                    name="subCategory"
-                    control={control}
-                    rules={{ required: "Sub category is required" }}
-                    render={({ field }) => (
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full h-10 px-3 bg-background">
-                          <SelectValue placeholder="Select Sub Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="top">Top</SelectItem>
-                          <SelectItem value="bottom">Bottom</SelectItem>
-                          <SelectItem value="2piece">2 Piece</SelectItem>
-                          <SelectItem value="3piece">3 Piece</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                  {errors.subCategory && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.subCategory.message}
-                    </p>
-                  )}
-                </div>
-                {/* Outfit Type */}
-                <Controller
-                  name="outfitType"
-                  control={control}
-                  rules={{ required: "Outfit Type is required" }}
-                  render={({ field }) => {
-                    const outfitOptions =
-                      watch("audience") === "men"
-                        ? [
-                            "Polo Shirt",
-                            "T-Shirt",
-                            "Formal Shirt",
-                            "Kurta",
-                            "Waistcoat",
-                            "Formal Suit (2 Piece)",
-                            "Formal Suit (3 Piece)",
-                            "Sherwani",
-                            "Jeans",
-                            "Trousers / Chinos",
-                            "Shorts",
-                            "Tracksuit / Gym Wear",
-                          ]
-                        : [
-                            "Kurti / Shirt",
-                            "Polo Shirt",
-                            "T-Shirt",
-                            "Blouse / Tunic",
-                            "Dress / Maxi",
-                            "Gown",
-                            "Saree",
-                            "Lehenga Choli",
-                            "Anarkali Suit",
-                            "2 Piece (Kurti + Trouser)",
-                            "3 Piece (Kurti + Trouser + Dupatta)",
-                            "Jeans / Trousers",
-                            "Skirt",
-                            "Leggings / Jeggings",
-                            "Tracksuit / Gym Wear",
-                          ];
-
-                    return (
-                      <div>
-                        <Label>Outfit Type</Label>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <SelectTrigger className="w-full h-10 px-3 bg-background">
-                            <SelectValue placeholder="Select Outfit Type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {outfitOptions.map((item) => (
-                              <SelectItem key={item} value={item}>
-                                {item}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {errors.outfitType && (
-                          <p className="text-xs text-destructive mt-1">
-                            {errors.outfitType.message}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  }}
-                />
-
-                {/* Fabaric */}
-                <div>
-                  <Label>Fabric</Label>
-                  <Controller
-                    name="fabric"
-                    control={control}
-                    rules={{ required: "Fabric is required" }}
-                    render={({ field }) => (
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full h-10 px-3 bg-background">
-                          <SelectValue placeholder="Select Fabric" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {fabrics.map((fabric) => (
-                            <SelectItem key={fabric._id} value={fabric._id}>
-                              {fabric.title}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                  {errors.fabric && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.fabric.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* desscription */}
-
-                <div className="md:col-span-2 space-y-4">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Enter product description..."
-                    {...register("description", {
-                      required: "Description is required",
-                    })}
-                  />
-                  {errors.description && (
-                    <p className="text-red-500 text-sm">
-                      {errors.description.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* <Controller
-                  name="description"
-                  control={control}
-                  rules={{ required: "Description is required" }}
-                  render={({ field }) => (
-                    <DescriptionEditor
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
-                /> */}
-
-                {/* variants */}
-                <div className="md:col-span-2 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label>Variants</Label>
-                    <Button
-                      type="button"
-                      onClick={() =>
-                        append({
-                          color: "",
-                          featuredImage: null,
-                          additionalImages: [],
-                          stock: 0,
-                        })
-                      }
-                    >
-                      + Add Variant
-                    </Button>
-                  </div>
-
-                  {fields.map((variant, index) => (
-                    <Card key={variant.id} className="p-4 relative">
-                      <button
-                        type="button"
-                        onClick={() => remove(index)}
-                        className="absolute top-2 right-2 text-gray-500 hover:text-red-600"
-                      >
-                        <X size={18} />
-                      </button>
-
-                      {/* Color Select */}
-                      <Controller
-                        name={`variants.${index}.color`}
-                        control={control}
-                        rules={{ required: "Color is required" }}
-                        render={({ field }) => (
-                          <div className="mb-3">
-                            <Label>Color</Label>
-                            <Select
-                              onValueChange={field.onChange}
-                              value={field.value}
-                            >
-                              <SelectTrigger className="w-full h-10 px-3 bg-background">
-                                <SelectValue placeholder="Select Color" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {colors.map((color) => (
-                                  <SelectItem key={color._id} value={color._id}>
-                                    {color.title}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            {errors.variants?.[index]?.color && (
-                              <p className="text-xs text-destructive mt-1">
-                                {errors.variants[index].color.message}
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      />
-
-                      {/* Featured Image */}
-                      <div className="mb-3">
-                        <Label>Featured Image</Label>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          {...register(`variants.${index}.featuredImage`, {
-                            required: "Featured image is required",
-                          })}
-                        />
-                        {errors.variants?.[index]?.featuredImage && (
-                          <p className="text-xs text-destructive mt-1">
-                            {errors.variants[index].featuredImage.message}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Additional Images */}
-                      <div className="mb-3">
-                        <Label>Additional Images</Label>
-                        <Input
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          {...register(`variants.${index}.additionalImages`)}
-                        />
-                      </div>
-
-                      {/* Stock */}
-                      <div>
-                        <Label>Stock</Label>
-                        <Input
-                          type="number"
-                          min="0"
-                          {...register(`variants.${index}.stock`, {
-                            required: "Stock is required",
-                            valueAsNumber: true,
-                            min: {
-                              value: 0,
-                              message: "Stock cannot be negative",
-                            },
-                          })}
-                        />
-                        {errors.variants?.[index]?.stock && (
-                          <p className="text-xs text-destructive mt-1">
-                            {errors.variants[index].stock.message}
-                          </p>
-                        )}
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-                {/* <div className="md:col-span-2">
-                  <Label htmlFor="season">Season (comma separated)</Label>
-                  <Input
-                    id="season"
-                    placeholder="summer,winter"
-                    {...register("season", {
-                      required: "Season is required",
-                      setValueAs: (v) =>
-                        String(v || "")
-                          .split(",")
-                          .map((s: string) => s.trim())
-                          .filter(Boolean),
-                    })}
-                  />
-                  {errors.season && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.season.message}
-                    </p>
-                  )}
-                </div> */}
-                <Controller
-                  name="season"
-                  control={control}
-                  rules={{ required: "Please select at least one season" }}
-                  render={({ field }) => {
-                    const handleChange = (value: string) => {
-                      const newValue = field.value?.includes(value)
-                        ? field.value.filter((v: string) => v !== value)
-                        : [...(field.value || []), value];
-                      field.onChange(newValue);
-                    };
-
-                    const seasonOptions = ["Summer", "Winter"];
-
-                    return (
-                      <div className="md:col-span-2">
-                        <Label>Season</Label>
-                        <div className="flex flex-wrap gap-4 mt-2">
-                          {seasonOptions.map((season) => (
-                            <div
-                              key={season}
-                              className="flex items-center space-x-2"
-                            >
-                              <Checkbox
-                                id={season}
-                                checked={field.value?.includes(season)}
-                                onCheckedChange={() => handleChange(season)}
-                              />
-                              <label htmlFor={season} className="text-sm">
-                                {season}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                        {errors.season && (
-                          <p className="text-xs text-destructive mt-1">
-                            {errors.season.message}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  }}
-                />
-
-                {/* <div className="md:col-span-2">
-                  <Label htmlFor="designs">Designs (comma separated)</Label>
-                  <Input
-                    id="designs"
-                    placeholder="plain,printed"
-                    {...register("designs", {
-                      required: "Designs are required",
-                      setValueAs: (v) =>
-                        String(v || "")
-                          .split(",")
-                          .map((s: string) => s.trim())
-                          .filter(Boolean),
-                    })}
-                  />
-                  {errors.designs && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.designs.message}
-                    </p>
-                  )}
-                </div> */}
-                <Controller
-                  name="designs"
-                  control={control}
-                  rules={{ required: "Please select at least one design" }}
-                  render={({ field }) => {
-                    const handleChange = (value: string) => {
-                      const newValue = field.value?.includes(value)
-                        ? field.value.filter((v: string) => v !== value)
-                        : [...(field.value || []), value];
-                      field.onChange(newValue);
-                    };
-
-                    const designOptions = [
-                      "Plain",
-                      "Printed",
-                      "Embroidered",
-                      "Block Print",
-                      "Digital Print",
-                      "Geometric",
-                      "Floral",
-                      "Abstract",
-                      "Minimalist",
-                    ];
-
-                    return (
-                      <div className="md:col-span-2">
-                        <Label>Designs</Label>
-                        <div className="flex flex-wrap gap-4 mt-2">
-                          {designOptions.map((design) => (
-                            <div
-                              key={design}
-                              className="flex items-center space-x-2"
-                            >
-                              <Checkbox
-                                id={design}
-                                checked={field.value?.includes(design)}
-                                onCheckedChange={() => handleChange(design)}
-                              />
-                              <label htmlFor={design} className="text-sm">
-                                {design}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                        {errors.designs && (
-                          <p className="text-xs text-destructive mt-1">
-                            {errors.designs.message}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  }}
-                />
-
-                {/* <div className="md:col-span-2">
-                  <Label htmlFor="occasions">Occasions (comma separated)</Label>
-                  <Input
-                    id="occasions"
-                    placeholder="casual,formal"
-                    {...register("occasions", {
-                      required: "Occasions are required",
-                      setValueAs: (v) =>
-                        String(v || "")
-                          .split(",")
-                          .map((s: string) => s.trim())
-                          .filter(Boolean),
-                    })}
-                  />
-                  {errors.occasions && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.occasions.message}
-                    </p>
-                  )}
-                </div> */}
-                <Controller
-                  name="occasions"
-                  control={control}
-                  rules={{ required: "Please select at least one occasion" }}
-                  render={({ field }) => {
-                    const handleChange = (value: string) => {
-                      const newValue = field.value?.includes(value)
-                        ? field.value.filter((v: string) => v !== value)
-                        : [...(field.value || []), value];
-                      field.onChange(newValue);
-                    };
-
-                    const occasionOptions = [
-                      "Casual",
-                      "Formal",
-                      "Party / Festive",
-                      "Wedding",
-                      "Office / Workwear",
-                      "Eid / Religious",
-                    ];
-
-                    return (
-                      <div className="md:col-span-2">
-                        <Label>Occasions</Label>
-                        <div className="flex flex-wrap gap-4 mt-2">
-                          {occasionOptions.map((occasion) => (
-                            <div
-                              key={occasion}
-                              className="flex items-center space-x-2"
-                            >
-                              <Checkbox
-                                id={occasion}
-                                checked={field.value?.includes(occasion)}
-                                onCheckedChange={() => handleChange(occasion)}
-                              />
-                              <label htmlFor={occasion} className="text-sm">
-                                {occasion}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                        {errors.occasions && (
-                          <p className="text-xs text-destructive mt-1">
-                            {errors.occasions.message}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  }}
-                />
-                {submitError && (
-                  <p className="text-sm text-destructive md:col-span-2">
-                    {submitError}
-                  </p>
-                )}
-                {submitSuccess && (
-                  <p className="text-sm text-green-600 md:col-span-2">
-                    {submitSuccess}
-                  </p>
-                )}
-                <div className="md:col-span-2 flex gap-3">
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Creating..." : "Create product"}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => reset()}
-                  >
-                    Reset
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
+            <Button asChild variant={"secondary"} size="lg" className="w-full">
+              <Link href="studio">Add New Product</Link>
+            </Button>
           </Card>
+          {/* Add product content is place inside the 
+          components/custom/admin/AddProduct.tsx */}
 
           <Card className="mt-6">
             <CardHeader>
@@ -1159,6 +571,20 @@ export default function AdminPage() {
                       </div>
                     );
                   })}
+                  {hasMore && (
+                    <Button
+                      variant="outline"
+                      // loading={loadingMore}
+                      disabled={loadingMore}
+                      className="w-full mt-4"
+                      onClick={() => {
+                        setPage((p) => p + 1);
+                        setLoadingMore(true);
+                      }}
+                    >
+                      {loadingMore ? "Loading more…" : "Show More"}
+                    </Button>
+                  )}
                 </div>
               )}
             </CardContent>
