@@ -58,6 +58,92 @@ export const allProductsQuery = (page: number) => {
   `;
 };
 
+
+
+
+export const filteredProductsQuery = (
+  page: number,
+  search?: string,
+  productFilter?: any
+) => {
+  const pageSize = 24;
+  const start = page * pageSize;
+  const end = start + pageSize - 1;
+
+  const isSearchingForFeaturedProducts = search?.toLowerCase().includes("feature");
+
+  // --- Price range filter ---
+  const priceRangeArray =
+    productFilter?.priceRanges?.length > 0
+      ? productFilter.priceRanges.map((range: string) => {
+          const [startPart, endPart] = range.split("-");
+          const start = parseFloat(startPart.replace("$", "").trim());
+          let end: any = endPart
+            ? parseFloat(endPart.replace("$", "").trim())
+            : null;
+          if (isNaN(end)) end = null;
+          return { start, end };
+        })
+      : [];
+
+  // --- Build conditions dynamically ---
+  const conditions = [
+    `_type == "product"`,
+    `defined(title)`,
+    `defined(slug.current)`,
+    `defined(price)`,
+    `defined(variants)`,
+  ];
+
+  // Add filters
+  if (isSearchingForFeaturedProducts) conditions.push(`isFeatured == true`);
+
+  if (search && !isSearchingForFeaturedProducts) {
+    conditions.push(`
+      title match "${search}*" ||
+      subTitle match "${search}*" ||
+      brand->name match "${search}*" ||
+      "${search}" in relevantTags[]->value
+    `);
+  }
+
+  if (productFilter?.brands?.length > 0) {
+    conditions.push(`brand->name in [${productFilter.brands
+      .map((b: string) => `"${b}"`)
+      .join(", ")}]`);
+  }
+
+  if (priceRangeArray.length > 0) {
+    const priceConditions = priceRangeArray
+      .map(
+        (price: { start: number; end: number }) =>
+          `(price >= ${price.start}${price.end != null ? ` && price <= ${price.end}` : ""})`
+      )
+      .join(" || ");
+    conditions.push(`(${priceConditions})`);
+  }
+
+  if (productFilter?.categories?.length > 0) {
+    conditions.push(`category in [${productFilter.categories
+      .map((c: string) => `"${c}"`)
+      .join(", ")}]`);
+  }
+
+  if (productFilter?.discounts?.length > 0) {
+    conditions.push(`discount in [${productFilter.discounts.join(", ")}]`);
+  }
+
+  if (productFilter?.ratings?.length > 0) {
+    conditions.push(`rating in [${productFilter.ratings.join(", ")}]`);
+  }
+
+  // --- Final GROQ query ---
+  return `*[
+    ${conditions.join(" && ")}
+  ] | order(publishedAt desc) [${start}..${end}] ${productFields}`;
+};
+
+
 // for product showcase
 export const featuredCollectionQuery = `*[
   _type == "product" &&

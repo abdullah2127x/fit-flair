@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { openSidebar } from "@/redux/slices/cartSidebarSlice";
 import { selectCartCount } from "@/redux/slices/cartSlice";
 import AuthButton from "./AuthButton";
+import { useRouter } from "next/navigation";
 
 // ✅ Logo Component
 function Logo() {
@@ -168,11 +169,32 @@ function DesktopNav() {
 
 // ✅ Desktop Search Component
 function DesktopSearch() {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const router = useRouter();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      router.push(`/shop?search=${searchQuery?.toLowerCase().trim()}`);
+    }
+  };
+
   return (
     <div className="hidden lg:flex items-center space-x-2 flex-1 max-w-sm mx-8">
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-        <Input placeholder="Search clothing..." className="pl-10" />
+        <Input
+          name="search"
+          value={searchQuery}
+          placeholder="Search clothing..."
+          onChange={handleChange}
+          onKeyDown={handleSubmit}
+          className="pl-10 placeholder-teal-800"
+        />
       </div>
     </div>
   );
@@ -235,6 +257,18 @@ function MobileSearch({
 }: {
   searchRef: React.RefObject<HTMLDivElement>;
 }) {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      router.push(`/shop?search=${searchQuery?.toLowerCase().trim()}`);
+    }
+  };
   return (
     <div
       ref={searchRef}
@@ -242,7 +276,14 @@ function MobileSearch({
     >
       <div className="relative bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70 rounded-md">
         <Search className="absolute left-3  top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-        <Input placeholder="Search clothing..." className="pl-10" />
+        <Input
+          name="search"
+          value={searchQuery}
+          onChange={handleChange}
+          onKeyDown={handleSubmit}
+          placeholder="Search clothing..."
+          className="pl-10"
+        />
       </div>
     </div>
   );
