@@ -28,7 +28,7 @@ export default function ContactPage() {
       icon: <Phone className="w-6 h-6" />,
       title: "Phone",
       details: "03243218965",
-      description: "Mon–Sat, 9AM–6PM",
+      description: "Mon-Sat, 9AM-6PM",
     },
     {
       icon: <Mail className="w-6 h-6" />,
@@ -75,7 +75,7 @@ export default function ContactPage() {
             Get In Touch
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Have questions? We're here to help! Reach out and let's connect.
+            Have questions? We&apos;re here to help! Reach out and let&apos;s connect.
           </p>
         </div>
       </section>

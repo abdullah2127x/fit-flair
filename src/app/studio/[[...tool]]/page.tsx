@@ -88,9 +88,9 @@ export default async function StudioPage() {
           Access Denied 🚫
         </h1>
         <p className="text-secondary-foreground max-w-md text-center mb-8">
-          You can't access the admin studio — but don't worry!
+          You can&apos;`t access the admin studio — but don&apos;`t worry!
           <br />
-          Let's get back to what matters most. 🛍️
+          Let&apos;`s get back to what matters most. 🛍️
         </p>
         <Button variant="secondary" size={"lg"} asChild>
           <Link href="/shop">Start Shopping</Link>

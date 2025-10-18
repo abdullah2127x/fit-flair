@@ -162,13 +162,13 @@ export default function AboutPage() {
               <h2 className="text-4xl font-bold text-foreground mb-6">Our Story</h2>
               <div className="space-y-4 text-lg text-muted-foreground">
                 <p>
-                  FitFlair was born from a simple belief: everyone deserves access to high-quality fitness gear that doesn't break the bank. What started as a small online shop in 2020 has grown into a thriving community of fitness enthusiasts.
+                  FitFlair was born from a simple belief: everyone deserves access to high-quality fitness gear that doesn&apos;t break the bank. What started as a small online shop in 2020 has grown into a thriving community of fitness enthusiasts.
                 </p>
                 <p>
-                  We understand the struggle of finding the perfect workout gear—pieces that perform as good as they look. That's why we've made it our mission to source and create products that combine style, functionality, and affordability.
+                  We understand the struggle of finding the perfect workout gear—pieces that perform as good as they look. That&apos;s why we&apos;ve made it our mission to source and create products that combine style, functionality, and affordability.
                 </p>
                 <p>
-                  Today, we're proud to serve thousands of customers worldwide, helping them look good and feel great while crushing their fitness goals.
+                  Today, we&apos;re proud to serve thousands of customers worldwide, helping them look good and feel great while crushing their fitness goals.
                 </p>
               </div>
             </div>
