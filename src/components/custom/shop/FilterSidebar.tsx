@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -18,6 +18,7 @@ import {
 } from "@/redux/slices/filterSidebarSlice";
 import { useRouter } from "next/navigation";
 import { FaAngleDown } from "react-icons/fa";
+import apiClient from "@/lib/apiClient";
 
 interface Option {
   title: string;
@@ -86,10 +87,63 @@ function CustomSelect({
 }
 
 const FilterSidebar = () => {
+  const [fabrics, setFabrics] = useState<{ title: string; value: string }[]>(
+    []
+  );
+  const [colors, setColors] = useState<
+    {
+      // colorTitle: string;
+      // colorTitleValue: string;
+      // colorCode: string;
+      // colorCodeValue: string;
+      title: string;
+      value: string;
+    }[]
+  >([]);
   const dispatch = useAppDispatch();
   const { isFilterOpen, device } = useAppSelector(
     (state) => state.filterSidebar
   );
+
+  //  loading fabrics
+  useEffect(() => {
+    (async () => {
+      const res = await apiClient.get("/admin/fabrics");
+      console.log("the fabrics at the admin are : ", res);
+
+      if (res.success && Array.isArray(res.data)) {
+        const fabricOptions = res.data.map(
+          (fabric: { _id: string; title: string }) => ({
+            title: fabric.title,
+            value: fabric.title.toLowerCase().replace(/\s+/g, "_"), // normalize value
+          })
+        );
+        setFabrics(fabricOptions);
+      }
+    })();
+  }, []);
+
+  //  loading colors
+  useEffect(() => {
+    (async () => {
+      const res = await apiClient.get("/admin/colors");
+      console.log("the colots at the admin are : ", res);
+
+      if (res.success && Array.isArray(res.data)) {
+        const colorOptions = res.data.map(
+          (color: { _id: string; title: string; code: string }) => ({
+            // colorTitle: color.title,
+            // colorTitleValue: color.title.toLowerCase().replace(/\s+/g, "_"), // normalize value
+            // colorCode: color.code,
+            // colorCodeValue: color.code.toLowerCase().replace(/\s+/g, "_"), // normalize value
+            title: color.title,
+            value: color.title.toLowerCase().replace(/\s+/g, "_"), // normalize value
+          })
+        );
+        setColors(colorOptions);
+      }
+    })();
+  }, []);
 
   const filterOptions = {
     audience: [
@@ -185,6 +239,8 @@ const FilterSidebar = () => {
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [selectedDiscounts, setSelectedDiscounts] = useState<number[]>([]);
+  const [selectedFabrics, setSelectedFabrics] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
 
   const router = useRouter();
 
@@ -206,6 +262,8 @@ const FilterSidebar = () => {
       seasons: selectedSeasons,
       designs: selectedDesigns,
       occasions: selectedOccasions,
+      fabrics: selectedFabrics, // ✅ added
+      colors: selectedColors, // ✅ added
       priceRanges: selectedPriceRanges,
       discounts: selectedDiscounts,
     };
@@ -282,6 +340,35 @@ const FilterSidebar = () => {
           handleToggle(value as string, setSelectedSubCategories)
         }
       />
+
+      {fabrics.length > 0 && (
+        <CustomSelect
+          title="Fabric"
+          options={fabrics}
+          selectedValues={selectedFabrics}
+          onSelect={(value) =>
+            handleToggle(value as string, setSelectedFabrics)
+          }
+        />
+      )}
+      {colors.length > 0 && (
+        <CustomSelect
+          title="Colors"
+          options={colors}
+          selectedValues={selectedColors}
+          onSelect={(value) => handleToggle(value as string, setSelectedColors)}
+        />
+      )}
+      {fabrics.length > 0 && (
+        <CustomSelect
+          title="Fabric"
+          options={fabrics}
+          selectedValues={selectedFabrics}
+          onSelect={(value) =>
+            handleToggle(value as string, setSelectedFabrics)
+          }
+        />
+      )}
 
       {showMenOutfits && (
         <CustomSelect
