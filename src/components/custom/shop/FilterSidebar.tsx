@@ -1,348 +1,3 @@
-// "use client";
-
-// import React, { useState } from "react";
-// import {
-//   Sheet,
-//   SheetContent,
-//   SheetHeader,
-//   SheetTitle,
-//   SheetDescription,
-// } from "@/components/ui/sheet";
-// import { Button } from "@/components/ui/button";
-// import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-// import { closeSidebar } from "@/redux/slices/filterSidebarSlice";
-// import { useRouter } from "next/navigation";
-
-// // Simple underline heading, same as before
-// const Heading = ({ children }: { children: React.ReactNode }) => {
-//   return (
-//     <h5 className="text-[20px] font-semibold text-darkTextBlue underline underline-offset-4">
-//       {children}
-//     </h5>
-//   );
-// };
-
-// const FilterSidebar = () => {
-//   const dispatch = useAppDispatch();
-//   const { isFilterOpen, device } = useAppSelector(
-//     (state) => state.filterSidebar
-//   );
-
-//   // Example filters (you can replace with your actual ones)
-//   const filterOptions = {
-//     categories: ["Shirts", "Pants", "Jackets", "Shoes"],
-//     brands: ["Zara", "Nike", "Adidas", "Levis"],
-//     priceRanges: ["$0 - $50", "$50 - $150", "$150+"],
-//     ratings: [5, 4, 3, 2, 1],
-//   };
-
-//   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-//   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-//   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
-//   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
-
-//   const router = useRouter();
-
-//   const handleToggle = <T,>(
-//     value: T,
-//     setFn: React.Dispatch<React.SetStateAction<T[]>>
-//   ) => {
-//     setFn((prev) =>
-//       prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-//     );
-//   };
-
-//   const handleApply = () => {
-//     // Collect filters
-//     const filters = {
-//       categories: selectedCategories,
-//       brands: selectedBrands,
-//       priceRanges: selectedPriceRanges,
-//       ratings: selectedRatings,
-//     };
-//     console.log("Applied Filters:", filters);
-//     const query = new URLSearchParams();
-//     Object.entries(filters).forEach(([key, value]) => {
-//       if (Array.isArray(value) && value.length > 0) {
-//         value.forEach((v) => query.append(key, v.toString()));
-//       }
-//     });
-//     console.log("the query to string is :",query , "and ", query.toString)
-
-//     router.push(`/shop?${query.toString()}`);
-
-//     dispatch(closeSidebar());
-//   };
-
-//   const handleReset = () => {
-//     setSelectedCategories([]);
-//     setSelectedBrands([]);
-//     setSelectedPriceRanges([]);
-//     setSelectedRatings([]);
-//   };
-
-//   const handleClose = () => dispatch(closeSidebar());
-
-//   return (
-//     <>
-//       {/* ✅ Mobile View - Uses Sheet */}
-//       {device === "mobile" && (
-//         <Sheet open={isFilterOpen} onOpenChange={handleClose}>
-//           <SheetContent className="text-darkTextBlue overflow-y-auto">
-//             <SheetHeader>
-//               <SheetTitle>
-//                 <div className="flex justify-center text-center font-bold text-2xl text-darkTextBlue">
-//                   Filter Products
-//                 </div>
-//               </SheetTitle>
-//               <SheetDescription>
-//                 <div className="bg-white h-fit p-6 shadow-md text-start rounded-lg flex flex-col items-start gap-10">
-//                   {/* Categories */}
-//                   <div className="flex flex-col gap-4">
-//                     <Heading>Categories</Heading>
-//                     <ul className="flex flex-col gap-2">
-//                       {filterOptions.categories.map((c) => (
-//                         <li key={c}>
-//                           <input
-//                             type="checkbox"
-//                             className="accent-pPink size-4 cursor-pointer"
-//                             checked={selectedCategories.includes(c)}
-//                             onChange={() =>
-//                               handleToggle(c, setSelectedCategories)
-//                             }
-//                           />{" "}
-//                           <label className="text-subText cursor-pointer">
-//                             {c}
-//                           </label>
-//                         </li>
-//                       ))}
-//                     </ul>
-//                   </div>
-
-//                   {/* Brand */}
-//                   <div className="flex flex-col gap-4">
-//                     <Heading>Brand</Heading>
-//                     <ul className="flex flex-col gap-2">
-//                       {filterOptions.brands.map((b) => (
-//                         <li key={b}>
-//                           <input
-//                             type="checkbox"
-//                             className="accent-purple-400 size-4 cursor-pointer"
-//                             checked={selectedBrands.includes(b)}
-//                             onChange={() => handleToggle(b, setSelectedBrands)}
-//                           />{" "}
-//                           <label className="text-subText cursor-pointer">
-//                             {b}
-//                           </label>
-//                         </li>
-//                       ))}
-//                     </ul>
-//                   </div>
-
-//                   {/* Price */}
-//                   <div className="flex flex-col gap-4">
-//                     <Heading>Price Range</Heading>
-//                     <ul className="flex flex-col gap-2">
-//                       {filterOptions.priceRanges.map((p) => (
-//                         <li key={p}>
-//                           <input
-//                             type="checkbox"
-//                             className="accent-pPink size-4 cursor-pointer"
-//                             checked={selectedPriceRanges.includes(p)}
-//                             onChange={() =>
-//                               handleToggle(p, setSelectedPriceRanges)
-//                             }
-//                           />{" "}
-//                           <label className="text-subText cursor-pointer">
-//                             {p}
-//                           </label>
-//                         </li>
-//                       ))}
-//                     </ul>
-//                   </div>
-
-//                   {/* Rating */}
-//                   <div className="flex flex-col gap-4">
-//                     <Heading>Rating</Heading>
-//                     {filterOptions.ratings.map((stars) => (
-//                       <div key={stars} className="flex gap-2 items-center">
-//                         <input
-//                           type="checkbox"
-//                           className="size-4 accent-yellow-300 cursor-pointer"
-//                           checked={selectedRatings.includes(stars)}
-//                           onChange={() =>
-//                             handleToggle(stars, setSelectedRatings)
-//                           }
-//                         />
-//                         <div
-//                           className="flex space-x-1 cursor-pointer"
-//                           onClick={() =>
-//                             handleToggle(stars, setSelectedRatings)
-//                           }
-//                         >
-//                           {[...Array(stars)].map((_, i) => (
-//                             <span key={i} className="text-yellow-500">
-//                               ★
-//                             </span>
-//                           ))}
-//                           {[...Array(5 - stars)].map((_, i) => (
-//                             <span key={i} className="text-subText">
-//                               ★
-//                             </span>
-//                           ))}
-//                         </div>
-//                       </div>
-//                     ))}
-//                   </div>
-
-//                   {/* Buttons */}
-//                   <div className="w-full flex gap-3">
-//                     <Button
-//                       onClick={handleApply}
-//                       className="w-full bg-pPink text-white"
-//                     >
-//                       Apply
-//                     </Button>
-//                     <Button
-//                       variant="outline"
-//                       onClick={handleReset}
-//                       className="w-full border-pPink text-pPink hover:bg-pPink/10"
-//                     >
-//                       Reset
-//                     </Button>
-//                   </div>
-//                 </div>
-//               </SheetDescription>
-//             </SheetHeader>
-//           </SheetContent>
-//         </Sheet>
-//       )}
-
-//       {/* ✅ Desktop View - Static Sidebar */}
-//       {device === "desktop" && (
-//         <div
-//           className={`hidden lg:block text-darkTextBlue bg-white p-6 shadow-md rounded-lg h-screen sticky top-0 overflow-y-auto transition-all duration-700 ease-in-out ${
-//             isFilterOpen ? "w-72" : "w-0"
-//           }`}
-//         >
-//           {isFilterOpen && (
-//             <div className="flex flex-col items-start gap-10">
-//               <h2 className="font-bold text-2xl text-center w-full">
-//                 Filter Products
-//               </h2>
-
-//               {/* Categories */}
-//               <div className="flex flex-col gap-4">
-//                 <Heading>Categories</Heading>
-//                 <ul className="flex flex-col gap-2">
-//                   {filterOptions.categories.map((c) => (
-//                     <li key={c}>
-//                       <input
-//                         type="checkbox"
-//                         className="accent-pPink size-4 cursor-pointer"
-//                         checked={selectedCategories.includes(c)}
-//                         onChange={() => handleToggle(c, setSelectedCategories)}
-//                       />{" "}
-//                       <label className="text-subText cursor-pointer">{c}</label>
-//                     </li>
-//                   ))}
-//                 </ul>
-//               </div>
-
-//               {/* Brand */}
-//               <div className="flex flex-col gap-4">
-//                 <Heading>Brand</Heading>
-//                 <ul className="flex flex-col gap-2">
-//                   {filterOptions.brands.map((b) => (
-//                     <li key={b}>
-//                       <input
-//                         type="checkbox"
-//                         className="accent-purple-400 size-4 cursor-pointer"
-//                         checked={selectedBrands.includes(b)}
-//                         onChange={() => handleToggle(b, setSelectedBrands)}
-//                       />{" "}
-//                       <label className="text-subText cursor-pointer">{b}</label>
-//                     </li>
-//                   ))}
-//                 </ul>
-//               </div>
-
-//               {/* Price */}
-//               <div className="flex flex-col gap-4">
-//                 <Heading>Price Range</Heading>
-//                 <ul className="flex flex-col gap-2">
-//                   {filterOptions.priceRanges.map((p) => (
-//                     <li key={p}>
-//                       <input
-//                         type="checkbox"
-//                         className="accent-pPink size-4 cursor-pointer"
-//                         checked={selectedPriceRanges.includes(p)}
-//                         onChange={() => handleToggle(p, setSelectedPriceRanges)}
-//                       />{" "}
-//                       <label className="text-subText cursor-pointer">{p}</label>
-//                     </li>
-//                   ))}
-//                 </ul>
-//               </div>
-
-//               {/* Rating */}
-//               <div className="flex flex-col gap-4">
-//                 <Heading>Rating</Heading>
-//                 {filterOptions.ratings.map((stars) => (
-//                   <div key={stars} className="flex gap-2 items-center">
-//                     <input
-//                       type="checkbox"
-//                       className="size-4 accent-yellow-300 cursor-pointer"
-//                       checked={selectedRatings.includes(stars)}
-//                       onChange={() => handleToggle(stars, setSelectedRatings)}
-//                     />
-//                     <div
-//                       className="flex space-x-1 cursor-pointer"
-//                       onClick={() => handleToggle(stars, setSelectedRatings)}
-//                     >
-//                       {[...Array(stars)].map((_, i) => (
-//                         <span key={i} className="text-yellow-500">
-//                           ★
-//                         </span>
-//                       ))}
-//                       {[...Array(5 - stars)].map((_, i) => (
-//                         <span key={i} className="text-subText">
-//                           ★
-//                         </span>
-//                       ))}
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-
-//               {/* Buttons */}
-//               <div className="w-full flex gap-3">
-//                 <Button
-//                   onClick={handleApply}
-//                   className="w-full bg-pPink text-white"
-//                 >
-//                   Apply
-//                 </Button>
-//                 <Button
-//                   variant="outline"
-//                   onClick={handleReset}
-//                   className="w-full border-pPink text-pPink hover:bg-pPink/10"
-//                 >
-//                   Reset
-//                 </Button>
-//               </div>
-//             </div>
-//           )}
-//         </div>
-//       )}
-//     </>
-//   );
-// };
-
-// export default FilterSidebar;
-
-
-
 "use client";
 
 import React, { useState } from "react";
@@ -354,17 +9,72 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { closeSidebar } from "@/redux/slices/filterSidebarSlice";
 import { useRouter } from "next/navigation";
+import { FaAngleDown } from "react-icons/fa";
 
-const Heading = ({ children }: { children: React.ReactNode }) => {
+interface Option {
+  title: string;
+  value: string | number;
+}
+
+interface CustomSelectProps {
+  title: string;
+  options: Option[];
+  selectedValues: (string | number)[];
+  onSelect: (value: string | number) => void;
+}
+
+function CustomSelect({
+  title,
+  options,
+  selectedValues,
+  onSelect,
+}: CustomSelectProps) {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const toggleOpen = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <h5 className="text-[20px] font-semibold text-darkTextBlue underline underline-offset-4">
-      {children}
-    </h5>
+    <div className="w-full">
+      <Button
+        onClick={toggleOpen}
+        size={"lg"}
+        className="w-full flex items-center justify-between hover:bg-accent/50  rounded-lg transition-colors"
+      >
+        <span className="text-lg font-bold text-primary-foreground">
+          {title}
+        </span>
+
+        <FaAngleDown
+          size={6}
+          className={` transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
+      </Button>
+
+      {isOpen && (
+        <div className="flex flex-wrap gap-6 py-3 mb-4">
+          {options.map((option: Option) => (
+            <Button
+              key={option.value}
+              className=" px-6"
+              variant={
+                selectedValues.includes(option.value) ? "secondary" : "default"
+              }
+              onClick={() => onSelect(option.value)}
+            >
+              {option.title}
+            </Button>
+          ))}
+        </div>
+      )}
+    </div>
   );
-};
+}
 
 const FilterSidebar = () => {
   const dispatch = useAppDispatch();
@@ -372,7 +82,6 @@ const FilterSidebar = () => {
     (state) => state.filterSidebar
   );
 
-  // ✅ Filter options matching your Sanity schema
   const filterOptions = {
     audience: [
       { title: "Men", value: "men" },
@@ -443,7 +152,11 @@ const FilterSidebar = () => {
       { title: "Office / Workwear", value: "office" },
       { title: "Eid / Religious", value: "eid" },
     ],
-    priceRanges: ["$0 - $50", "$50 - $150", "$150+"],
+    priceRanges: [
+      { title: "$0 - $50", value: "$0 - $50" },
+      { title: "$50 - $150", value: "$50 - $150" },
+      { title: "$150+", value: "$150+" },
+    ],
     discounts: [
       { title: "10% Off", value: 10 },
       { title: "20% Off", value: 20 },
@@ -514,208 +227,105 @@ const FilterSidebar = () => {
 
   const handleClose = () => dispatch(closeSidebar());
 
-  // ✅ Determine which outfit types to show based on selected audience
   const showMenOutfits = selectedAudience.includes("men");
   const showWomenOutfits = selectedAudience.includes("women");
 
   const FilterContent = () => (
-    <div className="flex flex-col items-start gap-10">
-      <h2 className="font-bold text-2xl text-center w-full">
-        Filter Products
-      </h2>
+    <div className="flex flex-col items-start gap-3">
+      <h2 className="font-bold text-2xl text-center w-full">Filter Products</h2>
 
-      {/* Audience */}
-      <div className="flex flex-col gap-4">
-        <Heading>Audience</Heading>
-        <ul className="flex flex-col gap-2">
-          {filterOptions.audience.map((a) => (
-            <li key={a.value}>
-              <input
-                type="checkbox"
-                className="accent-pPink size-4 cursor-pointer"
-                checked={selectedAudience.includes(a.value)}
-                onChange={() => handleToggle(a.value, setSelectedAudience)}
-              />{" "}
-              <label className="text-subText cursor-pointer">{a.title}</label>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <CustomSelect
+        title="Audience"
+        options={filterOptions.audience}
+        selectedValues={selectedAudience}
+        onSelect={(value) => handleToggle(
+          value as string, 
+          setSelectedAudience)}
+      />
 
-      {/* Categories */}
-      <div className="flex flex-col gap-4">
-        <Heading>Categories</Heading>
-        <ul className="flex flex-col gap-2">
-          {filterOptions.categories.map((c) => (
-            <li key={c.value}>
-              <input
-                type="checkbox"
-                className="accent-pPink size-4 cursor-pointer"
-                checked={selectedCategories.includes(c.value)}
-                onChange={() => handleToggle(c.value, setSelectedCategories)}
-              />{" "}
-              <label className="text-subText cursor-pointer">{c.title}</label>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <CustomSelect
+        title="Categories"
+        options={filterOptions.categories}
+        selectedValues={selectedCategories}
+        onSelect={(value) =>
+          handleToggle(value as string, setSelectedCategories)
+        }
+      />
 
-      {/* Sub Categories */}
-      <div className="flex flex-col gap-4">
-        <Heading>Sub Category</Heading>
-        <ul className="flex flex-col gap-2">
-          {filterOptions.subCategories.map((sc) => (
-            <li key={sc.value}>
-              <input
-                type="checkbox"
-                className="accent-pPink size-4 cursor-pointer"
-                checked={selectedSubCategories.includes(sc.value)}
-                onChange={() =>
-                  handleToggle(sc.value, setSelectedSubCategories)
-                }
-              />{" "}
-              <label className="text-subText cursor-pointer">{sc.title}</label>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <CustomSelect
+        title="Sub Category"
+        options={filterOptions.subCategories}
+        selectedValues={selectedSubCategories}
+        onSelect={(value) =>
+          handleToggle(value as string, setSelectedSubCategories)
+        }
+      />
 
-      {/* Men Outfit Types */}
       {showMenOutfits && (
-        <div className="flex flex-col gap-4">
-          <Heading>Men Outfit Type</Heading>
-          <ul className="flex flex-col gap-2">
-            {filterOptions.menOutfitTypes.map((ot) => (
-              <li key={ot.value}>
-                <input
-                  type="checkbox"
-                  className="accent-pPink size-4 cursor-pointer"
-                  checked={selectedOutfitTypes.includes(ot.value)}
-                  onChange={() => handleToggle(ot.value, setSelectedOutfitTypes)}
-                />{" "}
-                <label className="text-subText cursor-pointer">{ot.title}</label>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <CustomSelect
+          title="Men Outfit Type"
+          options={filterOptions.menOutfitTypes}
+          selectedValues={selectedOutfitTypes}
+          onSelect={(value) =>
+            handleToggle(value as string, setSelectedOutfitTypes)
+          }
+        />
       )}
 
-      {/* Women Outfit Types */}
       {showWomenOutfits && (
-        <div className="flex flex-col gap-4">
-          <Heading>Women Outfit Type</Heading>
-          <ul className="flex flex-col gap-2">
-            {filterOptions.womenOutfitTypes.map((ot) => (
-              <li key={ot.value}>
-                <input
-                  type="checkbox"
-                  className="accent-pPink size-4 cursor-pointer"
-                  checked={selectedOutfitTypes.includes(ot.value)}
-                  onChange={() => handleToggle(ot.value, setSelectedOutfitTypes)}
-                />{" "}
-                <label className="text-subText cursor-pointer">{ot.title}</label>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <CustomSelect
+          title="Women Outfit Type"
+          options={filterOptions.womenOutfitTypes}
+          selectedValues={selectedOutfitTypes}
+          onSelect={(value) =>
+            handleToggle(value as string, setSelectedOutfitTypes)
+          }
+        />
       )}
 
-      {/* Season */}
-      <div className="flex flex-col gap-4">
-        <Heading>Season</Heading>
-        <ul className="flex flex-col gap-2">
-          {filterOptions.seasons.map((s) => (
-            <li key={s.value}>
-              <input
-                type="checkbox"
-                className="accent-pPink size-4 cursor-pointer"
-                checked={selectedSeasons.includes(s.value)}
-                onChange={() => handleToggle(s.value, setSelectedSeasons)}
-              />{" "}
-              <label className="text-subText cursor-pointer">{s.title}</label>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <CustomSelect
+        title="Season"
+        options={filterOptions.seasons}
+        selectedValues={selectedSeasons}
+        onSelect={(value) => handleToggle(value as string, setSelectedSeasons)}
+      />
 
-      {/* Designs */}
-      <div className="flex flex-col gap-4">
-        <Heading>Designs</Heading>
-        <ul className="flex flex-col gap-2 max-h-48 overflow-y-auto">
-          {filterOptions.designs.map((d) => (
-            <li key={d.value}>
-              <input
-                type="checkbox"
-                className="accent-pPink size-4 cursor-pointer"
-                checked={selectedDesigns.includes(d.value)}
-                onChange={() => handleToggle(d.value, setSelectedDesigns)}
-              />{" "}
-              <label className="text-subText cursor-pointer">{d.title}</label>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <CustomSelect
+        title="Designs"
+        options={filterOptions.designs}
+        selectedValues={selectedDesigns}
+        onSelect={(value) => handleToggle(value as string, setSelectedDesigns)}
+      />
 
-      {/* Occasions */}
-      <div className="flex flex-col gap-4">
-        <Heading>Occasions</Heading>
-        <ul className="flex flex-col gap-2">
-          {filterOptions.occasions.map((o) => (
-            <li key={o.value}>
-              <input
-                type="checkbox"
-                className="accent-pPink size-4 cursor-pointer"
-                checked={selectedOccasions.includes(o.value)}
-                onChange={() => handleToggle(o.value, setSelectedOccasions)}
-              />{" "}
-              <label className="text-subText cursor-pointer">{o.title}</label>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <CustomSelect
+        title="Occasions"
+        options={filterOptions.occasions}
+        selectedValues={selectedOccasions}
+        onSelect={(value) =>
+          handleToggle(value as string, setSelectedOccasions)
+        }
+      />
 
-      {/* Price Range */}
-      <div className="flex flex-col gap-4">
-        <Heading>Price Range</Heading>
-        <ul className="flex flex-col gap-2">
-          {filterOptions.priceRanges.map((p) => (
-            <li key={p}>
-              <input
-                type="checkbox"
-                className="accent-pPink size-4 cursor-pointer"
-                checked={selectedPriceRanges.includes(p)}
-                onChange={() => handleToggle(p, setSelectedPriceRanges)}
-              />{" "}
-              <label className="text-subText cursor-pointer">{p}</label>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <CustomSelect
+        title="Price Range"
+        options={filterOptions.priceRanges}
+        selectedValues={selectedPriceRanges}
+        onSelect={(value) =>
+          handleToggle(value as string, setSelectedPriceRanges)
+        }
+      />
 
-      {/* Discount */}
-      <div className="flex flex-col gap-4">
-        <Heading>Discount</Heading>
-        <ul className="flex flex-col gap-2">
-          {filterOptions.discounts.map((d) => (
-            <li key={d.value}>
-              <input
-                type="checkbox"
-                className="accent-pPink size-4 cursor-pointer"
-                checked={selectedDiscounts.includes(d.value)}
-                onChange={() => handleToggle(d.value, setSelectedDiscounts)}
-              />{" "}
-              <label className="text-subText cursor-pointer">{d.title}</label>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <CustomSelect
+        title="Discount"
+        options={filterOptions.discounts}
+        selectedValues={selectedDiscounts}
+        onSelect={(value) =>
+          handleToggle(value as number, setSelectedDiscounts)
+        }
+      />
 
-      {/* Buttons */}
-      <div className="w-full flex gap-3">
-        <Button
-          onClick={handleApply}
-          className="w-full bg-pPink text-white"
-        >
+      <div className="w-full flex gap-3 mt-4">
+        <Button onClick={handleApply} className="w-full bg-pPink text-white">
           Apply
         </Button>
         <Button
@@ -731,7 +341,6 @@ const FilterSidebar = () => {
 
   return (
     <>
-      {/* ✅ Mobile View - Uses Sheet */}
       {device === "mobile" && (
         <Sheet open={isFilterOpen} onOpenChange={handleClose}>
           <SheetContent className="text-darkTextBlue overflow-y-auto">
@@ -751,11 +360,10 @@ const FilterSidebar = () => {
         </Sheet>
       )}
 
-      {/* ✅ Desktop View - Static Sidebar */}
       {device === "desktop" && (
         <div
-          className={`hidden lg:block text-darkTextBlue bg-white p-6 shadow-md rounded-lg h-screen sticky top-0 overflow-y-auto transition-all duration-700 ease-in-out ${
-            isFilterOpen ? "w-72" : "w-0"
+          className={`hidden lg:block text-secondary-foreground py-6 px-1 shadow-md rounded-lg h-screen sticky top-0    overflow-y-auto transition-all duration-700 ease-in-out ${
+            isFilterOpen ? "w-80" : "w-0"
           }`}
         >
           {isFilterOpen && <FilterContent />}
