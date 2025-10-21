@@ -11,7 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { closeSidebar } from "@/redux/slices/filterSidebarSlice";
+import {
+  closeSidebar,
+  selectOpenSelects,
+  toggleSelect,
+} from "@/redux/slices/filterSidebarSlice";
 import { useRouter } from "next/navigation";
 import { FaAngleDown } from "react-icons/fa";
 
@@ -33,16 +37,21 @@ function CustomSelect({
   selectedValues,
   onSelect,
 }: CustomSelectProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  // const isOpen = useAppSelector(selectIsSelectOpen);
+  const dispatch = useAppDispatch();
+  const openSelects = useAppSelector(selectOpenSelects);
 
-  const toggleOpen = () => {
-    setIsOpen(!isOpen);
+  // check if THIS select is open
+  const isOpen = openSelects.includes(title);
+
+  const handleToggleOpen = () => {
+    dispatch(toggleSelect(title)); // title = unique identifier for this select
   };
 
   return (
     <div className="w-full">
       <Button
-        onClick={toggleOpen}
+        onClick={handleToggleOpen}
         size={"lg"}
         className="w-full flex items-center justify-between hover:bg-accent/50  rounded-lg transition-colors"
       >
@@ -223,6 +232,7 @@ const FilterSidebar = () => {
     setSelectedOccasions([]);
     setSelectedPriceRanges([]);
     setSelectedDiscounts([]);
+    router.push("/shop");
   };
 
   const handleClose = () => dispatch(closeSidebar());
@@ -233,14 +243,26 @@ const FilterSidebar = () => {
   const FilterContent = () => (
     <div className="flex flex-col items-start gap-3">
       <h2 className="font-bold text-2xl text-center w-full">Filter Products</h2>
+      <div className="w-full flex gap-3 mt-4">
+        <Button variant={"secondary"} onClick={handleApply} className="w-full">
+          Apply
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleReset}
+          className="w-full border-pPink text-pPink hover:bg-pPink/10"
+        >
+          Reset
+        </Button>
+      </div>
 
       <CustomSelect
         title="Audience"
         options={filterOptions.audience}
         selectedValues={selectedAudience}
-        onSelect={(value) => handleToggle(
-          value as string, 
-          setSelectedAudience)}
+        onSelect={(value) => {
+          handleToggle(value as string, setSelectedAudience);
+        }}
       />
 
       <CustomSelect
@@ -323,19 +345,6 @@ const FilterSidebar = () => {
           handleToggle(value as number, setSelectedDiscounts)
         }
       />
-
-      <div className="w-full flex gap-3 mt-4">
-        <Button onClick={handleApply} className="w-full bg-pPink text-white">
-          Apply
-        </Button>
-        <Button
-          variant="outline"
-          onClick={handleReset}
-          className="w-full border-pPink text-pPink hover:bg-pPink/10"
-        >
-          Reset
-        </Button>
-      </div>
     </div>
   );
 
@@ -343,15 +352,15 @@ const FilterSidebar = () => {
     <>
       {device === "mobile" && (
         <Sheet open={isFilterOpen} onOpenChange={handleClose}>
-          <SheetContent className="text-darkTextBlue overflow-y-auto">
+          <SheetContent className="text-secondary-foreground p-2 overflow-y-auto ">
             <SheetHeader>
-              <SheetTitle>
+              {/* <SheetTitle>
                 <div className="flex justify-center text-center font-bold text-2xl text-darkTextBlue">
                   Filter Products
                 </div>
-              </SheetTitle>
+              </SheetTitle> */}
               <SheetDescription>
-                <div className="bg-white h-fit p-6 shadow-md text-start rounded-lg">
+                <div className=" h-fit shadow-md text-start rounded-lg ">
                   <FilterContent />
                 </div>
               </SheetDescription>
@@ -362,7 +371,7 @@ const FilterSidebar = () => {
 
       {device === "desktop" && (
         <div
-          className={`hidden lg:block text-secondary-foreground py-6 px-1 shadow-md rounded-lg h-screen sticky top-0    overflow-y-auto transition-all duration-700 ease-in-out ${
+          className={`hidden lg:block text-secondary-foreground py-6 px-1 rounded-lg h-screen sticky top-0    overflow-y-auto transition-all duration-700 ease-in-out ${
             isFilterOpen ? "w-80" : "w-0"
           }`}
         >
