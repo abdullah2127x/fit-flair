@@ -1,4 +1,15 @@
 "use client";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useEffect, useMemo, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -146,6 +157,7 @@ export default function AdminPage() {
   const [page, setPage] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [reloadFlag, setReloadFlag] = useState(false);
 
   // to fetch products, users and orders
   useEffect(() => {
@@ -175,7 +187,7 @@ export default function AdminPage() {
     return () => {
       mounted = false;
     };
-  }, [page, search]);
+  }, [page, search, reloadFlag]);
 
   // to load users and orders
   useEffect(() => {
@@ -220,6 +232,8 @@ export default function AdminPage() {
     setPage(0);
     setHasMore(true);
     setLoadingLists(true);
+    setReloadFlag((prev) => !prev); // toggle to refetch
+
     // "search" triggers effect above
   };
 
@@ -237,6 +251,10 @@ export default function AdminPage() {
     const res = await apiClient.put(`/admin/products/${id}`, data);
     console.log("In the update product the res is :", res);
     if (res.success) await reloadProducts();
+    console.log(
+      "there is success to update the product now sending to reload products.",
+      res
+    );
     return res.success;
   };
 
@@ -553,7 +571,54 @@ export default function AdminPage() {
                             <Button asChild variant="default" size="sm">
                               <Link href={`/shop/${p.slug}`}>View</Link>
                             </Button>
-                            <Button
+
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="sm">
+                                  Delete
+                                </Button>
+                              </AlertDialogTrigger>
+
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    Are you absolutely sure?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will
+                                    permanently delete your product.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={async () => {
+                                      try {
+                                        const res = await apiClient.delete(
+                                          `/admin/products/${p.id}`
+                                        );
+                                        if (res.success) {
+                                          reloadProducts(); // refresh your product list
+                                        } else {
+                                          console.error(
+                                            "Failed to delete product"
+                                          );
+                                        }
+                                      } catch (error) {
+                                        console.error(
+                                          "Error deleting product:",
+                                          error
+                                        );
+                                      }
+                                    }}
+                                  >
+                                    Continue
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+
+                            {/* <Button
                               variant="destructive"
                               size="sm"
                               onClick={async () => {
@@ -565,7 +630,7 @@ export default function AdminPage() {
                               }}
                             >
                               Delete
-                            </Button>
+                            </Button> */}
                           </div>
                         </div>
                       </div>

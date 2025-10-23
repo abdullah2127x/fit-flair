@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import ShopHeader from "@/components/custom/shop/FilterHeader";
 import ShopProducts from "@/components/custom/shop/ShowProducts";
 import FilterSidebar from "@/components/custom/shop/FilterSidebar";
 import { useAppSelector } from "@/redux/hooks";
+import FullPageLoader from "@/components/custom/FullPageLoader";
 
-const Shop = () => {
+const ShopContent = () => {
   const { isFilterOpen } = useAppSelector((state) => state.filterSidebar);
 
   return (
@@ -15,7 +16,7 @@ const Shop = () => {
       {isFilterOpen && (
         <aside className="bg-secondary shrink-0">
           <div className="">
-          {/* <div className="sticky overflow-x-hidden top-20 max-h-[calc(100vh-5rem)] overflow-auto"> */}
+            {/* <div className="sticky overflow-x-hidden top-20 max-h-[calc(100vh-5rem)] overflow-auto"> */}
             <FilterSidebar />
           </div>
         </aside>
@@ -37,4 +38,12 @@ const Shop = () => {
   );
 };
 
+const Shop = () => {
+  return(
+    <Suspense fallback={<FullPageLoader />}>
+    <ShopContent />
+  </Suspense>
+  )
+};
 export default Shop;
+// export default ShopContent;

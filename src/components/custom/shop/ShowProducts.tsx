@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react-hooks/exhaustive-deps */
 import ProductGrid from "@/components/custom/ProductGrid";
 import { filteredProductsQuery } from "@/lib/groqQueries";
 import { client } from "@/sanity/lib/client";
@@ -131,34 +132,6 @@ const ShowProductsContent = ({ view }: { view: "list" | "grid" }) => {
       discounts,
     }),
   ]);
-
-  // const filters = useMemo(() => {
-  //   return {
-  //     audience,
-  //     categories,
-  //     subCategories,
-  //     outfitTypes,
-  //     seasons,
-  //     designs,
-  //     occasions,
-  //     priceRanges,
-  //     discounts: discounts.filter((d) => !isNaN(d)),
-  //   };
-  // }, [
-  //   audience,
-  //   categories,
-  //   subCategories,
-  //   outfitTypes,
-  //   seasons,
-  //   designs,
-  //   occasions,
-  //   priceRanges,
-  //   discounts,
-  // ]);
-
-  // useEffect(() => {
-  //   setProductFilter(filters);
-  // }, [filters]);
 
   useEffect(() => {
     setPage(0);

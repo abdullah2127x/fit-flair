@@ -5,7 +5,6 @@ import { IoIosCheckmark } from "react-icons/io";
 import { Button } from "../../ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import MyButton from "../MyButton";
 
 // ✅ Features List Data from Black Friday
 const features = [
