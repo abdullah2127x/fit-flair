@@ -10,11 +10,12 @@ const Shop = () => {
   const { isFilterOpen } = useAppSelector((state) => state.filterSidebar);
 
   return (
-    <div className="min-h-screen container mx-auto px-4 flex gap-6">
+    <div className="min-h-screen container mx-auto px-4 flex gap-4">
       {/* Sidebar column */}
       {isFilterOpen && (
-        <aside className="w-64 shrink-0">
-          <div className="sticky overflow-x-hidden top-20 max-h-[calc(100vh-5rem)] overflow-auto">
+        <aside className="bg-secondary shrink-0">
+          <div className="">
+          {/* <div className="sticky overflow-x-hidden top-20 max-h-[calc(100vh-5rem)] overflow-auto"> */}
             <FilterSidebar />
           </div>
         </aside>
@@ -23,7 +24,7 @@ const Shop = () => {
       {/* Products column */}
       <main className="flex-1 flex flex-col gap-4 pb-16">
         {/* Header */}
-        <div className="w-full">
+        <div className="w-full ">
           <ShopHeader />
         </div>
 

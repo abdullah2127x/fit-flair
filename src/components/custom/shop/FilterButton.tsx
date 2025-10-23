@@ -2,8 +2,13 @@ import React from "react";
 import { IoFilter } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { toggleSidebar, setDevice } from "@/redux/slices/filterSidebarSlice";
+import {
+  toggleSidebar,
+  setDevice,
+  selectIsFilterOpen,
+} from "@/redux/slices/filterSidebarSlice";
 import { DeviceType } from "@/types/device";
+import { FaArrowLeft } from "react-icons/fa";
 
 interface FilterButtonProps {
   view: DeviceType;
@@ -11,6 +16,7 @@ interface FilterButtonProps {
 
 const FilterButton = ({ view }: FilterButtonProps) => {
   const dispatch = useAppDispatch();
+  const isFilterOpen = useAppSelector(selectIsFilterOpen);
 
   return (
     <Button
@@ -23,7 +29,11 @@ const FilterButton = ({ view }: FilterButtonProps) => {
           : dispatch(setDevice("mobile"));
       }}
     >
-      <IoFilter className="text-lg" />
+      {isFilterOpen ? (
+        <FaArrowLeft className="text-lg" />
+      ) : (
+        <IoFilter className="text-lg" />
+      )}
       <span>Filter</span>
       <div className="px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-600 font-semibold">
         New

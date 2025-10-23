@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 import ImageCard from "./ImageCard";
 import QuickViewDialog from "@/components/custom/QuickViewDialog";
@@ -45,15 +44,14 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         {loading ? (
           // ✅ First load → only skeletons
           Array.from({ length: skeletonCount }).map((_, i) => (
-            <SkeletonImageCard key={i} tags={3} />
+            <SkeletonImageCard key={`more-${i}`} tags={3} />
           ))
         ) : (
           <>
             {/* ✅ Render products */}
             {products.map((product, idx) => (
-              <div className="max-w-sm w-full mx-auto">
+              <div key={idx} className="max-w-sm w-full mx-auto">
                 <ImageCard
-                  key={idx}
                   variant="showcase"
                   id={product.id.toString()}
                   slug={product.slug}

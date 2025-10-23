@@ -1,3 +1,38 @@
+import { NextRequest, NextResponse } from "next/server";
+import { client } from "@/sanity/lib/client";
+import { success, failure } from "@/lib/response";
+import { filteredProductsQuery } from "@/lib/groqQueries";
+
+export const dynamic = "force-dynamic"; // ✅ no caching
+export const revalidate = 0;
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+
+    const page = Number(searchParams.get("page")) || 0;
+    const search = searchParams.get("search") || "";
+    const filter = JSON.parse(searchParams.get("filter") || "{}");
+
+    // ✅ always run fresh query
+    const query = filteredProductsQuery(page, search, filter);
+
+    console.log("🧠 Running Sanity query:\n", query);
+
+    const products = await client.fetch(query, {}, { cache: "no-store" });
+    console.log("✅ New products from Sanity:", products?.length);
+
+    return success(products, "Products fetched", 200);
+  } catch (err: any) {
+    console.error("❌ Admin products endpoint error:", err);
+    return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
+  }
+}
+
+
+
+
+
 // import { NextRequest, NextResponse } from 'next/server';
 // import connectDB from '@/lib/mongodb';
 // import Product from '@/models/Product';
@@ -103,8 +138,8 @@
 //   }
 // }
 
-import { NextResponse } from "next/server";
+// import { NextResponse } from "next/server";
 
-export async function GET() {
-  return NextResponse.json({ message: "Cart API works!" });
-}
+// export async function GET() {
+//   return NextResponse.json({ message: "Cart API works!" });
+// }

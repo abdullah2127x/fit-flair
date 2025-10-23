@@ -4,30 +4,72 @@ import { isAdminClerkId } from "@/lib/utils";
 import { failure, success } from "@/lib/response";
 import writeClient from "@/sanity/lib/writeClient";
 
+// export async function PUT(
+//   request: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   try {
+//     const { id } =  params;
+//     const { userId } = await auth();
+//     if (!userId || !isAdminClerkId(userId)) return failure("Forbidden", 403);
+//     const body = await request.json();
+    
+//     const updated = await writeClient
+//     .patch(id)
+//     .set(body)
+//     .commit({ autoGenerateArrayKeys: true });
+
+//     console.log("the updated is : ", updated);
+//     return success(updated, "Product updated", 200);
+//   } catch (err: any) {
+//     console.error("Admin update product error:", err);
+//     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
+//   }
+// }
+
+
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  try {
-    const { id } = await params;
-    const { userId } = await auth();
-    if (!userId || !isAdminClerkId(userId)) return failure("Forbidden", 403);
-    const body = await request.json();
-    const patch = writeClient.patch(id).set(body);
-    // const updated = await writeClient
-    //   .transaction()
-    //   .patch(patch)
-    //   .commit({ autoGenerateArrayKeys: true });
-    
-    const updated = await writeClient
-    .patch(id)
-    .set(body)
-    .commit({ autoGenerateArrayKeys: true });
+  console.log("🟡 [PUT] API Called — Admin Update Product");
 
-    console.log("the updated is : ", updated);
+  try {
+    console.log("🔹 Raw context:", context);
+
+    const { params } = context;
+    const { id } = params;
+    console.log("🟢 Product ID from params:", id);
+
+    const { userId } = await auth();
+    console.log("👤 Authenticated user ID:", userId);
+
+    if (!userId) {
+      console.log("❌ No user ID found — Unauthorized");
+      return failure("Unauthorized", 401);
+    }
+
+    const isAdmin = isAdminClerkId(userId);
+    console.log("🧩 Is user admin?", isAdmin);
+
+    if (!isAdmin) {
+      console.log("🚫 Forbidden — Non-admin tried to update product");
+      return failure("Forbidden", 403);
+    }
+
+    const body = await request.json();
+    console.log("📦 Request body received:", body);
+
+    console.log("🛠️ Attempting to update product in Sanity...");
+    const updated = await writeClient
+      .patch(id)
+      .set(body)
+      .commit({ autoGenerateArrayKeys: true });
+
+    console.log("✅ Product updated successfully:", updated);
     return success(updated, "Product updated", 200);
   } catch (err: any) {
-    console.error("Admin update product error:", err);
+    console.error("🔥 Admin update product error:", err);
     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
   }
 }

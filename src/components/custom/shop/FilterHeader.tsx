@@ -102,28 +102,47 @@ const FilterHeader = () => {
     };
   }, []);
 
-  const items = [
-    { text: "Option 1", value: "1" },
-    { text: "Option 2", value: "2" },
-    { text: "Option 3", value: "3" },
-    { text: "Option 4", value: "4" },
-    { text: "Option 1", value: "1" },
-    { text: "Option 2", value: "2" },
-    { text: "Option 3", value: "3" },
-    { text: "Option 4", value: "4" },
-    { text: "Option 1", value: "1" },
-    { text: "Option 2", value: "2" },
-    { text: "Option 3", value: "3" },
-    { text: "Option 4", value: "4" },
-    { text: "Option 1", value: "1" },
-    { text: "Option 2", value: "2" },
-    { text: "Option 3", value: "3" },
-    { text: "Option 4", value: "4" },
-    { text: "Option 1", value: "1" },
-    { text: "Option 2", value: "2" },
-    { text: "Option 3", value: "3" },
-    { text: "Option 4", value: "4" },
+
+  
+  const mainFilters = [
+    { text: "Men", key: "audience", value: "men" },
+    { text: "Women", key: "audience", value: "women" },
+    { text: "Unstitched", key: "categories", value: "unstitched" },
+    { text: "Stitched", key: "categories", value: "stitched" },
+    { text: "Ready To Wear", key: "categories", value: "readytowear" },
+    { text: "Summer", key: "season", value: "summer" },
+    { text: "Winter", key: "season", value: "winter" },
+    { text: "Plain", key: "designs", value: "plain" },
+    { text: "Printed", key: "designs", value: "printed" },
+    { text: "Casual", key: "occasion", value: "casual" },
+    { text: "Formal", key: "occasion", value: "formal" },
+    { text: "10% Off", key: "discounts", value: "10" },
   ];
+  
+ 
+
+  // const items = [
+  //   { text: "Option 1", value: "1" },
+  //   { text: "Option 2", value: "2" },
+  //   { text: "Option 3", value: "3" },
+  //   { text: "Option 4", value: "4" },
+  //   { text: "Option 1", value: "1" },
+  //   { text: "Option 2", value: "2" },
+  //   { text: "Option 3", value: "3" },
+  //   { text: "Option 4", value: "4" },
+  //   { text: "Option 1", value: "1" },
+  //   { text: "Option 2", value: "2" },
+  //   { text: "Option 3", value: "3" },
+  //   { text: "Option 4", value: "4" },
+  //   { text: "Option 1", value: "1" },
+  //   { text: "Option 2", value: "2" },
+  //   { text: "Option 3", value: "3" },
+  //   { text: "Option 4", value: "4" },
+  //   { text: "Option 1", value: "1" },
+  //   { text: "Option 2", value: "2" },
+  //   { text: "Option 3", value: "3" },
+  //   { text: "Option 4", value: "4" },
+  // ];
 
   return (
     <>
@@ -142,7 +161,7 @@ const FilterHeader = () => {
 
         {/* Scrollable Tabs */}
         <div className="flex-1 overflow-x-hidden relative">
-          <FilterTopTabs items={items} />
+          <FilterTopTabs items={mainFilters} />
         </div>
       </div>
     </>

@@ -6,7 +6,8 @@ export async function GET() {
     console.log("req come to get of admin colors")
     const colors = await readClient.fetch(`*[_type == "color"]{
       _id,
-      "title": name
+      "title": name,
+      // code
     }`);
     console.log("the admin colors are :", colors)
 

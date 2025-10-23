@@ -58,169 +58,29 @@ export const allProductsQuery = (page: number) => {
   `;
 };
 
-// export const filteredProductsQuery = (
-//   page: number,
-//   search?: string,
-//   productFilter?: any
-// ) => {
-//   console.log("[filteredProductsQuery] called with:", {
-//     page,
-//     search,
-//     productFilter,
-//   });
-
-//   const pageSize = 24;
-//   const start = page * pageSize;
-//   const end = start + pageSize - 1;
-//   console.log("[filteredProductsQuery] paging:", { pageSize, start, end });
-
-//   const isSearchingForFeaturedProducts = search
-//     ?.toLowerCase()
-//     .includes("feature");
-//   console.log(
-//     "[filteredProductsQuery] isSearchingForFeaturedProducts:",
-//     isSearchingForFeaturedProducts
-//   );
-
-//   // --- 🧮 Price Ranges Parsing ---
-//   const priceRangeArray =
-//     productFilter?.priceRanges?.length > 0
-//       ? productFilter.priceRanges.map((range: string) => {
-//           console.log("[filteredProductsQuery] parsing price range:", range);
-//           if (range.includes("+")) {
-//             const start = parseFloat(
-//               range.replace("$", "").replace("+", "").trim()
-//             );
-//             console.log("[filteredProductsQuery] parsed open-ended price:", {
-//               start,
-//               end: null,
-//             });
-//             return { start, end: null };
-//           }
-//           const [startPart, endPart] = range.split("-");
-//           const start = parseFloat(startPart.replace("$", "").trim());
-//           const end = endPart
-//             ? parseFloat(endPart.replace("$", "").trim())
-//             : null;
-//           const parsedEnd = isNaN(end as number) ? null : end;
-//           console.log("[filteredProductsQuery] parsed price range:", {
-//             start,
-//             end: parsedEnd,
-//           });
-//           return { start, end: parsedEnd };
-//         })
-//       : [];
-//   console.log("[filteredProductsQuery] priceRangeArray:", priceRangeArray);
-
-//   // --- Base Conditions ---
-//   const conditions: string[] = [
-//     `_type == "product"`,
-//     `defined(title)`,
-//     `defined(slug.current)`,
-//     `defined(price)`,
-//   ];
-//   console.log("[filteredProductsQuery] initial conditions:", conditions);
-
-//   const addCondition = (cond: string) => {
-//     conditions.push(cond);
-//     console.log("[filteredProductsQuery] added condition:", cond);
-//   };
-
-//   // --- Featured Filter ---
-//   if (isSearchingForFeaturedProducts) {
-//     addCondition(`isFeatured == true`);
-//   }
-
-//   // --- Search Filter ---
-//   if (search && !isSearchingForFeaturedProducts) {
-//     const safeSearch = search.replace(/"/g, '\\"');
-//     const searchCond = `(
-//       title match "${safeSearch}*" ||
-//       subTitle match "${safeSearch}*" ||
-//       brand->name match "${safeSearch}*" ||
-//       "${safeSearch}" in relevantTags[]->value
-//     )`;
-//     addCondition(searchCond);
-//   }
-
-//   // --- Category Filter ---
-//   if (productFilter?.categories?.length > 0) {
-//     const categoriesList = productFilter.categories
-//       .map((c: string) => `"${c}"`)
-//       .join(", ");
-//     // ✅ Use category->name since category is a reference field in Sanity
-//     addCondition(`category->name in [${categoriesList}]`);
-//   }
-
-//   // --- Brand Filter ---
-//   if (productFilter?.brands?.length > 0) {
-//     const brandsList = productFilter.brands
-//       .map((b: string) => `"${b}"`)
-//       .join(", ");
-//     // ✅ brand is a reference, so use brand->name
-//     addCondition(`brand->name in [${brandsList}]`);
-//   }
-
-//   // --- Discount Filter ---
-//   if (productFilter?.discounts?.length > 0) {
-//     const discountsList = productFilter.discounts.join(", ");
-//     // ✅ Numeric discount filter
-//     addCondition(`discount in [${discountsList}]`);
-//   }
-
-//   // --- Ratings Filter ---
-//   if (productFilter?.ratings?.length > 0) {
-//     const ratingsList = productFilter.ratings.join(", ");
-//     // ✅ round() ensures float ratings like 4.7 match filter 5
-//     addCondition(`round(rating) in [${ratingsList}]`);
-//   }
-
-//   // --- Price Filter ---
-//   if (priceRangeArray.length > 0) {
-//     const priceConditions = priceRangeArray
-//       .map(
-//         (p: { start: number; end: number | null }) =>
-//           `(price >= ${p.start}${p.end ? ` && price <= ${p.end}` : ""})`
-//       )
-//       .join(" || ");
-//     addCondition(`(${priceConditions})`);
-//   }
-
-//   console.log("[filteredProductsQuery] final conditions:", conditions);
-
-//   // --- Final Query ---
-//   const query = `*[
-//     ${conditions.join(" && ")}
-
-//     ] | order(publishedAt desc) [${start}..${end}] ${productFields}`;
-//   console.log("[filteredProductsQuery] finalQuery:", query);
-
-//   return query;
-// };
-
 export const filteredProductsQuery = (
   page: number,
   search?: string,
   productFilter?: any
 ) => {
-  console.log("[filteredProductsQuery] called with:", {
-    page,
-    search,
-    productFilter,
-  });
+  // console.log("[filteredProductsQuery] called with:", {
+  //   page,
+  //   search,
+  //   productFilter,
+  // });
 
   const pageSize = 24;
   const start = page * pageSize;
   const end = start + pageSize - 1;
-  console.log("[filteredProductsQuery] paging:", { pageSize, start, end });
+  // console.log("[filteredProductsQuery] paging:", { pageSize, start, end });
 
   const isSearchingForFeaturedProducts = search
     ?.toLowerCase()
     .includes("feature");
-  console.log(
-    "[filteredProductsQuery] isSearchingForFeaturedProducts:",
-    isSearchingForFeaturedProducts
-  );
+  // console.log(
+  //   "[filteredProductsQuery] isSearchingForFeaturedProducts:",
+  //   isSearchingForFeaturedProducts
+  // );
 
   // --- Base Conditions ---
   const conditions: string[] = [
@@ -229,7 +89,7 @@ export const filteredProductsQuery = (
     `defined(slug.current)`,
     `defined(price)`,
   ];
-  console.log("[filteredProductsQuery] initial conditions:", conditions);
+  // console.log("[filteredProductsQuery] initial conditions:", conditions);
 
   const addCondition = (cond: string) => conditions.push(cond);
 
@@ -272,7 +132,7 @@ export const filteredProductsQuery = (
       lower(fabric->name) match "${term}*" 
     )`
     );
-    
+
     // Combine all with ORs if there are alternate spellings
     const combinedSearchCond = `(${searchConditions.join(" || ")})`;
 
@@ -299,6 +159,18 @@ export const filteredProductsQuery = (
       .map((sc: string) => `"${sc}"`)
       .join(", ");
     addCondition(`subCategory in [${list}]`);
+  }
+
+  // 🧵 FABRIC TYPE FILTER (corrected)
+  if (productFilter?.fabrics?.length > 0) {
+    const list = productFilter.fabrics.map((f: string) => `"${f}"`).join(", ");
+    addCondition(`fabric->name in [${list}]`);
+  }
+
+  // 🎨 COLOR FILTER (filter products by variant color)
+  if (productFilter?.colors?.length > 0) {
+    const list = productFilter.colors.map((c: string) => `"${c}"`).join(", ");
+    addCondition(`count(variants[color->name in [${list}]]) > 0`);
   }
 
   // 👕 OUTFIT TYPE FILTER (for men & women)
@@ -376,7 +248,7 @@ export const filteredProductsQuery = (
   const query = `*[
     ${conditions.join(" && ")}
   ] | order(_createdAt desc) [${start}..${end}] ${productFields}`;
-  console.log("[filteredProductsQuery] finalQuery:", query);
+  // console.log("[filteredProductsQuery] finalQuery:", query);
 
   return query;
 };

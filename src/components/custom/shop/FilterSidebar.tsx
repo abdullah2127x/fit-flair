@@ -5,86 +5,16 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  closeSidebar,
-  selectOpenSelects,
-  toggleSelect,
-} from "@/redux/slices/filterSidebarSlice";
+import { closeSidebar } from "@/redux/slices/filterSidebarSlice";
 import { useRouter } from "next/navigation";
-import { FaAngleDown } from "react-icons/fa";
 import apiClient from "@/lib/apiClient";
-
-interface Option {
-  title: string;
-  value: string | number;
-}
-
-interface CustomSelectProps {
-  title: string;
-  options: Option[];
-  selectedValues: (string | number)[];
-  onSelect: (value: string | number) => void;
-}
-
-function CustomSelect({
-  title,
-  options,
-  selectedValues,
-  onSelect,
-}: CustomSelectProps) {
-  // const isOpen = useAppSelector(selectIsSelectOpen);
-  const dispatch = useAppDispatch();
-  const openSelects = useAppSelector(selectOpenSelects);
-
-  // check if THIS select is open
-  const isOpen = openSelects.includes(title);
-
-  const handleToggleOpen = () => {
-    dispatch(toggleSelect(title)); // title = unique identifier for this select
-  };
-
-  return (
-    <div className="w-full">
-      <Button
-        onClick={handleToggleOpen}
-        size={"lg"}
-        className="w-full flex items-center justify-between hover:bg-accent/50  rounded-lg transition-colors"
-      >
-        <span className="text-lg font-bold text-primary-foreground">
-          {title}
-        </span>
-
-        <FaAngleDown
-          size={6}
-          className={` transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-        />
-      </Button>
-
-      {isOpen && (
-        <div className="flex flex-wrap gap-6 py-3 mb-4">
-          {options.map((option: Option) => (
-            <Button
-              key={option.value}
-              className=" px-6"
-              variant={
-                selectedValues.includes(option.value) ? "secondary" : "default"
-              }
-              onClick={() => onSelect(option.value)}
-            >
-              {option.title}
-            </Button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+import SecondaryHeading from "../SecondaryHeading";
+import CustomSelect from "./FilterSelect";
 
 const FilterSidebar = () => {
   const [fabrics, setFabrics] = useState<{ title: string; value: string }[]>(
@@ -92,10 +22,6 @@ const FilterSidebar = () => {
   );
   const [colors, setColors] = useState<
     {
-      // colorTitle: string;
-      // colorTitleValue: string;
-      // colorCode: string;
-      // colorCodeValue: string;
       title: string;
       value: string;
     }[]
@@ -132,10 +58,6 @@ const FilterSidebar = () => {
       if (res.success && Array.isArray(res.data)) {
         const colorOptions = res.data.map(
           (color: { _id: string; title: string; code: string }) => ({
-            // colorTitle: color.title,
-            // colorTitleValue: color.title.toLowerCase().replace(/\s+/g, "_"), // normalize value
-            // colorCode: color.code,
-            // colorCodeValue: color.code.toLowerCase().replace(/\s+/g, "_"), // normalize value
             title: color.title,
             value: color.title.toLowerCase().replace(/\s+/g, "_"), // normalize value
           })
@@ -300,7 +222,10 @@ const FilterSidebar = () => {
 
   const FilterContent = () => (
     <div className="flex flex-col items-start gap-3">
-      <h2 className="font-bold text-2xl text-center w-full">Filter Products</h2>
+      <SecondaryHeading className="text-center">
+        Filter Products
+      </SecondaryHeading>
+      {/* <h2 className="font-bold text-2xl text-center w-full">Filter Products</h2> */}
       <div className="w-full flex gap-3 mt-4">
         <Button variant={"secondary"} onClick={handleApply} className="w-full">
           Apply

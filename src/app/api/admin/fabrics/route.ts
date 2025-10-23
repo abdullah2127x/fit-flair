@@ -4,7 +4,7 @@ import { failure, success } from "@/lib/response";
 
 export async function GET() {
   try {
-    // console.log("req come to get og admin fabrics");
+    console.log("req come to get og admin fabrics");
     const fabrics = await readClient.fetch(`*[_type == "fabric"]{
       _id,
       "title":name
