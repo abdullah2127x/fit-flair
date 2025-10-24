@@ -15,18 +15,8 @@ import { openSidebar } from "@/redux/slices/cartSidebarSlice";
 import { selectCartCount } from "@/redux/slices/cartSlice";
 import AuthButton from "./AuthButton";
 import { useRouter } from "next/navigation";
-
-// ✅ Logo Component
-function Logo() {
-  return (
-    <Link href="/" className="flex items-center space-x-2">
-      <div className="h-8 w-8 bg-primary-foreground rounded-lg flex items-center justify-center">
-        <span className="text-primary font-bold text-sm">FF</span>
-      </div>
-      <span className="font-bold text-xl">FitFlair</span>
-    </Link>
-  );
-}
+import Logo from "./Logo";
+import { useGSAP } from "@gsap/react";
 
 // ✅ Animated DesktopNav
 function DesktopNav() {
@@ -35,6 +25,31 @@ function DesktopNav() {
   const underlineRef = useRef<HTMLDivElement[]>([]);
   const dotRef = useRef<HTMLDivElement[]>([]);
   const [activeLinkIndex, setActiveLinkIndex] = useState<number>(-1);
+
+  useGSAP(() => {
+    // Initial entrance animation on mount
+    frontRefs.current.forEach((innerRefs) => {
+      if (innerRefs && innerRefs.length) {
+        gsap.from(innerRefs, {
+          y: -80,
+          opacity: 0,
+          duration: 0.2,
+          stagger: 0.04,
+          ease: "power3.out",
+        });
+      }
+    });
+
+    // Set initial state for backRefs as a fallback
+    backRefs.current.forEach((innerRefs) => {
+      if (innerRefs && innerRefs.length) {
+        gsap.set(innerRefs, {
+          yPercent: 100,
+          opacity: 0,
+        });
+      }
+    });
+  }, []);
 
   const animateIn = (wordIdx: number) => {
     if (activeLinkIndex >= 0) return;
@@ -119,7 +134,7 @@ function DesktopNav() {
           onMouseLeave={() => animateOut(idx)}
         >
           {/* Front Layer */}
-          <div className="w-full h-full flex text-primary-foreground items-center justify-center">
+          <div className="w-full h-full flex text-secondary-foreground items-center justify-center">
             {link.label.split("").map((char, charIdx) => (
               <span
                 key={charIdx}
@@ -340,7 +355,7 @@ export default function Header() {
       {/* ✅ Header */}
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
-          <Logo />
+          <Logo/>
           <DesktopNav />
           <DesktopSearch />
           <RightSection />

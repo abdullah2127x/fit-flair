@@ -227,6 +227,19 @@ class ApiClient {
 
     return res.data; // return deleted user object (or success response)
   }
+
+  // NEWSLETTER
+  async subscribeToNewsletter(email: string) {
+    return this.post("/newsletter", { email });
+  }
+
+  async getAllSubscribers() {
+    return this.get("/newsletter");
+  }
+
+  async deleteSubscriber(id: string) {
+    return this.delete(`/newsletter/${id}`);
+  }
 }
 
 export const apiClient = new ApiClient();

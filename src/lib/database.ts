@@ -7,6 +7,8 @@ import { formatDBError } from "@/utilityFunctions/formatDBError";
 import { DbErrorCode, DBResponse, Pagination } from "@/types/database";
 import { IUser } from "@/types/user";
 import { IOrder } from "@/types/order";
+import { INewsletter } from "@/types/newletter";
+import Newsletter from "@/models/Newsletter";
 
 // Database utility functions
 export class DatabaseService {
@@ -100,13 +102,13 @@ export class DatabaseService {
       console.log("DatabaseService: Connecting to MongoDB...");
       await connectDB();
       console.log("DatabaseService: MongoDB connected, fetching users...");
-      
+
       // Ensure connection is ready
       const connection = await connectDB();
       if (connection.connection.readyState !== 1) {
         throw new Error("MongoDB connection not ready");
       }
-      
+
       const users = await User.find().sort({ createdAt: -1 }).lean();
       console.log("DatabaseService: Users fetched successfully:", users.length);
       return { success: true, data: users as unknown as IUser[] };
@@ -118,13 +120,13 @@ export class DatabaseService {
 
   static async listOrders(): Promise<DBResponse<IOrder[]>> {
     try {
-      await connectDB();      
+      await connectDB();
       // Ensure connection is ready
       const connection = await connectDB();
       if (connection.connection.readyState !== 1) {
         throw new Error("MongoDB connection not ready");
       }
-      
+
       const orders = await Order.find().sort({ createdAt: -1 }).lean();
       return { success: true, data: orders as unknown as IOrder[] };
     } catch (err: any) {
@@ -235,7 +237,7 @@ export class DatabaseService {
       return {
         success: true,
         data: {
-          orders: orders.map(order => order as unknown as IOrder),
+          orders: orders.map((order) => order as unknown as IOrder),
           pagination: {
             page,
             limit,
@@ -339,6 +341,64 @@ export class DatabaseService {
           totalRevenue: totalRevenue[0]?.total || 0,
         },
       };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
+
+  // NEWSLETTER
+  static async addNewsletter(email: string): Promise<DBResponse<INewsletter>> {
+    try {
+      await connectDB();
+
+      const existing = await Newsletter.findOne({ email });
+      if (existing) {
+        return {
+          success: false,
+          error: {
+            code: DbErrorCode.CONFLICT,
+            message: "Email already subscribed",
+          },
+        };
+      }
+
+      const newSubscriber = new Newsletter({ email });
+      const saved = await newSubscriber.save();
+
+      return { success: true, data: saved };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
+
+  static async getAllSubscribers(): Promise<DBResponse<INewsletter[]>> {
+    try {
+      await connectDB();
+      const list = await Newsletter.find()
+        .sort({ createdAt: -1 })
+        .lean<INewsletter[]>();
+      return { success: true, data: list };
+    } catch (err: any) {
+      return formatDBError(err);
+    }
+  }
+
+  static async deleteSubscriber(id: string): Promise<DBResponse<null>> {
+    try {
+      await connectDB();
+
+      const deleted = await Newsletter.findByIdAndDelete(id);
+      if (!deleted) {
+        return {
+          success: false,
+          error: {
+            code: DbErrorCode.NOT_FOUND,
+            message: "Subscriber not found",
+          },
+        };
+      }
+
+      return { success: true };
     } catch (err: any) {
       return formatDBError(err);
     }

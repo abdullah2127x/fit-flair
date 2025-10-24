@@ -5,6 +5,7 @@ export enum DbErrorCode {
   UNAUTHORIZED = "UNAUTHORIZED",
   FORBIDDEN = "FORBIDDEN",
   DB_ERROR = "DB_ERROR",
+  CONFLICT = "CONFLICT", // 👈 added for cases like duplicate email, etc.
 }
 
 export type DBResponse<T = null> = {

@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Logo from "./Logo";
+import FooterForm from "./FooterForm";
 
 export function Footer() {
   // Social Icons
@@ -66,14 +68,15 @@ export function Footer() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Brand Section */}
         <div className="space-y-4">
-          <div className="flex items-center space-x-2">
+          <Logo />
+          {/* <div className="flex items-center space-x-2">
             <div className="h-8 w-8 bg-primary-foreground rounded-lg flex items-center justify-center">
               <span className="text-primary font-bold text-sm">C</span>
             </div>
             <span className="font-bold text-xl text-primary-foreground">
               Couture
             </span>
-          </div>
+          </div> */}
           <p className="text-sm">
             Discover premium clothing crafted with finest fabrics and attention
             to detail. Your style is our commitment.
@@ -110,7 +113,8 @@ export function Footer() {
             ))}
           </div>
 
-          <div className="space-y-2">
+          <FooterForm />
+          {/* <div className="space-y-2">
             <p className="text-sm font-medium">Newsletter</p>
             <form className="flex items-center gap-x-2">
               <Input
@@ -121,19 +125,19 @@ export function Footer() {
               />
               <Button
                 size="sm"
-                className="bg-secondary-foreground text-secondary"
+                variant={"secondary"}
                 type="submit"
               >
                 Subscribe
               </Button>
             </form>
-          </div>
+          </div> */}
         </div>
       </div>
 
       <div className="border-t mt-10 pt-8 text-center">
         <p className="text-sm text-muted-foreground">
-          © 2024 Couture. All rights reserved. Crafted with finest fabrics and
+          © 2024 FitFlair. All rights reserved. Crafted with finest fabrics and
           attention to detail.
         </p>
       </div>

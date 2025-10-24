@@ -9,6 +9,7 @@ import ReduxStoreProvider from "@/components/providers/ReduxStoreProvider";
 import CartSidebar from "@/components/custom/cart/CartSidebar";
 import SyncCartOnLogin from "@/components/custom/SyncCartOnLogin";
 import SyncUser from "@/components/custom/SyncUser";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,7 +36,7 @@ export default function RootLayout({
             {/* <Navbar /> */}
             <ReduxStoreProvider>
               <SyncCartOnLogin />
-            {/* <SyncUser /> */}
+              {/* <SyncUser /> */}
               <div className="min-h-screen bg-background text-foreground flex flex-col">
                 <Header />
                 <main>{children}</main>
@@ -45,6 +46,7 @@ export default function RootLayout({
                   </div>
                 </div>
               </div>
+              <Toaster />
               <CartSidebar />
             </ReduxStoreProvider>
           </ThemeProvider>

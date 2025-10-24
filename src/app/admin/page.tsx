@@ -1,4 +1,5 @@
 "use client";
+import { toast } from "sonner"; // 👈 Import toast from sonner
 import {
   AlertDialog,
   AlertDialogAction,
@@ -79,6 +80,43 @@ export default function AdminPage() {
   //   control,
   //   name: "variants",
   // });
+
+  const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [loadingSubscribers, setLoadingSubscribers] = useState(false);
+
+  async function loadSubscribers() {
+    try {
+      setLoadingSubscribers(true);
+      const res = await apiClient.getAllSubscribers();
+      if (res.success) {
+        setSubscribers(res.data as any[]);
+      } else {
+        toast.error(res.message || "Failed to fetch subscribers");
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setLoadingSubscribers(false);
+    }
+  }
+
+  async function deleteSubscriber(id: string) {
+    try {
+      const res = await apiClient.deleteSubscriber(id);
+      if (res.success) {
+        setSubscribers((prev) => prev.filter((s) => s._id !== id));
+        toast.success("Subscriber deleted");
+      } else {
+        toast.error(res.message || "Failed to delete subscriber");
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  }
+
+  useEffect(() => {
+    loadSubscribers();
+  }, []);
 
   type AdminProduct = {
     id: string;
@@ -366,10 +404,11 @@ export default function AdminPage() {
       </h1>
 
       <Tabs defaultValue="products">
-        <TabsList className="grid grid-cols-3 w-full md:w-auto">
+        <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full md:w-auto">
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
         </TabsList>
 
         <TabsContent value="products" className="mt-6">
@@ -591,7 +630,7 @@ export default function AdminPage() {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction 
+                                  <AlertDialogAction
                                     onClick={async () => {
                                       try {
                                         const res = await apiClient.delete(
@@ -720,6 +759,67 @@ export default function AdminPage() {
                       <div className="text-xs text-muted-foreground mt-2 md:mt-0">
                         {new Date(o.createdAt).toLocaleString()}
                       </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="subscribers" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Newsletter Subscribers</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loadingSubscribers ? (
+                <div className="text-sm text-muted-foreground">
+                  Loading subscribers…
+                </div>
+              ) : subscribers.length === 0 ? (
+                <div className="text-sm text-muted-foreground">
+                  No subscribers found.
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {subscribers.map((s) => (
+                    <div
+                      key={s._id}
+                      className="flex flex-col md:flex-row md:items-center md:justify-between border rounded p-3 bg-card hover:bg-accent/50 transition"
+                    >
+                      <div>
+                        <p className="text-sm font-medium">{s.email}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(s.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" size="sm">
+                            Delete
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you sure you want to delete this subscriber?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => deleteSubscriber(s._id)}
+                            >
+                              Continue
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   ))}
                 </div>
