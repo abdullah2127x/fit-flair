@@ -166,12 +166,7 @@ export default function AdminPage() {
 
   const updateProduct = async (id: string, data: Partial<AdminProduct>) => {
     const res = await apiClient.put(`/admin/products/${id}`, data);
-    console.log("In the update product the res is :", res);
     if (res.success) await reloadProducts();
-    console.log(
-      "there is success to update the product now sending to reload products.",
-      res
-    );
     return res.success;
   };
 
@@ -223,8 +218,6 @@ export default function AdminPage() {
     let mounted = true;
     (async () => {
       setLoadingLists(true);
-      console.log("Admin page: Starting to fetch data...");
-
       try {
         const [usersRes, ordersRes] = await Promise.all([
           apiClient.get("/admin/users"),

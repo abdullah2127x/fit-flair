@@ -17,11 +17,7 @@ export async function GET(request: NextRequest) {
     // ✅ always run fresh query
     const query = filteredProductsQuery(page, search, filter);
 
-    console.log("🧠 Running Sanity query:\n", query);
-
     const products = await client.fetch(query, {}, { cache: "no-store" });
-    console.log("✅ New products from Sanity:", products?.length);
-
     return success(products, "Products fetched", 200);
   } catch (err: any) {
     console.error("❌ Admin products endpoint error:", err);

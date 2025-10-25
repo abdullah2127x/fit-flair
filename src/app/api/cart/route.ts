@@ -23,7 +23,6 @@ export async function GET() {
         err?.details
       );
     }
-    console.log("the carts are : ",cartRes.data)
 
     return success(cartRes.data?.items, "Cart fetched", 200);
   } catch (err: any) {

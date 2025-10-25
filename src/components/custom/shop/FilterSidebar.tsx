@@ -35,7 +35,6 @@ const FilterSidebar = () => {
   useEffect(() => {
     (async () => {
       const res = await apiClient.get("/admin/fabrics");
-      console.log("the fabrics at the admin are : ", res);
 
       if (res.success && Array.isArray(res.data)) {
         const fabricOptions = res.data.map(
@@ -53,7 +52,6 @@ const FilterSidebar = () => {
   useEffect(() => {
     (async () => {
       const res = await apiClient.get("/admin/colors");
-      console.log("the colots at the admin are : ", res);
 
       if (res.success && Array.isArray(res.data)) {
         const colorOptions = res.data.map(
@@ -189,7 +187,6 @@ const FilterSidebar = () => {
       priceRanges: selectedPriceRanges,
       discounts: selectedDiscounts,
     };
-    console.log("Applied Filters:", filters);
 
     const query = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {

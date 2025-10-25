@@ -63,11 +63,7 @@ export const filteredProductsQuery = (
   search?: string,
   productFilter?: any
 ) => {
-  // console.log("[filteredProductsQuery] called with:", {
-  //   page,
-  //   search,
-  //   productFilter,
-  // });
+  
 
   const pageSize = 24;
   const start = page * pageSize;

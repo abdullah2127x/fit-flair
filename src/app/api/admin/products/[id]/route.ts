@@ -11,14 +11,6 @@ export async function PUT(
 ) {
   const { id } = await context.params;
 
-  // const { id } = params;
-
-  // export async function PUT(
-  // request: NextRequest,
-  // { params }: { params: { id: string } }
-  // ) {
-  console.log("🟡 [PUT] API Called — Admin Update Product");
-
   try {
     // const { id } = params;
 
@@ -58,24 +50,3 @@ export async function DELETE(
     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
   }
 }
-
-// import { NextResponse } from "next/server";
-
-// export async function GET() {
-//   try {
-//     // Example data — you can replace it with a database call or API fetch
-//     const data = {
-//       message: "GET request successful!",
-//       status: "ok",
-//     };
-
-//     // Return a JSON response
-//     return NextResponse.json(data, { status: 200 });
-//   } catch (error) {
-//     console.error("Error in GET route:", error);
-//     return NextResponse.json(
-//       { error: "Something went wrong" },
-//       { status: 500 }
-//     );
-//   }
-// }
