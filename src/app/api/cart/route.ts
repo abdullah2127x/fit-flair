@@ -3,7 +3,6 @@ import { auth } from "@clerk/nextjs/server";
 import DatabaseService from "@/lib/database";
 import { success, failure } from "@/lib/response";
 import { mapDbCodeToStatus } from "@/utilityFunctions/mapDbCodeToStatus";
-import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -24,36 +23,34 @@ export async function GET() {
         err?.details
       );
     }
+    console.log("the carts are : ",cartRes.data)
 
-    return success(cartRes.data, "Cart fetched", 200);
+    return success(cartRes.data?.items, "Cart fetched", 200);
   } catch (err: any) {
     console.error("Unhandled error fetching cart:", err);
     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
   }
 }
 
-// export async function POST(request: NextRequest) {
+// export async function GET(request: NextRequest) {
 //   try {
 //     const { userId } = await auth();
 
+//     // 🟡 CASE 1: Not logged in → fallback to local cart
 //     if (!userId) {
-//       return failure("Unauthorized", 401);
+//       // NOTE: You cannot access localStorage on the server!
+//       // So here we just return a hint for the frontend to load local cart.
+//       return success(
+//         { items: null },
+//         "User not logged in, load from local storage",
+//         200
+//       );
 //     }
 
-//     const body = await request.json();
-//     let addRes;
-
-//     // ✅ If it's an array → bulk insert
-//     if (Array.isArray(body)) {
-//       addRes = await DatabaseService.addManyToCart(userId, body);
-//     }
-//     // ✅ If it's a single object → add single item
-//     else {
-//       addRes = await DatabaseService.addToCart(userId, body);
-//     }
-
-//     if (!addRes.success) {
-//       const err = addRes.error;
+//     // 🟢 CASE 2: Logged in → fetch from DB
+//     const cartRes = await DatabaseService.getCart(userId);
+//     if (!cartRes.success) {
+//       const err = cartRes.error;
 //       const status = mapDbCodeToStatus(err?.code);
 //       return failure(
 //         err?.message || "Database error",
@@ -63,12 +60,13 @@ export async function GET() {
 //       );
 //     }
 
-//     return success(addRes.data, "Cart updated", 201);
+//     return success(cartRes.data, "Cart fetched successfully", 200);
 //   } catch (err: any) {
-//     console.error("Unhandled error adding to cart:", err);
+//     console.error("Unhandled error fetching cart:", err);
 //     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
 //   }
 // }
+
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
@@ -97,44 +95,6 @@ export async function POST(request: NextRequest) {
     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
   }
 }
-
-// export async function PUT(request: NextRequest) {
-//   try {
-//     const { userId } = await auth();
-
-//     if (!userId) {
-//       return failure("Unauthorized", 401);
-//     }
-
-//     const { productId, colorName, quantity } = await request.json();
-//     const updateRes = await DatabaseService.updateCartItem(
-//       userId,
-//       productId,
-//       colorName,
-//       quantity
-//     );
-
-//     if (!updateRes.success) {
-//       const err = updateRes.error;
-//       const status = mapDbCodeToStatus(err?.code);
-//       return failure(
-//         err?.message || "Database error",
-//         status,
-//         err?.code,
-//         err?.details
-//       );
-//     }
-
-//     if (!updateRes.data) {
-//       return failure("Cart not found", 404, "NOT_FOUND");
-//     }
-
-//     return success(updateRes.data, "Cart updated", 200);
-//   } catch (err: any) {
-//     console.error("Unhandled error updating cart:", err);
-//     return failure("Internal server error", 500, "SERVER_ERROR", err?.message);
-//   }
-// }
 
 export async function DELETE(request: NextRequest) {
   try {

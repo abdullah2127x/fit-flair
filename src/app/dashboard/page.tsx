@@ -4,14 +4,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import apiClient from "@/lib/apiClient";
-import type { ICart } from "@/types/cart";
+import type { ICart, ICartItem } from "@/types/cart";
 import type { IOrder } from "@/types/order";
 import Link from "next/link";
+import {
+  loadCartFromLocalStorage,
+  saveCartToLocalStorage,
+} from "@/utilityFunctions/cartFunctions";
 
 export default function DashboardPage() {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
-  const [cart, setCart] = useState<ICart | null>(null);
+  const [cart, setCart] = useState<ICartItem[] | null>(null);
   const [cartLoading, setCartLoading] = useState(true);
 
   useEffect(() => {
@@ -27,7 +31,7 @@ export default function DashboardPage() {
     })();
     return () => {
       isMounted = false;
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -36,19 +40,26 @@ export default function DashboardPage() {
       setCartLoading(true);
       const res = await apiClient.getCart();
       if (isMounted && res.success) {
-        setCart(res.data as ICart || null);
+        setCart(((res.data as ICart)?.items) || null);
       }
+      const localCarts = loadCartFromLocalStorage();
+      if (localCarts && localCarts.length > 0) {
+        setCart((localCarts as ICartItem[]) || null);
+      }
+
       setCartLoading(false);
       isMounted = false;
     })();
     return () => {
       isMounted = false;
-    }
+    };
   }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl md:text-3xl font-semibold mb-6">Your Dashboard</h1>
+      <h1 className="text-2xl md:text-3xl font-semibold mb-6">
+        Your Dashboard
+      </h1>
       <Tabs defaultValue="orders" className="w-full">
         <TabsList className="grid grid-cols-2 w-full md:w-auto">
           <TabsTrigger value="orders">Orders</TabsTrigger>
@@ -61,10 +72,14 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               {ordersLoading ? (
-                <div className="text-sm text-muted-foreground">Loading orders...</div>
+                <div className="text-sm text-muted-foreground">
+                  Loading orders...
+                </div>
               ) : orders.length === 0 ? (
                 <div className="flex flex-col items-start gap-3">
-                  <p className="text-sm text-muted-foreground">No orders yet.</p>
+                  <p className="text-sm text-muted-foreground">
+                    No orders yet.
+                  </p>
                   <Link href="/shop">
                     <Button>Shop now</Button>
                   </Link>
@@ -77,14 +92,18 @@ export default function DashboardPage() {
                       className="flex flex-col md:flex-row md:items-center md:justify-between rounded-md border p-4 bg-card"
                     >
                       <div className="space-y-1">
-                        <p className="text-sm">Order #{String(order._id).slice(-8)}</p>
+                        <p className="text-sm">
+                          Order #{String(order._id).slice(-8)}
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           Status: {order.status} • Total: ${order.total}
                         </p>
                       </div>
                       <div className="mt-3 md:mt-0 flex gap-2">
                         <Link href={`/orders/${order._id}`}>
-                          <Button variant="outline" size="sm">View</Button>
+                          <Button variant="outline" size="sm">
+                            View
+                          </Button>
                         </Link>
                       </div>
                     </div>
@@ -101,24 +120,37 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               {cartLoading ? (
-                <div className="text-sm text-muted-foreground">Loading cart...</div>
-              ) : !cart || cart.items.length === 0 ? (
+                <div className="text-sm text-muted-foreground">
+                  Loading cart...
+                </div>
+              ) : !cart || cart.length === 0 ? (
                 <div className="flex flex-col items-start gap-3">
-                  <p className="text-sm text-muted-foreground">Your cart is empty.</p>
+                  <p className="text-sm text-muted-foreground">
+                    Your cart is empty.
+                  </p>
                   <Link href="/shop">
                     <Button>Browse products</Button>
                   </Link>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {cart.items.map((item) => (
-                    <div key={`${item.productId}-${item.colorName}`} className="flex items-center justify-between rounded-md border p-4 bg-card">
+                  {cart.map((item:ICartItem) => (
+                    <div
+                      key={`${item.productId}-${item.colorName}`}
+                      className="flex items-center justify-between rounded-md border p-4 bg-card"
+                    >
                       <div className="space-y-1">
                         <p className="text-sm font-medium">{item.title}</p>
-                        <p className="text-xs text-muted-foreground">Color: {item.colorName}</p>
-                        <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Color: {item.colorName}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Qty: {item.quantity}
+                        </p>
                       </div>
-                      <div className="text-sm">${item.price * item.quantity}</div>
+                      <div className="text-sm">
+                        ${item.price * item.quantity}
+                      </div>
                     </div>
                   ))}
                   <div className="pt-2">
@@ -135,5 +167,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-
