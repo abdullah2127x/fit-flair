@@ -59,34 +59,60 @@ import FullPageLoader from "@/components/custom/FullPageLoader";
 //   occasions: string[];
 // };
 
-export default function AdminPage() {
-  // const {
-  //   control,
-  //   watch,
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors, isSubmitting },
-  //   reset,
-  // } = useForm<ProductForm>({
-  //   defaultValues: {
-  //     audience: "men",
-  //     description: "",
-  //     season: [],
-  //     designs: [],
-  //     occasions: [],
-  //   },
-  // });
+type AdminProduct = {
+  id: string;
+  title: string;
+  subTitle: string;
+  slug: string;
+  price: number;
+  discount?: number;
+  category: string;
+  subCategory: string;
+  fabric: string;
+  audience: "men" | "women";
+  designs: string[];
+  occasions: string[];
+  season: string[];
+  variants: Array<{
+    stock: number;
+    featuredImage?: string;
+    additionalImages?: string[];
+    colorName?: string;
+    colorCode?: string;
+  }>;
+  description: string;
+  uploadedAt: string;
+  isFeatured?: boolean;
+  isNewArrival?: boolean;
+  isPopular?: boolean;
+  relevantTags?: string[];
+  outFitType?: string;
+};
 
-  // const { fields, append, remove } = useFieldArray({
-  //   control,
-  //   name: "variants",
-  // });
+export default function AdminPage() {
+  const PAGE_SIZE = 24;
+  const [page, setPage] = useState(0);
 
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null); // null = not checked yet
   const [adminError, setAdminError] = useState<string | null>(null);
 
   const [subscribers, setSubscribers] = useState<any[]>([]);
+
+  const [users, setUsers] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [products, setProducts] = useState<AdminProduct[]>([]);
+
+  const [loadingLists, setLoadingLists] = useState(true);
   const [loadingSubscribers, setLoadingSubscribers] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [reloadFlag, setReloadFlag] = useState(false);
+
+  const [search, setSearch] = useState("");
+  const [audience, setAudience] = useState<"all" | "men" | "women">("all");
+  const [onlyFeatured, setOnlyFeatured] = useState(false);
+  const [onlyNew, setOnlyNew] = useState(false);
+  const [onlyPopular, setOnlyPopular] = useState(false);
 
   async function loadSubscribers() {
     try {
@@ -118,90 +144,43 @@ export default function AdminPage() {
     }
   }
 
+  // Instead of reloadProducts, reset pagination!
+  const reloadProducts = async () => {
+    setPage(0);
+    setHasMore(true);
+    setLoadingLists(true);
+    setReloadFlag((prev) => !prev); // toggle to refetch
+
+    // "search" triggers effect above
+  };
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      if (audience !== "all" && p.audience !== audience) return false;
+      if (onlyFeatured && !p.isFeatured) return false;
+      if (onlyNew && !p.isNewArrival) return false;
+      if (onlyPopular && !p.isPopular) return false;
+      return true;
+    });
+  }, [products, audience, onlyFeatured, onlyNew, onlyPopular]);
+
+  const updateProduct = async (id: string, data: Partial<AdminProduct>) => {
+    const res = await apiClient.put(`/admin/products/${id}`, data);
+    console.log("In the update product the res is :", res);
+    if (res.success) await reloadProducts();
+    console.log(
+      "there is success to update the product now sending to reload products.",
+      res
+    );
+    return res.success;
+  };
+
+  // load the subscribers
   useEffect(() => {
     loadSubscribers();
   }, []);
 
-  type AdminProduct = {
-    id: string;
-    title: string;
-    subTitle: string;
-    slug: string;
-    price: number;
-    discount?: number;
-    category: string;
-    subCategory: string;
-    fabric: string;
-    audience: "men" | "women";
-    designs: string[];
-    occasions: string[];
-    season: string[];
-    variants: Array<{
-      stock: number;
-      featuredImage?: string;
-      additionalImages?: string[];
-      colorName?: string;
-      colorCode?: string;
-    }>;
-    description: string;
-    uploadedAt: string;
-    isFeatured?: boolean;
-    isNewArrival?: boolean;
-    isPopular?: boolean;
-    relevantTags?: string[];
-    outFitType?: string;
-  };
-
-  const [users, setUsers] = useState<any[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loadingLists, setLoadingLists] = useState(true);
-  const [products, setProducts] = useState<AdminProduct[]>([]);
-  const [loadingProducts, setLoadingProducts] = useState(false);
-  const [search, setSearch] = useState("");
-  const [audience, setAudience] = useState<"all" | "men" | "women">("all");
-  const [onlyFeatured, setOnlyFeatured] = useState(false);
-  const [onlyNew, setOnlyNew] = useState(false);
-  const [onlyPopular, setOnlyPopular] = useState(false);
-
-  // const [submitError, setSubmitError] = useState<string | null>(null);
-  // const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
-
-  // all the fabrics from sanity
-  // const [fabrics, setFabrics] = useState<{ _id: string; title: string }[]>([]);
-
-  // all the colors from sanity
-  // const [colors, setColors] = useState<{ _id: string; title: string }[]>([]);
-
-  // load colors from backend
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await apiClient.get("/admin/colors");
-  //     console.log("the colors res is :", res);
-  //     if (res.success) setColors(res.data as { _id: string; title: string }[]);
-  //   })();
-  // }, []);
-
-  // loading fabrics
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await apiClient.get("/admin/fabrics");
-  //     console.log("the fabrics at the admin are : ", res);
-
-  //     if (res.success) {
-  //       console.log("setting the fabrics");
-  //       setFabrics(res.data as { _id: string; title: string }[]);
-  //     }
-  //   })();
-  // }, []);
-
-  // Step 1: Chunked state
-  const PAGE_SIZE = 24;
-  const [page, setPage] = useState(0);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [reloadFlag, setReloadFlag] = useState(false);
-
-  // to fetch products, users and orders
+  // to fetch products.
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -277,36 +256,60 @@ export default function AdminPage() {
     };
   }, []);
 
-  // Instead of reloadProducts, reset pagination!
-  const reloadProducts = async () => {
-    setPage(0);
-    setHasMore(true);
-    setLoadingLists(true);
-    setReloadFlag((prev) => !prev); // toggle to refetch
+  // const {
+  //   control,
+  //   watch,
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors, isSubmitting },
+  //   reset,
+  // } = useForm<ProductForm>({
+  //   defaultValues: {
+  //     audience: "men",
+  //     description: "",
+  //     season: [],
+  //     designs: [],
+  //     occasions: [],
+  //   },
+  // });
 
-    // "search" triggers effect above
-  };
+  // const { fields, append, remove } = useFieldArray({
+  //   control,
+  //   name: "variants",
+  // });
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((p) => {
-      if (audience !== "all" && p.audience !== audience) return false;
-      if (onlyFeatured && !p.isFeatured) return false;
-      if (onlyNew && !p.isNewArrival) return false;
-      if (onlyPopular && !p.isPopular) return false;
-      return true;
-    });
-  }, [products, audience, onlyFeatured, onlyNew, onlyPopular]);
+  // const [submitError, setSubmitError] = useState<string | null>(null);
+  // const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
-  const updateProduct = async (id: string, data: Partial<AdminProduct>) => {
-    const res = await apiClient.put(`/admin/products/${id}`, data);
-    console.log("In the update product the res is :", res);
-    if (res.success) await reloadProducts();
-    console.log(
-      "there is success to update the product now sending to reload products.",
-      res
-    );
-    return res.success;
-  };
+  // all the fabrics from sanity
+  // const [fabrics, setFabrics] = useState<{ _id: string; title: string }[]>([]);
+
+  // all the colors from sanity
+  // const [colors, setColors] = useState<{ _id: string; title: string }[]>([]);
+
+  // load colors from backend
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await apiClient.get("/admin/colors");
+  //     console.log("the colors res is :", res);
+  //     if (res.success) setColors(res.data as { _id: string; title: string }[]);
+  //   })();
+  // }, []);
+
+  // loading fabrics
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await apiClient.get("/admin/fabrics");
+  //     console.log("the fabrics at the admin are : ", res);
+
+  //     if (res.success) {
+  //       console.log("setting the fabrics");
+  //       setFabrics(res.data as { _id: string; title: string }[]);
+  //     }
+  //   })();
+  // }, []);
+
+  // Step 1: Chunked state
 
   // witout iamges
   // const onSubmit = async (data: ProductForm) => {
@@ -444,9 +447,6 @@ export default function AdminPage() {
   if (isAdmin === null) {
     return (
       <FullPageLoader message="Checking Access..." />
-      // <div className="container mx-auto px-4 py-20 text-center text-muted-foreground">
-      //   Checking access…
-      // </div>
     );
   }
 
@@ -528,7 +528,7 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {loadingLists || loadingProducts ? (
+              {loadingLists ? (
                 <div className="text-sm text-muted-foreground">
                   Loading products…
                 </div>
