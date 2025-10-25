@@ -84,7 +84,7 @@ const ImageCard: React.FC<ImageCardProps> = (props) => {
         />
 
         {props.variant === "showcase" && discount > 0 && (
-          <Badge variant="destructive" className="absolute left-3 top-3 z-10">
+          <Badge variant="destructive" className="absolute text-white left-3 top-3 z-10">
             -{discount}%
           </Badge>
         )}

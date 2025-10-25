@@ -17,6 +17,7 @@ import AuthButton from "./AuthButton";
 import { useRouter } from "next/navigation";
 import Logo from "./Logo";
 import { useGSAP } from "@gsap/react";
+import DashboardButton from "./DashboardButton";
 
 // ✅ Animated DesktopNav
 function DesktopNav() {
@@ -223,6 +224,7 @@ function RightSection() {
   return (
     <div className="flex items-center space-x-2">
       {/* Sign In button icon */}
+      <DashboardButton />
       <AuthButton />
 
       {/* if signed in user button */}
@@ -287,7 +289,7 @@ function MobileSearch({
   return (
     <div
       ref={searchRef}
-      className="md:hidden sticky top-16 z-30 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-2"
+      className="lg:hidden sticky top-16 z-30 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-2"
     >
       <div className="relative bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70 rounded-md">
         <Search className="absolute left-3  top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />

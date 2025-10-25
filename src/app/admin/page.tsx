@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import apiClient from "@/lib/apiClient";
 import Link from "next/link";
 import EditProductDialog from "@/components/custom/EditProductDialog";
+import FullPageLoader from "@/components/custom/FullPageLoader";
 
 // import { useFieldArray, Controller, useForm } from "react-hook-form";
 // import { Label } from "@/components/ui/label";
@@ -80,6 +81,9 @@ export default function AdminPage() {
   //   control,
   //   name: "variants",
   // });
+
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null); // null = not checked yet
+  const [adminError, setAdminError] = useState<string | null>(null);
 
   const [subscribers, setSubscribers] = useState<any[]>([]);
   const [loadingSubscribers, setLoadingSubscribers] = useState(false);
@@ -210,15 +214,23 @@ export default function AdminPage() {
 
       if (!mounted) return;
 
-      if (productsRes.success) {
-        const incoming = productsRes.data as AdminProduct[];
-        if (page === 0) setProducts(incoming);
-        else setProducts((prev) => [...prev, ...incoming]);
-        setHasMore(incoming.length === PAGE_SIZE);
-      } else {
-        if (page === 0) setProducts([]);
-        setHasMore(false);
+      if (!productsRes.success) {
+        // ❌ Not authorized or failed
+        setIsAdmin(false);
+        setAdminError(
+          productsRes.message ||
+            "Access denied. You are not authorized to view this page."
+        );
+        setLoadingLists(false);
+        return;
       }
+
+      // ✅ Authorized
+      setIsAdmin(true);
+      const incoming = productsRes.data as AdminProduct[];
+      if (page === 0) setProducts(incoming);
+      else setProducts((prev) => [...prev, ...incoming]);
+      setHasMore(incoming.length === PAGE_SIZE);
       setLoadingLists(false);
       setLoadingMore(false);
     })();
@@ -396,6 +408,47 @@ export default function AdminPage() {
   //   // reset()
   //   reloadProducts();
   // };
+
+  if (isAdmin === false) {
+    return (
+      <div className="container mx-auto px-4 py-20 text-center">
+        <h1 className="text-2xl md:text-3xl font-semibold mb-4">
+          Access Denied
+        </h1>
+        <p className="text-muted-foreground mb-6">
+          {adminError || "You are not authorized to access this admin panel."}
+        </p>
+        <p className="text-sm">
+          If you believe this is a mistake or you need admin access, please
+          contact us at{" "}
+          <a
+            href="mailto:abdullah2127x@gmail.com"
+            className="text-blue-600 underline hover:font-semibold"
+          >
+            abdullah2127x@gmail.com
+          </a>
+          <span className="mx-1">or</span>
+          <a
+            href="mailto:mabdullahqureshi853@gmail.com"
+            className="text-blue-600 underline hover:font-semibold"
+          >
+            mabdullahqureshi853@gmail.com
+          </a>
+          .
+        </p>
+      </div>
+    );
+  }
+
+  // Show a spinner while loading check
+  if (isAdmin === null) {
+    return (
+      <FullPageLoader message="Checking Access..." />
+      // <div className="container mx-auto px-4 py-20 text-center text-muted-foreground">
+      //   Checking access…
+      // </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
