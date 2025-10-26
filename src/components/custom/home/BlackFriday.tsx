@@ -43,7 +43,7 @@ export default function BlackFriday() {
           </div>
 
           <Button size="lg" asChild variant="secondary">
-            <Link href="/shop">Grab Deals</Link>
+            <Link href="/shop?discounts=50">Grab Deals</Link>
           </Button>
         </div>
 

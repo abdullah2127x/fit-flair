@@ -72,8 +72,10 @@
   --accent-foreground: 50 71% 89%; /* invert of 50 71% 11% */
 
   /* destructive */
-  --destructive: 0 72% 55%;  /* invert of 0 72% 45% (kept saturation/hue) */
-  --destructive-foreground: 0 0% 2%; /* invert of 0 0% 98% */
+     --destructive: 0 72% 45%; /* Modern red */
+    --destructive-foreground: 0 0% 98%;
+   /* --destructive: 0 72% 55%;  */
+  /* --destructive-foreground: 0 0% 2%; invert of 0 0% 98% */
 
   /* borders / controls */
   --border: 47 20% 18%;      /* invert of 47 20% 82% */

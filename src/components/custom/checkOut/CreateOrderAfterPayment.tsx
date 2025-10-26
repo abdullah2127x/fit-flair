@@ -69,7 +69,7 @@ function CreateOrderAfterPaymentContent() {
       try {
         setTimeout(() => {
           setStatusText("Creating your order...");
-        }, 500);
+        }, 300);
 
         const orderData = {
           items: cartItems.map((item: ICartItem) => ({
@@ -122,7 +122,6 @@ function CreateOrderAfterPaymentContent() {
       hasRun.current = true;
       createOrder();
     }
-    // }, [paymentIntentId, cartItems, subTotal, shippingAddress, shippingCost]);
   }, [
     isLoaded,
     amount,

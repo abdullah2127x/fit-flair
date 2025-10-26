@@ -69,7 +69,7 @@ const FeaturedCollection = () => {
         slidesToShow={4}
         autoPlay={false}
         stepAutoPlay
-        stepAutoPlayDelay={2}
+        stepAutoPlayDelay={4}
         showNavigation={true}
         // showPagination={true}
         buttonText="View Detail"

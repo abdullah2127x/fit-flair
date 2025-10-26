@@ -14,7 +14,7 @@ export default function SyncCartOnLogin() {
 
   useEffect(() => {
     if (!user) return;
-    const excludedPaths = ["/about", "/services", "/contact"];// replace with the real paths later
+    const excludedPaths = ["/payment-success", "/create-order"];// replace with the real paths later
     if (excludedPaths.includes(pathname)) {
       console.log("we are not syncing");
       return; // 🚫 skip sync on these pages

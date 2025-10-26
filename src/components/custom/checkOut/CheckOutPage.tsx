@@ -82,7 +82,7 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
       elements,
       clientSecret: clientSecret!,
       confirmParams: {
-      return_url: `${URL}/create-order?amount=${amount}`,
+        return_url: `${URL}/create-order?amount=${amount}`,
       },
     });
 
@@ -102,6 +102,10 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
       {errorMessage && <p className="text-destructive mb-4">{errorMessage}</p>}
       {clientSecret ? (
         <>
+          <p className="text-base text-primary-foreground font-bold mb-2">
+            Test card number:
+            <span className="text-sm ml-3 font-normal">4242 4242 4242 4242</span>
+          </p>
           <PaymentElement className="bg-secondary" />
           <Button
             disabled={loading || !stripe || !elements}

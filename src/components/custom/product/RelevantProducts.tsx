@@ -4,13 +4,10 @@
 import { client } from "@/sanity/lib/client";
 import { relevantProductsQuery } from "@/lib/groqQueries";
 import { ProductDetailSchema, ProductShowcaseSchema } from "@/types/product";
-import ImageCard from "../ImageCard";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import EmblaCarousel from "../EmblaCarousel";
-import PrimaryHeading from "../PrimaryHeading";
-import SubTitle from "../SubTitle";
 import SecondaryHeading from "../SecondaryHeading";
 
 interface RelevantProductsProps {
@@ -108,7 +105,7 @@ export default function RelevantProducts({ product }: RelevantProductsProps) {
         slidesToShow={5}
         autoPlay={false}
         stepAutoPlay
-        stepAutoPlayDelay={2}
+        stepAutoPlayDelay={3}
         showNavigation={true}
         showPagination={true}
         buttonText={"View Detail"}

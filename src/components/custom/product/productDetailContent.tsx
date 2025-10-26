@@ -272,15 +272,27 @@ export default function ProductDetailContent({
                 Add to Cart
               </Button>
             </AddToCartWrapper>
-            <Button
-              variant="secondary"
-              className="w-full lg:w-auto"
-              size="lg"
-              disabled={product.variant.stock === 0}
+            <AddToCartWrapper
+              quantity={1}
+              productId={product.id}
+              slug={product.slug}
+              title={product.title}
+              subTitle={product.subTitle}
+              price={product.price}
+              discount={product.discount}
+              imageSrc={product.variant.featuredImage}
+              colorName={product.variant.colorName}
             >
-              <WalletCards className="mr-2 h-5 w-5" />
-              Buy Now
-            </Button>
+              <Button
+                variant="secondary"
+                className="w-full lg:w-auto"
+                size="lg"
+                disabled={product.variant.stock === 0}
+              >
+                <WalletCards className="mr-2 h-5 w-5" />
+                Buy Now
+              </Button>
+            </AddToCartWrapper>
           </div>
         </div>
       </div>
