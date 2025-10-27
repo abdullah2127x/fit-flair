@@ -324,7 +324,7 @@ export async function GET(request: NextRequest) {
     `;
 
     const products = await readClient.fetch(groq, { q: `${query}*`, limit });
-    console.log("The new products are :", products);
+    // console.log("The new products are :", products);
     return success(products, "Products fetched", 200);
   } catch (err: any) {
     console.error("Admin products endpoint: Error:", err);
