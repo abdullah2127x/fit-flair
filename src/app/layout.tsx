@@ -10,6 +10,7 @@ import CartSidebar from "@/components/custom/cart/CartSidebar";
 import SyncCartOnLogin from "@/components/custom/SyncCartOnLogin";
 import SyncUser from "@/components/custom/SyncUser";
 import { Toaster } from "@/components/ui/sonner";
+import FooterWrapper from "@/components/custom/FooterWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,11 +41,14 @@ export default function RootLayout({
               <div className="min-h-screen bg-background text-foreground flex flex-col">
                 <Header />
                 <main>{children}</main>
-                <div className=" bg-secondary text-secondary-foreground">
-                  <div className="container mx-auto">
-                    <Footer />
+                {/* {!isStudioRoute && (
+                  <div className="bg-secondary text-secondary-foreground">
+                    <div className="container mx-auto">
+                      <Footer />
+                    </div>
                   </div>
-                </div>
+                )} */}
+                <FooterWrapper/>
               </div>
               <Toaster />
               <CartSidebar />
