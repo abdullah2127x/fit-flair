@@ -7,7 +7,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
-const OUT_FILE = path.join(__dirname, "products.json");
+const OUT_FILE = path.join(process.cwd(), "src/data/forSanity/products.json");
 const COUNT = 1000;
 
 // Try to load fabric.json and colors.json if present, otherwise use built-in lists
@@ -86,38 +86,116 @@ const colorNames = Array.isArray(colorsJson)
   : colorsFallback.map((c) => c.name);
 
 // Images list extracted from your examples (allowed to repeat)
-const imagePool = [
-  "/images/men/tracksuit.jpg",
-  "/images/men/polo.jpg",
-  "/images/men/t-shirt.jpg",
+// const imagePool = [
+//   "/images/categories/bottom.webp",
+//   "/images/categories/full.webp",
+//   "/images/categories/men.webp",
+//   "/images/categories/readyToWear.webp",
+//   "/images/categories/top.webp",
+//   "/images/categories/unStitched.webp",
+//   "/images/categories/women.webp",
+
+//   "/images/fabrics/Chambray.webp",
+//   "/images/fabrics/Chiffon.webp",
+//   "/images/fabrics/Cotton.webp",
+//   "/images/fabrics/Crepe.webp",
+//   "/images/fabrics/Denim.webp",
+//   "/images/fabrics/Fleece.webp",
+//   "/images/fabrics/Georgette.webp",
+//   "/images/fabrics/Jersey.webp",
+//   "/images/fabrics/Leather.webp",
+//   "/images/fabrics/Linen.webp",
+//   "/images/fabrics/Nylon.webp",
+//   "/images/fabrics/Organza.webp",
+//   "/images/fabrics/Polyester.webp",
+//   "/images/fabrics/Poplinn.webp",
+//   "/images/fabrics/Rayon.webp",
+//   "/images/fabrics/Satin.webp",
+//   "/images/fabrics/Silk.webp",
+//   "/images/fabrics/Tulle.webp",
+//   "/images/fabrics/Velvet.webp",
+//   "/images/fabrics/Wool.webp",
+
+//   "/images/men/formal-shirt.jpg",
+//   "/images/men/formal-suit.jpg",
+//   "/images/men/hodie.jpg",
+//   "/images/men/jeans.jpg",
+//   "/images/men/kurta.jpg",
+//   "/images/men/polo.jpg",
+//   "/images/men/sherwani.jpg",
+//   "/images/men/t-shirt.jpg",
+//   "/images/men/tracksuit.jpg",
+//   "/images/men/trouser.jpg",
+//   "/images/women/2-piece-suit.jpg",
+//   "/images/women/3-piece-suit.jpg",
+//   "/images/women/anarkali.jpg",
+//   "/images/women/dress.jpg",
+//   "/images/women/gown.jpg",
+//   "/images/women/jeans-trousers.jpg",
+//   "/images/women/kurti.jpg",
+//   "/images/women/lehenga.jpg",
+//   "/images/women/polo.jpg",
+//   "/images/women/skirt.jpg",
+//   "/images/women/t-shirt.jpg",
+//   "/images/women/tracksuit.jpg",
+// ];
+
+// Separate pools
+const imagePoolCommon = [
+  "/images/categories/bottom.webp",
+  "/images/categories/full.webp",
+  "/images/categories/readyToWear.webp",
+  "/images/categories/top.webp",
+  "/images/categories/unStitched.webp",
+
+  "/images/fabrics/Chambray.webp",
+  "/images/fabrics/Chiffon.webp",
+  "/images/fabrics/Cotton.webp",
+  "/images/fabrics/Crepe.webp",
+  "/images/fabrics/Denim.webp",
+  "/images/fabrics/Fleece.webp",
+  "/images/fabrics/Georgette.webp",
+  "/images/fabrics/Jersey.webp",
+  "/images/fabrics/Leather.webp",
+  "/images/fabrics/Linen.webp",
+  "/images/fabrics/Nylon.webp",
+  "/images/fabrics/Organza.webp",
+  "/images/fabrics/Polyester.webp",
+  "/images/fabrics/Poplinn.webp",
+  "/images/fabrics/Rayon.webp",
+  "/images/fabrics/Satin.webp",
+  "/images/fabrics/Silk.webp",
+  "/images/fabrics/Tulle.webp",
+  "/images/fabrics/Velvet.webp",
+  "/images/fabrics/Wool.webp",
+];
+
+const imagePoolMen = [
   "/images/men/formal-shirt.jpg",
-  "/images/men/jeans.jpg",
-  "/images/men/trouser.jpg",
-  "/images/men/kurta.jpg",
   "/images/men/formal-suit.jpg",
+  "/images/men/hodie.jpg",
+  "/images/men/jeans.jpg",
+  "/images/men/kurta.jpg",
+  "/images/men/polo.jpg",
   "/images/men/sherwani.jpg",
-  "/images/men/kurta.jpg",
-  "/images/men/formal-suit.jpg",
-  "/images/men/polo.jpg",
   "/images/men/t-shirt.jpg",
-  "/images/men/formal-shirt.jpg",
-  "/images/men/jeans.jpg",
-  "/images/men/trouser.jpg",
-  "/images/men/formal-suit.jpg",
-  "/images/men/sherwani.jpg",
-  "/images/men/polo.jpg",
-  "/images/men/t-shirt.jpg",
-  "/images/men/formal-shirt.jpg",
-  "/images/men/jeans.jpg",
-  "/images/men/trouser.jpg",
-  "/images/men/formal-suit.jpg",
-  "/images/men/formal-suit.jpg",
-  "/images/men/kurta.jpg",
-  "/images/men/jeans.jpg",
-  "/images/men/trouser.jpg",
-  "/images/men/formal-shirt.jpg",
   "/images/men/tracksuit.jpg",
-  "/images/men/hoodie.jpg", // (if missing, it's fine - string paths only)
+  "/images/men/trouser.jpg",
+];
+
+const imagePoolWomen = [
+  "/images/women/2-piece-suit.jpg",
+  "/images/women/3-piece-suit.jpg",
+  "/images/women/anarkali.jpg",
+  "/images/women/dress.jpg",
+  "/images/women/gown.jpg",
+  "/images/women/jeans-trousers.jpg",
+  "/images/women/kurti.jpg",
+  "/images/women/lehenga.jpg",
+  "/images/women/polo.jpg",
+  "/images/women/skirt.jpg",
+  "/images/women/t-shirt.jpg",
+  "/images/women/tracksuit.jpg",
 ];
 
 // Utility
@@ -262,22 +340,22 @@ function makeTitle(i, audience) {
   return `${adj} ${noun} ${i}`;
 }
 
-function makeVariantPool(productIndex) {
+function makeVariantPool(productIndex, audience) {
   const numVariants = randInt(1, 4);
-  // choose unique colors
-  const colorChoices = [...colorNames];
-  // shuffle simple
-  for (let i = colorChoices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [colorChoices[i], colorChoices[j]] = [colorChoices[j], colorChoices[i]];
-  }
+  const colorChoices = [...colorNames].sort(() => Math.random() - 0.5);
   const chosen = colorChoices.slice(0, numVariants);
-  return chosen.map((color, idx) => {
-    const featured = randPick(imagePool);
-    // additional images up to 3 (could include duplicates)
+
+  // Choose correct image pool
+  const genderPool =
+    audience === "men"
+      ? [...imagePoolMen, ...imagePoolCommon]
+      : [...imagePoolWomen, ...imagePoolCommon];
+
+  return chosen.map((color) => {
+    const featured = randPick(genderPool);
     const addCount = randInt(0, 3);
     const additional = Array.from({ length: addCount }, () =>
-      randPick(imagePool)
+      randPick(genderPool)
     );
     return {
       color,

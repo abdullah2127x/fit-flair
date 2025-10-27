@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/scripts/importSubFields.mjs"
-, "src/components/carousels/s"  ],
+, "src/components/carousels/s", "src/lib/genProdocts.js"  ],
   "exclude": [
     "node_modules"
   ]

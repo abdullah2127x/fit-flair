@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fabrics from "@/data/forSanity/fabrics.json";
 import colors from "@/data/forSanity/colors.json";
+// import products from "@/data/forSanity/prevProducts.json";
 import products from "@/data/forSanity/products.json";
 
 type DataType = "brand" | "fabric" | "color" | "product";

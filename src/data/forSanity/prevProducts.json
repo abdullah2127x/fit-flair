@@ -1,0 +1,436 @@
+[
+  {
+    "title": "Jumpsuit Outfit",
+    "subTitle": "Jumpsuit Outfit is the sub title of this product",
+    "slug": "jumpsuit-outfit",
+    "price": 9590.92,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "2piece",
+    "menOutfitType": "tracksuit",
+    "season": ["summer"],
+    "designs": ["plain"],
+    "occasions": ["casual"],
+    "fabric": "Wool",
+    "discount": 13,
+    "isNewArrival": true,
+    "variants": [
+      {
+        "color": "Teal",
+        "featuredImage": "/images/men/tracksuit.jpg",
+        "additionalImages": ["/images/men/polo.jpg", "/images/men/t-shirt.jpg", "/images/men/formal-shirt.jpg"],
+        "stock": 25
+      },
+      {
+        "color": "Red",
+        "featuredImage": "/images/men/tracksuit.jpg",
+        "additionalImages": ["/images/men/jeans.jpg", "/images/men/trouser.jpg", "/images/men/kurta.jpg"],
+        "stock": 30
+      },
+      {
+        "color": "Blue",
+        "featuredImage": "/images/men/tracksuit.jpg",
+        "additionalImages": ["/images/men/formal-suit.jpg", "/images/men/sherwani.jpg", "/images/men/polo.jpg"],
+        "stock": 20
+      }
+    ],
+    "description": "A readyToWear Jumpsuit Outfit perfect for everyday wear.",
+    "relevantTags": ["Shorts", "Trouser", "Festive"],
+    "isFeatured": true,
+    "isPopular": true
+  },
+  {
+    "title": "Casual Shirt",
+    "subTitle": "Casual Shirt is the sub title of this product",
+    "slug": "casual-shirt",
+    "price": 4590.50,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "2piece",
+    "menOutfitType": "shirt",
+    "season": ["summer"],
+    "designs": ["printed"],
+    "occasions": ["office"],
+    "fabric": "Cotton",
+    "discount": 25,
+    "isNewArrival": false,
+    "variants": [
+      {
+        "color": "Red",
+        "featuredImage": "/images/men/formal-shirt.jpg",
+        "additionalImages": ["/images/men/polo.jpg", "/images/men/t-shirt.jpg", "/images/men/kurta.jpg"],
+        "stock": 40
+      },
+      {
+        "color": "Blue",
+        "featuredImage": "/images/men/formal-shirt.jpg",
+        "additionalImages": ["/images/men/jeans.jpg", "/images/men/trouser.jpg", "/images/men/formal-suit.jpg"],
+        "stock": 35
+      }
+    ],
+    "description": "A casual printed shirt suitable for office and daily wear.",
+    "relevantTags": ["Shirt", "Casual", "Office"],
+    "isFeatured": false,
+    "isPopular": false
+  },
+  {
+    "title": "Formal Suit",
+    "subTitle": "Formal Suit is the sub title of this product",
+    "slug": "formal-suit",
+    "price": 15990.00,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "3piece",
+    "menOutfitType": "3pieceSuit",
+    "season": ["winter"],
+    "designs": ["plain"],
+    "occasions": ["formal"],
+    "fabric": "Wool",
+    "discount": 18,
+    "isNewArrival": false,
+    "variants": [
+      {
+        "color": "Black",
+        "featuredImage": "/images/men/formal-suit.jpg",
+        "additionalImages": ["/images/men/polo.jpg", "/images/men/t-shirt.jpg", "/images/men/formal-shirt.jpg"],
+        "stock": 10
+      },
+      {
+        "color": "Navy Blue",
+        "featuredImage": "/images/men/formal-suit.jpg",
+        "additionalImages": ["/images/men/kurta.jpg", "/images/men/jeans.jpg", "/images/men/trouser.jpg"],
+        "stock": 12
+      }
+    ],
+    "description": "A premium formal suit perfect for winter weddings and office events.",
+    "relevantTags": ["Suit", "Formal", "Winter"],
+    "isFeatured": true,
+    "isPopular": true
+  },
+  {
+    "title": "Kurta Set",
+    "subTitle": "Kurta Set is the sub title of this product",
+    "slug": "kurta-set",
+    "price": 7590.75,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "2piece",
+    "menOutfitType": "kurta",
+    "season": ["summer"],
+    "designs": ["embroidered"],
+    "occasions": ["eid", "casual"],
+    "fabric": "Cotton",
+    "discount": 21,
+    "isNewArrival": true,
+    "variants": [
+      {
+        "color": "White",
+        "featuredImage": "/images/men/kurta.jpg",
+        "additionalImages": ["/images/men/polo.jpg", "/images/men/t-shirt.jpg", "/images/men/formal-shirt.jpg"],
+        "stock": 25
+      },
+      {
+        "color": "Beige",
+        "featuredImage": "/images/men/kurta.jpg",
+        "additionalImages": ["/images/men/jeans.jpg", "/images/men/trouser.jpg", "/images/men/formal-suit.jpg"],
+        "stock": 20
+      }
+    ],
+    "description": "Lightweight embroidered kurta set suitable for summer and festive occasions.",
+    "relevantTags": ["Kurta", "Eid", "Festive"],
+    "isFeatured": false,
+    "isPopular": true
+  },
+  {
+    "title": "T-Shirt Casual",
+    "subTitle": "T-Shirt Casual is the sub title of this product",
+    "slug": "tshirt-casual",
+    "price": 2990.99,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "top",
+    "menOutfitType": "tshirt",
+    "season": ["summer"],
+    "designs": ["printed"],
+    "occasions": ["casual"],
+    "fabric": "Cotton",
+    "discount": 25,
+    "isNewArrival": true,
+    "variants": [
+      {
+        "color": "Red",
+        "featuredImage": "/images/men/t-shirt.jpg",
+        "additionalImages": ["/images/men/polo.jpg", "/images/men/formal-shirt.jpg", "/images/men/kurta.jpg"],
+        "stock": 50
+      },
+      {
+        "color": "Black",
+        "featuredImage": "/images/men/t-shirt.jpg",
+        "additionalImages": ["/images/men/jeans.jpg", "/images/men/trouser.jpg", "/images/men/formal-suit.jpg"],
+        "stock": 45
+      }
+    ],
+    "description": "Comfortable printed T-Shirt suitable for summer casual wear.",
+    "relevantTags": ["T-Shirt", "Casual", "Summer"],
+    "isFeatured": true,
+    "isPopular": true
+  },
+  {
+    "title": "Formal Shirt",
+    "subTitle": "Formal Shirt is the sub title of this product",
+    "slug": "formal-shirt",
+    "price": 5290.00,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "top",
+    "menOutfitType": "shirt",
+    "season": ["summer"],
+    "designs": ["plain"],
+    "occasions": ["office"],
+    "fabric": "Linen",
+    "discount": 10,
+    "isNewArrival": false,
+    "variants": [
+      {
+        "color": "White",
+        "featuredImage": "/images/men/formal-shirt.jpg",
+        "additionalImages": ["/images/men/polo.jpg", "/images/men/t-shirt.jpg", "/images/men/kurta.jpg"],
+        "stock": 30
+      }
+    ],
+    "description": "Elegant formal shirt for office and professional events.",
+    "relevantTags": ["Shirt", "Formal", "Office"],
+    "isFeatured": false,
+    "isPopular": false
+  },
+  {
+    "title": "Jeans Classic",
+    "subTitle": "Jeans Classic is the sub title of this product",
+    "slug": "jeans-classic",
+    "price": 3890.50,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "bottom",
+    "menOutfitType": "jeans",
+    "season": ["summer", "winter"],
+    "designs": ["plain"],
+    "occasions": ["casual", "office"],
+    "fabric": "Denim",
+    "discount": 13,
+    "isNewArrival": true,
+    "variants": [
+      {
+        "color": "Blue",
+        "featuredImage": "/images/men/jeans.jpg",
+        "additionalImages": ["/images/men/polo.jpg", "/images/men/t-shirt.jpg", "/images/men/formal-shirt.jpg"],
+        "stock": 50
+      },
+      {
+        "color": "Black",
+        "featuredImage": "/images/men/jeans.jpg",
+        "additionalImages": ["/images/men/kurta.jpg", "/images/men/trouser.jpg", "/images/men/formal-suit.jpg"],
+        "stock": 40
+      }
+    ],
+    "description": "Classic jeans for casual and semi-formal occasions.",
+    "relevantTags": ["Jeans", "Casual", "Denim"],
+    "isFeatured": true,
+    "isPopular": true
+  },
+  {
+    "title": "Waistcoat Style",
+    "subTitle": "Waistcoat Style is the sub title of this product",
+    "slug": "waistcoat-style",
+    "price": 6990.75,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "top",
+    "menOutfitType": "waistcoat",
+    "season": ["winter"],
+    "designs": ["plain"],
+    "occasions": ["formal"],
+    "fabric": "Velvet",
+    "discount": 15,
+    "isNewArrival": true,
+    "variants": [
+      {
+        "color": "Maroon",
+        "featuredImage": "/images/men/formal-suit.jpg",
+        "additionalImages": ["/images/men/polo.jpg", "/images/men/t-shirt.jpg", "/images/men/formal-shirt.jpg"],
+        "stock": 15
+      }
+    ],
+    "description": "Stylish velvet waistcoat perfect for formal events.",
+    "relevantTags": ["Waistcoat", "Formal", "Winter"],
+    "isFeatured": false,
+    "isPopular": false
+  },
+  {
+    "title": "Sherwani Classic",
+    "subTitle": "Sherwani Classic is the sub title of this product",
+    "slug": "sherwani-classic",
+    "price": 12990.99,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "3piece",
+    "menOutfitType": "sherwani",
+    "season": ["winter"],
+    "designs": ["embroidered"],
+    "occasions": ["wedding", "formal"],
+    "fabric": "Silk",
+    "discount": 20,
+    "isNewArrival": true,
+    "variants": [
+      {
+        "color": "Gold",
+        "featuredImage": "/images/men/sherwani.jpg",
+        "additionalImages": ["/images/men/polo.jpg", "/images/men/t-shirt.jpg", "/images/men/formal-shirt.jpg"],
+        "stock": 12
+      }
+    ],
+    "description": "Elegant sherwani for weddings and formal events.",
+    "relevantTags": ["Sherwani", "Wedding", "Formal"],
+    "isFeatured": true,
+    "isPopular": true
+  },
+  {
+    "title": "Polo Modern",
+    "subTitle": "Polo Modern is the sub title of this product",
+    "slug": "polo-modern",
+    "price": 3690.40,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "top",
+    "menOutfitType": "polo",
+    "season": ["summer"],
+    "designs": ["striped"],
+    "occasions": ["casual"],
+    "fabric": "Cotton",
+    "discount": 12,
+    "isNewArrival": true,
+    "variants": [
+      {
+        "color": "Navy Blue",
+        "featuredImage": "/images/men/polo.jpg",
+        "additionalImages": ["/images/men/jeans.jpg", "/images/men/trouser.jpg", "/images/men/t-shirt.jpg"],
+        "stock": 35
+      }
+    ],
+    "description": "Trendy striped polo shirt for a casual summer look.",
+    "relevantTags": ["Polo", "Casual", "Summer"],
+    "isFeatured": false,
+    "isPopular": true
+  },
+  {
+    "title": "Tracksuit Pro",
+    "subTitle": "Tracksuit Pro is the sub title of this product",
+    "slug": "tracksuit-pro",
+    "price": 8590.60,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "2piece",
+    "menOutfitType": "tracksuit",
+    "season": ["winter"],
+    "designs": ["plain"],
+    "occasions": ["gym", "casual"],
+    "fabric": "Polyester",
+    "discount": 20,
+    "isNewArrival": true,
+    "variants": [
+      {
+        "color": "Grey",
+        "featuredImage": "/images/men/tracksuit.jpg",
+        "additionalImages": ["/images/men/t-shirt.jpg", "/images/men/polo.jpg", "/images/men/jeans.jpg"],
+        "stock": 28
+      }
+    ],
+    "description": "Comfortable tracksuit designed for gym and casual wear.",
+    "relevantTags": ["Tracksuit", "Gym", "Casual"],
+    "isFeatured": true,
+    "isPopular": true
+  },
+  {
+    "title": "Blazer Smart",
+    "subTitle": "Blazer Smart is the sub title of this product",
+    "slug": "blazer-smart",
+    "price": 9990.99,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "top",
+    "menOutfitType": "blazer",
+    "season": ["winter"],
+    "designs": ["plain"],
+    "occasions": ["office", "formal"],
+    "fabric": "Wool",
+    "discount": 17,
+    "isNewArrival": false,
+    "variants": [
+      {
+        "color": "Brown",
+        "featuredImage": "/images/men/formal-suit.jpg",
+        "additionalImages": ["/images/men/trouser.jpg", "/images/men/jeans.jpg", "/images/men/formal-shirt.jpg"],
+        "stock": 20
+      }
+    ],
+    "description": "Smart wool blazer ideal for professional and formal occasions.",
+    "relevantTags": ["Blazer", "Formal", "Office"],
+    "isFeatured": false,
+    "isPopular": false
+  },
+  {
+    "title": "Casual Hoodie",
+    "subTitle": "Casual Hoodie is the sub title of this product",
+    "slug": "casual-hoodie",
+    "price": 4790.25,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "top",
+    "menOutfitType": "hoodie",
+    "season": ["winter"],
+    "designs": ["printed"],
+    "occasions": ["casual"],
+    "fabric": "Fleece",
+    "discount": 22,
+    "isNewArrival": true,
+    "variants": [
+      {
+        "color": "Black",
+        "featuredImage": "/images/men/t-shirt.jpg",
+        "additionalImages": ["/images/men/jeans.jpg", "/images/men/polo.jpg", "/images/men/tracksuit.jpg"],
+        "stock": 30
+      }
+    ],
+    "description": "Warm fleece hoodie with trendy prints, perfect for casual outings.",
+    "relevantTags": ["Hoodie", "Casual", "Winter"],
+    "isFeatured": true,
+    "isPopular": true
+  },
+  {
+    "title": "Jogger Pants",
+    "subTitle": "Jogger Pants is the sub title of this product",
+    "slug": "jogger-pants",
+    "price": 3190.80,
+    "audience": "men",
+    "category": "readyToWear",
+    "subCategory": "bottom",
+    "menOutfitType": "jogger",
+    "season": ["summer", "winter"],
+    "designs": ["plain"],
+    "occasions": ["gym", "casual"],
+    "fabric": "Cotton",
+    "discount": 14,
+    "isNewArrival": true,
+    "variants": [
+      {
+        "color": "Olive",
+        "featuredImage": "/images/men/trouser.jpg",
+        "additionalImages": ["/images/men/t-shirt.jpg", "/images/men/jeans.jpg", "/images/men/polo.jpg"],
+        "stock": 45
+      }
+    ],
+    "description": "Comfortable cotton jogger pants for casual wear and gym sessions.",
+    "relevantTags": ["Jogger", "Casual", "Gym"],
+    "isFeatured": false,
+    "isPopular": true
+  }
+]
