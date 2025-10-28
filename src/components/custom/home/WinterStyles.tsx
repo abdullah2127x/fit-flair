@@ -42,7 +42,7 @@ export default function WinterStyles() {
             ))}
           </div>
           <Button size="lg" asChild variant="secondary">
-            <Link href="/shop?season=winter">Shop Now</Link>
+            <Link href="/shop?seasons=winter&discounts=20">Shop Now</Link>
           </Button>
         </div>
 

@@ -181,7 +181,7 @@ const FabricCollection = () => {
   const products: ProductCollectionSchema[] = fabrics.map(
     (fabric, index): ProductCollectionSchema => ({
       id: (index + 1).toString(),
-      slug: `/shop/${fabric.toLowerCase()}`,
+      slug: `?fabrics=${fabric.toLowerCase()}`,
       src: `/images/fabrics/${fabric}.webp`,
       title: fabric,
     })
