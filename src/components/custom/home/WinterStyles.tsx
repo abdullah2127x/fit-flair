@@ -54,7 +54,7 @@ export default function WinterStyles() {
               alt="Winter Outfit"
               width={400} // set your preferred width
               height={400} // set your preferred height
-              className="w-full max-w-sm rounded-2xl shadow-lg hover:scale-125 transition-transform duration-500 "
+              className="w-full h-auto max-w-sm rounded-2xl shadow-lg hover:scale-125 transition-transform duration-500 "
             />
           </div>
         </div>

@@ -63,7 +63,7 @@ const ImageCard: React.FC<ImageCardProps> = (props) => {
             overflow-hidden flex items-center justify-center rounded-full group-hover:rounded-b-none`}
       >
         {/* just view in mobile devices */}
-        <Link href={productUrl} className="md:hidden">
+        <Link href={productUrl} className="md:hidden relative">
           <Image
             src={src}
             alt={title ?? "slide"}
