@@ -1,94 +1,15 @@
-// // Created using gpt
-// "use client";
-
-// import { motion } from "framer-motion";
-// import { Button } from "@/components/ui/button";
-
-// export default function AboutPage() {
-//   return (
-//     <section className="min-h-screen bg-background text-foreground">
-//       <div className="container py-16">
-//         {/* Hero Section */}
-//         <motion.div
-//           initial={{ opacity: 0, y: 40 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           transition={{ duration: 0.6 }}
-//           className="text-center max-w-3xl mx-auto mb-14"
-//         >
-//           <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-primary-foreground">
-//             About <span className="text-accent-foreground">FitFlair</span>
-//           </h1>
-//           <p className="text-muted-foreground text-lg">
-//             At <span className="font-semibold text-foreground">FitFlair</span>, we believe that fashion
-//             and comfort should go hand in hand. Our mission is to bring you
-//             trendy, sustainable, and affordable clothing that empowers your
-//             lifestyle — whether you’re in the gym, at work, or out with friends.
-//           </p>
-//         </motion.div>
-
-//         {/* Values Section */}
-//         <div className="grid md:grid-cols-3 gap-8 mb-20">
-//           {[
-//             {
-//               title: "Quality & Comfort",
-//               desc: "We use premium fabrics and ethical production practices to ensure each piece feels as good as it looks.",
-//             },
-//             {
-//               title: "Style & Confidence",
-//               desc: "Our designs are made to make you look sharp and feel unstoppable — fitness or fashion, you set the trend.",
-//             },
-//             {
-//               title: "Sustainability",
-//               desc: "From packaging to materials, we’re committed to reducing our footprint and promoting conscious fashion.",
-//             },
-//           ].map((item, i) => (
-//             <motion.div
-//               key={i}
-//               initial={{ opacity: 0, y: 20 }}
-//               whileInView={{ opacity: 1, y: 0 }}
-//               transition={{ duration: 0.5, delay: i * 0.1 }}
-//               viewport={{ once: true }}
-//               className="bg-card border border-border rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300"
-//             >
-//               <h3 className="text-xl font-semibold mb-3 text-primary-foreground">
-//                 {item.title}
-//               </h3>
-//               <p className="text-muted-foreground">{item.desc}</p>
-//             </motion.div>
-//           ))}
-//         </div>
-
-//         {/* CTA Section */}
-//         <motion.div
-//           initial={{ opacity: 0, y: 30 }}
-//           whileInView={{ opacity: 1, y: 0 }}
-//           transition={{ duration: 0.6 }}
-//           viewport={{ once: true }}
-//           className="text-center"
-//         >
-//           <h2 className="text-3xl font-bold mb-4 text-primary-foreground">
-//             Ready to explore our latest collection?
-//           </h2>
-//           <p className="text-muted-foreground mb-8">
-//             Discover outfits that fit your style, mood, and every moment.
-//           </p>
-//           <Button
-//             variant="default"
-//             className="bg-accent text-accent-foreground hover:bg-accent/80 px-6 py-3 rounded-xl transition-all"
-//           >
-//             Start Shopping
-//           </Button>
-//         </motion.div>
-//       </div>
-//     </section>
-//   );
-// }
-
 // created using claude
 import React from "react";
 import { Heart, Shield, Truck, Award, Users, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us | Fit Flair",
+  description:
+    "Learn more about Fit Flair — our story, mission, and passion for delivering stylish, high-quality clothing that defines your fashion sense.",
+};
 
 export default function AboutPage() {
   const values = [
